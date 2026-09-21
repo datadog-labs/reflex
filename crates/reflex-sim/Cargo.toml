@@ -1,0 +1,31 @@
+[package]
+name = "reflex-sim"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish = false
+description = "Deterministic circuit-breaking scenarios and an offline HTML laboratory"
+
+[dependencies]
+reqwest.workspace = true
+reflex.workspace = true
+reflex-typesafe = { path = "../reflex-typesafe" }
+typesafe-ai.workspace = true
+tokio.workspace = true
+serde.workspace = true
+serde_json = { workspace = true, features = ["float_roundtrip"] }
+thiserror.workspace = true
+clap = { version = "4", features = ["derive"] }
+opentelemetry = { version = "0.31", default-features = false, features = ["metrics"] }
+tracing = "0.1"
+pin-project-lite = "0.2"
+
+axum = { version = "0.8", default-features = false, features = ["http1", "json", "tokio"] }
+
+[dev-dependencies]
+
+opentelemetry_sdk = { version = "0.31", features = ["testing"] }
+opentelemetry-otlp = { version = "0.31", default-features = false, features = ["http-proto", "reqwest-blocking-client", "reqwest-rustls", "metrics", "trace", "logs"] }
+opentelemetry-appender-tracing = { version = "0.31", features = ["experimental_use_tracing_span_context"] }
+tracing-opentelemetry = "0.32"
+tracing-subscriber = { version = "0.3", features = ["registry"] }

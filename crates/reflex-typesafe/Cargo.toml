@@ -1,0 +1,16 @@
+[package]
+name = "reflex-typesafe"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish = false
+description = "TypeSafe AI judge adapter for Reflex"
+
+[dependencies]
+reflex.workspace = true
+typesafe-ai.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+tokio.workspace = true

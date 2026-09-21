@@ -1,0 +1,1101 @@
+{
+  "title": "Reflex | Resource scheduler operations",
+  "description": "Queue pressure, job outcomes, node CPU/memory reservations and guarded placements. Select one simulation_run and its historical time range. SDK panels have application scope.",
+  "layout_type": "ordered",
+  "reflow_type": "auto",
+  "template_variables": [
+    {
+      "name": "env",
+      "prefix": "env",
+      "defaults": [
+        "local"
+      ]
+    },
+    {
+      "name": "application",
+      "prefix": "service",
+      "defaults": [
+        "reflex"
+      ]
+    },
+    {
+      "name": "policy",
+      "prefix": "policy",
+      "defaults": [
+        "jev"
+      ]
+    },
+    {
+      "name": "run",
+      "prefix": "simulation_run",
+      "defaults": [
+        "*"
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "id": 1,
+      "definition": {
+        "type": "note",
+        "content": "## Resource scheduling\nSelect an environment, application, policy and **simulation run**, then the matching time range. Run `*` combines tagged runs; select one run for capacity and queue interpretation. Scheduler run tags are enabled with `--datadog-evidence`.\nCPU and memory show **reserved capacity**, not measured utilization. Jobs are counted when completed or rejected; placement attempts can repeat for the same queued job. Rates use wall time; job durations use simulation time (aligned at 1\u00d7). Missing telemetry is not interpreted as free capacity.",
+        "background_color": "white",
+        "font_size": "14",
+        "text_align": "left",
+        "show_tick": false
+      }
+    },
+    {
+      "id": 6,
+      "definition": {
+        "type": "group",
+        "title": "Outcomes \u2014 selected time range",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "blue",
+        "widgets": [
+          {
+            "id": 2,
+            "definition": {
+              "type": "query_value",
+              "title": "Completed jobs",
+              "requests": [
+                {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:scheduler.jobs{$env AND $application AND $policy AND $run AND outcome:completed}.as_count()",
+                      "aggregator": "sum"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ]
+                }
+              ],
+              "precision": 0,
+              "autoscale": true
+            }
+          },
+          {
+            "id": 3,
+            "definition": {
+              "type": "query_value",
+              "title": "Rejected arrivals",
+              "requests": [
+                {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:scheduler.jobs{$env AND $application AND $policy AND $run AND outcome:rejected}.as_count()",
+                      "aggregator": "sum"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ]
+                }
+              ],
+              "precision": 0,
+              "autoscale": true
+            }
+          },
+          {
+            "id": 4,
+            "definition": {
+              "type": "query_value",
+              "title": "Successful placements",
+              "requests": [
+                {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:scheduler.placements{$env AND $application AND $policy AND $run AND outcome:placed}.as_count()",
+                      "aggregator": "sum"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ]
+                }
+              ],
+              "precision": 0,
+              "autoscale": true
+            }
+          },
+          {
+            "id": 5,
+            "definition": {
+              "type": "query_value",
+              "title": "Deferred placement attempts",
+              "requests": [
+                {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:scheduler.placements{$env AND $application AND $policy AND $run AND outcome:deferred}.as_count()",
+                      "aggregator": "sum"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ]
+                }
+              ],
+              "precision": 0,
+              "autoscale": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "definition": {
+        "type": "group",
+        "title": "Queue pressure and client experience",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "orange",
+        "widgets": [
+          {
+            "id": 7,
+            "definition": {
+              "type": "timeseries",
+              "title": "Queued jobs by client",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:scheduler.queue.depth{$env AND $application AND $policy AND $run} by {client}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 8,
+            "definition": {
+              "type": "timeseries",
+              "title": "Oldest queued job age (seconds)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:scheduler.queue.oldest_age{$env AND $application AND $policy AND $run} by {client}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 9,
+            "definition": {
+              "type": "timeseries",
+              "title": "Queue wait p95 (seconds) \u2014 jobs that started",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "p95:scheduler.queue.wait{$env AND $application AND $policy AND $run} by {client}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 10,
+            "definition": {
+              "type": "timeseries",
+              "title": "End-to-end completed-job p95 (seconds)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "p95:scheduler.job.duration{$env AND $application AND $policy AND $run AND outcome:completed} by {client}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 11,
+            "definition": {
+              "type": "timeseries",
+              "title": "Completed/rejected jobs per second",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:scheduler.jobs{$env AND $application AND $policy AND $run} by {client,outcome}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 12,
+            "definition": {
+              "type": "timeseries",
+              "title": "Rejected jobs per bucket by reason",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:scheduler.jobs{$env AND $application AND $policy AND $run AND outcome:rejected} by {client,reason}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "definition": {
+        "type": "group",
+        "title": "Node reservations and execution",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "green",
+        "widgets": [
+          {
+            "id": 14,
+            "definition": {
+              "type": "timeseries",
+              "title": "CPU reserved by node",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:scheduler.node.cpu.reserved{$env AND $application AND $policy AND $run} by {node}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 15,
+            "definition": {
+              "type": "timeseries",
+              "title": "CPU capacity by node",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:scheduler.node.cpu.capacity{$env AND $application AND $policy AND $run} by {node}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 16,
+            "definition": {
+              "type": "timeseries",
+              "title": "CPU reservation % by node",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:scheduler.node.cpu.reserved{$env AND $application AND $policy AND $run} by {node}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "q2",
+                      "query": "max:scheduler.node.cpu.capacity{$env AND $application AND $policy AND $run} by {node}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "100 * q1 / q2"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true,
+                "max": "100"
+              }
+            }
+          },
+          {
+            "id": 17,
+            "definition": {
+              "type": "timeseries",
+              "title": "Available CPU by node",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:scheduler.node.cpu.capacity{$env AND $application AND $policy AND $run} by {node}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "q2",
+                      "query": "max:scheduler.node.cpu.reserved{$env AND $application AND $policy AND $run} by {node}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1 - q2"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 18,
+            "definition": {
+              "type": "timeseries",
+              "title": "Memory reserved (GiB)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:scheduler.node.memory.reserved{$env AND $application AND $policy AND $run} by {node}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1 / 1073741824"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 19,
+            "definition": {
+              "type": "timeseries",
+              "title": "Memory reservation % by node",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:scheduler.node.memory.reserved{$env AND $application AND $policy AND $run} by {node}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "q2",
+                      "query": "max:scheduler.node.memory.capacity{$env AND $application AND $policy AND $run} by {node}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "100 * q1 / q2"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true,
+                "max": "100"
+              }
+            }
+          },
+          {
+            "id": 20,
+            "definition": {
+              "type": "timeseries",
+              "title": "Available memory (GiB)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:scheduler.node.memory.capacity{$env AND $application AND $policy AND $run} by {node}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "q2",
+                      "query": "max:scheduler.node.memory.reserved{$env AND $application AND $policy AND $run} by {node}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "(q1 - q2) / 1073741824"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 21,
+            "definition": {
+              "type": "timeseries",
+              "title": "Running jobs by node",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:scheduler.node.jobs.running{$env AND $application AND $policy AND $run} by {node}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 22,
+            "definition": {
+              "type": "timeseries",
+              "title": "Completed execution p95 (seconds)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "p95:scheduler.job.run.duration{$env AND $application AND $policy AND $run} by {node}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 28,
+      "definition": {
+        "type": "group",
+        "title": "Demand and placement decisions",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "purple",
+        "widgets": [
+          {
+            "id": 24,
+            "definition": {
+              "type": "timeseries",
+              "title": "Requested CPU p95 by client \u2014 arriving jobs",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "p95:scheduler.job.cpu{$env AND $application AND $policy AND $run} by {client}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 25,
+            "definition": {
+              "type": "timeseries",
+              "title": "Requested memory p95 (GiB) \u2014 arriving jobs",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "p95:scheduler.job.memory{$env AND $application AND $policy AND $run} by {client}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1 / 1073741824"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 26,
+            "definition": {
+              "type": "timeseries",
+              "title": "Placement attempts/s by outcome",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:scheduler.placements{$env AND $application AND $policy AND $run} by {outcome}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 27,
+            "definition": {
+              "type": "timeseries",
+              "title": "Successful placements per bucket by node",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:scheduler.placements{$env AND $application AND $policy AND $run AND outcome:placed} by {node}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 34,
+      "definition": {
+        "type": "group",
+        "title": "Jev and Reflex \u2014 application scope",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "blue",
+        "widgets": [
+          {
+            "id": 29,
+            "definition": {
+              "type": "note",
+              "content": "This section ignores the run and policy filters. Reflex evaluations/transitions are scoped to the resource scheduler, but TypeSafe latency and token usage include **all workloads** in this application. Reflex transitions include clock/arrival events; they are not placement counts. No dollar cost is inferred from tokens.",
+              "background_color": "white",
+              "font_size": "14",
+              "text_align": "left",
+              "show_tick": false
+            }
+          },
+          {
+            "id": 30,
+            "definition": {
+              "type": "timeseries",
+              "title": "Scheduler evaluations per bucket",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:reflex.evaluations{$env AND $application AND controller:resource_scheduler} by {status}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 31,
+            "definition": {
+              "type": "timeseries",
+              "title": "Scheduler state-machine outcomes per bucket",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:reflex.transitions{$env AND $application AND machine:resource_scheduler} by {status}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 32,
+            "definition": {
+              "type": "timeseries",
+              "title": "TypeSafe call p95 (ms) \u2014 all workloads",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "p95:typesafe.client.call.duration{$env AND $application} by {model}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "1000 * q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 33,
+            "definition": {
+              "type": "timeseries",
+              "title": "TypeSafe tokens per bucket \u2014 all workloads",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:typesafe.client.tokens{$env AND $application} by {direction}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+[package]
+name = "typesafe-ai"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish = false
+description = "Standalone typed Rust client for TypeSafe AI"
+
+[dependencies]
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+reqwest.workspace = true
+tracing = "0.1"
+opentelemetry = { version = "0.31", default-features = false, features = ["metrics"] }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util"] }
+
+opentelemetry_sdk = { version = "0.31", features = ["testing"] }
+opentelemetry-otlp = { version = "0.31", default-features = false, features = ["http-proto", "reqwest-blocking-client", "reqwest-rustls", "metrics", "trace", "logs"] }
+opentelemetry-appender-tracing = { version = "0.31", features = ["experimental_use_tracing_span_context"] }
+tracing-opentelemetry = "0.32"
+tracing-subscriber = { version = "0.3", features = ["registry"] }
+
+prost = "0.14"
+opentelemetry-proto = { version = "0.31", default-features = false, features = ["gen-tonic-messages", "metrics", "trace", "logs"] }

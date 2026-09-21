@@ -1,0 +1,22 @@
+[workspace]
+members = ["crates/*"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.92"
+
+[workspace.dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync", "net", "io-util"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+futures-util = "0.3"
+syn = { version = "2", features = ["full"] }
+quote = "1"
+proc-macro2 = "1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+reflex = { path = "crates/reflex", version = "0.1.0" }
+reflex-macros = { path = "crates/reflex-macros", version = "0.1.0" }
+typesafe-ai = { path = "crates/typesafe-ai", version = "0.1.0" }

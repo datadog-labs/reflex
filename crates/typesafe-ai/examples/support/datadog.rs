@@ -75,8 +75,8 @@ impl Telemetry {
         trace_headers.insert("compute_stats".into(), "true".into());
         // Blocking HTTP clients run on the SDK's background threads. Initialize outside Tokio.
         // Disable redirects so authentication cannot be forwarded to a different endpoint.
-        let http = reqwest::blocking::Client::builder()
-            .redirect(reqwest::redirect::Policy::none())
+        let http = reqwest_otel::blocking::Client::builder()
+            .redirect(reqwest_otel::redirect::Policy::none())
             .timeout(Duration::from_secs(5))
             .build()?;
         let metric_exporter = opentelemetry_otlp::MetricExporter::builder()

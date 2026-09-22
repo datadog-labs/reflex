@@ -9,6 +9,8 @@ Canned reports include an unprotected reference and a deterministic threshold br
 From the repository root:
 
 ```sh
+npm ci --prefix crates/reflex-sim/ui
+npm run build --prefix crates/reflex-sim/ui
 cargo run -p reflex-sim --locked
 ```
 

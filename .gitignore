@@ -10,3 +10,10 @@ artifacts/
 
 # Generated simulation reports
 /output/
+
+# Public-package UI assets: run npm ci && npm run build in crates/reflex-sim/ui.
+/crates/reflex-sim/src/playground/controls.js
+/crates/reflex-sim/src/playground/controls.css
+/crates/reflex-sim/src/playground/scenario-ui.js
+/crates/reflex-sim/src/playground/scenario-ui.css
+/crates/reflex-sim/src/typography.css

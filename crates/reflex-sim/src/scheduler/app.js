@@ -171,6 +171,8 @@ document.querySelectorAll('a[href="/"],a[href="/recovery"]').forEach(a=>a.addEve
 document.querySelectorAll('#map-clients,#client-picker').forEach(el=>el.addEventListener('click',e=>{const b=e.target.closest('[data-select-client]');if(b){selected={kind:'client',id:Number(b.dataset.selectClient)};clients(true);render();}}));
 $('map-nodes').addEventListener('click',e=>{const b=e.target.closest('[data-select-node]');if(b){selected={kind:'node',id:Number(b.dataset.selectNode)};render();}});
 $('queue-hub').addEventListener('click',()=>{selected={kind:'queue',id:0};render();});
+const renderLegacyScenario=render;
+render=function(){renderLegacyScenario();if(state)window.renderScenarioUI?.({state,busy,connected:connected,selected:selected,send,onSelect:selection=>{selected=selection;clients(true); render();}});};
 poll();requestAnimationFrame(animate);
 
 $('forecast-panel').addEventListener('change', e => { if(e.target.id === 'forecast-toggle') send({type:'forecast',enabled:e.target.checked}); });

@@ -1,0 +1,5 @@
+error: min_confidence is valid only on action rows
+ --> tests/ui/error_confidence.rs:7:37
+  |
+7 |         transitions: [Phase::Idle + evaluation_error(_) => unchanged { min_confidence: 0.5 }],
+  |                                     ^^^^^^^^^^^^^^^^

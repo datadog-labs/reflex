@@ -1,0 +1,1805 @@
+{
+  "title": "Reflex | Retry and recovery operations",
+  "description": "Client outcomes, replica health, bounded retries and rebuild activity. Select a single simulation_run. SDK panels have application scope.",
+  "layout_type": "ordered",
+  "reflow_type": "auto",
+  "template_variables": [
+    {
+      "name": "env",
+      "prefix": "env",
+      "defaults": [
+        "local"
+      ]
+    },
+    {
+      "name": "application",
+      "prefix": "service",
+      "defaults": [
+        "reflex"
+      ]
+    },
+    {
+      "name": "policy",
+      "prefix": "policy",
+      "defaults": [
+        "jev"
+      ]
+    },
+    {
+      "name": "run",
+      "prefix": "simulation_run",
+      "defaults": [
+        "*"
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "id": 1,
+      "definition": {
+        "type": "note",
+        "content": "## Retry and recovery operations\nSelect **one simulation run** and the corresponding time range. Run `*` combines tagged runs; use a specific run for gauges and replica states.\nClient results count each original request once, including retries and admission rejections. Server results count individual attempts that reached a replica. A crash or partition can therefore produce client failures without server attempts.\nHTTP durations use simulation time; counter rates use wall time (aligned at 1\u00d7 playback). Missing telemetry is not treated as healthy. Success rates include rejected requests; latency panels include successful requests only.",
+        "background_color": "white",
+        "font_size": "14",
+        "text_align": "left",
+        "show_tick": false
+      }
+    },
+    {
+      "id": 6,
+      "definition": {
+        "type": "group",
+        "title": "Client outcomes \u2014 selected time range",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "blue",
+        "widgets": [
+          {
+            "id": 2,
+            "definition": {
+              "type": "query_value",
+              "title": "Final client results",
+              "requests": [
+                {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream:replica_pool AND $application}.as_count()",
+                      "aggregator": "sum"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ]
+                }
+              ],
+              "precision": 0,
+              "autoscale": true
+            }
+          },
+          {
+            "id": 3,
+            "definition": {
+              "type": "query_value",
+              "title": "Client success (%)",
+              "requests": [
+                {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream:replica_pool AND $application AND outcome:success}.as_count()",
+                      "aggregator": "sum"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "q2",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream:replica_pool AND $application}.as_count()",
+                      "aggregator": "sum"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "100 * q1 / q2"
+                    }
+                  ]
+                }
+              ],
+              "precision": 1,
+              "autoscale": true,
+              "custom_unit": "%"
+            }
+          },
+          {
+            "id": 4,
+            "definition": {
+              "type": "query_value",
+              "title": "Essential client success (%)",
+              "requests": [
+                {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream:replica_pool AND $application AND essential:true AND outcome:success}.as_count()",
+                      "aggregator": "sum"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "q2",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream:replica_pool AND $application AND essential:true}.as_count()",
+                      "aggregator": "sum"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "100 * q1 / q2"
+                    }
+                  ]
+                }
+              ],
+              "precision": 1,
+              "autoscale": true,
+              "custom_unit": "%"
+            }
+          },
+          {
+            "id": 5,
+            "definition": {
+              "type": "query_value",
+              "title": "Rejected client requests",
+              "requests": [
+                {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream:replica_pool AND $application AND outcome:rejected}.as_count()",
+                      "aggregator": "sum"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ]
+                }
+              ],
+              "precision": 0,
+              "autoscale": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "definition": {
+        "type": "group",
+        "title": "Client experience and attempt load",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "blue",
+        "widgets": [
+          {
+            "id": 7,
+            "definition": {
+              "type": "timeseries",
+              "title": "Client final results/s by outcome",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream:replica_pool AND $application} by {outcome}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 8,
+            "definition": {
+              "type": "timeseries",
+              "title": "Essential client final results/s",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream:replica_pool AND $application AND essential:true} by {outcome}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 9,
+            "definition": {
+              "type": "timeseries",
+              "title": "Successful client p95 latency (ms)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "p95:http.client.request.duration{$env AND $policy AND $run AND upstream:replica_pool AND $application AND outcome:success} by {essential}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "1000 * q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 10,
+            "definition": {
+              "type": "timeseries",
+              "title": "Final client failures/s by assigned replica",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream:replica_pool AND $application AND outcome:failure} by {replica}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 11,
+            "definition": {
+              "type": "timeseries",
+              "title": "Rejected requests/s by reason",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream:replica_pool AND $application AND outcome:rejected} by {reason}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 12,
+            "definition": {
+              "type": "timeseries",
+              "title": "Client requests in flight",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:http.client.in_flight{$env AND $policy AND $run AND upstream:replica_pool AND $application} by {client}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 13,
+            "definition": {
+              "type": "timeseries",
+              "title": "Server attempt results/s",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.server.requests{$env AND $policy AND $run AND upstream:replica_pool AND service:replica_pool} by {replica,outcome}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 25,
+      "definition": {
+        "type": "group",
+        "title": "Replica health and pressure",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "orange",
+        "widgets": [
+          {
+            "id": 15,
+            "definition": {
+              "type": "timeseries",
+              "title": "Replica A \u2014 lifecycle (1 = current)",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_a AND state:ready}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "ready"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "green",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_a AND state:unavailable}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "unavailable"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "red",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_a AND state:rebuilding}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "rebuilding"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "orange",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_a AND state:checking}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "checking"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "purple",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_a AND state:empty}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "empty"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                }
+              ],
+              "show_legend": true,
+              "legend_layout": "auto",
+              "yaxis": {
+                "min": "0",
+                "max": "1.1",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 16,
+            "definition": {
+              "type": "timeseries",
+              "title": "Replica B \u2014 lifecycle (1 = current)",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_b AND state:ready}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "ready"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "green",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_b AND state:unavailable}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "unavailable"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "red",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_b AND state:rebuilding}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "rebuilding"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "orange",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_b AND state:checking}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "checking"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "purple",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_b AND state:empty}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "empty"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                }
+              ],
+              "show_legend": true,
+              "legend_layout": "auto",
+              "yaxis": {
+                "min": "0",
+                "max": "1.1",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 17,
+            "definition": {
+              "type": "timeseries",
+              "title": "Replica C \u2014 lifecycle (1 = current)",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_c AND state:ready}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "ready"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "green",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_c AND state:unavailable}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "unavailable"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "red",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_c AND state:rebuilding}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "rebuilding"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "orange",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_c AND state:checking}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "checking"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "purple",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_c AND state:empty}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "empty"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                }
+              ],
+              "show_legend": true,
+              "legend_layout": "auto",
+              "yaxis": {
+                "min": "0",
+                "max": "1.1",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 18,
+            "definition": {
+              "type": "timeseries",
+              "title": "Replica D \u2014 lifecycle (1 = current)",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_d AND state:ready}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "ready"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "green",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_d AND state:unavailable}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "unavailable"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "red",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_d AND state:rebuilding}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "rebuilding"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "orange",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_d AND state:checking}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "checking"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "purple",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.state{$env AND $policy AND $run AND upstream:replica_pool AND $application AND replica:replica_d AND state:empty}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "empty"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                }
+              ],
+              "show_legend": true,
+              "legend_layout": "auto",
+              "yaxis": {
+                "min": "0",
+                "max": "1.1",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 19,
+            "definition": {
+              "type": "timeseries",
+              "title": "Included in serving pool",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.serving{$env AND $policy AND $run AND upstream:replica_pool AND $application} by {replica}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true,
+                "max": "1.1"
+              }
+            }
+          },
+          {
+            "id": 20,
+            "definition": {
+              "type": "timeseries",
+              "title": "Observed reachability \u2014 client and transfer paths",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.reachable{$env AND $policy AND $run AND upstream:replica_pool AND $application} by {replica,path}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true,
+                "max": "1.1"
+              }
+            }
+          },
+          {
+            "id": 21,
+            "definition": {
+              "type": "timeseries",
+              "title": "Heartbeat age (seconds)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.heartbeat.age{$env AND $policy AND $run AND upstream:replica_pool AND $application} by {replica}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 22,
+            "definition": {
+              "type": "timeseries",
+              "title": "Outstanding requests \u2014 includes attempts not yet received",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.replica.requests.outstanding{$env AND $policy AND $run AND upstream:replica_pool AND $application} by {replica}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 23,
+            "definition": {
+              "type": "timeseries",
+              "title": "Received requests queued at replicas",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:http.server.queue.depth{$env AND $policy AND $run AND upstream:replica_pool AND service:replica_pool} by {replica}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 24,
+            "definition": {
+              "type": "timeseries",
+              "title": "Received requests occupying workers",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:http.server.active{$env AND $policy AND $run AND upstream:replica_pool AND service:replica_pool} by {replica}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 33,
+      "definition": {
+        "type": "group",
+        "title": "Retries and service controls",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "purple",
+        "widgets": [
+          {
+            "id": 26,
+            "definition": {
+              "type": "timeseries",
+              "title": "Retry decisions/s",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:recovery.retries{$env AND $policy AND $run AND upstream:replica_pool AND $application} by {outcome}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 27,
+            "definition": {
+              "type": "timeseries",
+              "title": "Suppressed retries/s by reason",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:recovery.retries{$env AND $policy AND $run AND upstream:replica_pool AND $application AND outcome:suppressed} by {reason}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 28,
+            "definition": {
+              "type": "timeseries",
+              "title": "Final results/s after a retry",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream:replica_pool AND $application AND retried:true} by {outcome}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 29,
+            "definition": {
+              "type": "timeseries",
+              "title": "Retry credits available",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.retry.budget.available{$env AND $policy AND $run AND upstream:replica_pool AND $application}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true,
+                "max": "2"
+              }
+            }
+          },
+          {
+            "id": 30,
+            "definition": {
+              "type": "timeseries",
+              "title": "Retries enabled",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.retry.enabled{$env AND $policy AND $run AND upstream:replica_pool AND $application}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true,
+                "max": "1.1"
+              }
+            }
+          },
+          {
+            "id": 31,
+            "definition": {
+              "type": "timeseries",
+              "title": "Essential-only serving mode",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.serving.essential_only{$env AND $policy AND $run AND upstream:replica_pool AND $application}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true,
+                "max": "1.1"
+              }
+            }
+          },
+          {
+            "id": 32,
+            "definition": {
+              "type": "timeseries",
+              "title": "Operator intervention requested",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:recovery.intervention.required{$env AND $policy AND $run AND upstream:replica_pool AND $application}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true,
+                "max": "1.1"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 38,
+      "definition": {
+        "type": "group",
+        "title": "Rebuild activity",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "green",
+        "widgets": [
+          {
+            "id": 34,
+            "definition": {
+              "type": "timeseries",
+              "title": "Active rebuild / verification operations",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:recovery.rebuild.active{$env AND $policy AND $run AND upstream:replica_pool AND $application} by {phase}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true,
+                "max": "1.1"
+              }
+            }
+          },
+          {
+            "id": 35,
+            "definition": {
+              "type": "timeseries",
+              "title": "Transferred throughput (MB/s, decimal)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:recovery.rebuild.bytes{$env AND $policy AND $run AND upstream:replica_pool AND $application} by {source,target}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1 / 1000000"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 36,
+            "definition": {
+              "type": "timeseries",
+              "title": "Terminal rebuild outcomes per bucket",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:recovery.rebuilds{$env AND $policy AND $run AND upstream:replica_pool AND $application} by {outcome}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 37,
+            "definition": {
+              "type": "timeseries",
+              "title": "Rebuild p95 duration (seconds)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "p95:recovery.rebuild.duration{$env AND $policy AND $run AND upstream:replica_pool AND $application} by {outcome}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 44,
+      "definition": {
+        "type": "group",
+        "title": "Jev and Reflex \u2014 application scope",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "blue",
+        "widgets": [
+          {
+            "id": 39,
+            "definition": {
+              "type": "note",
+              "content": "These panels ignore run and policy filters. Reflex metrics select the retry_recovery controller/machine. TypeSafe metrics include all workloads in the application. State-machine transitions include ticks and control events; they are not counts of recovery interventions. Tokens are usage, not dollar cost.",
+              "background_color": "white",
+              "font_size": "14",
+              "text_align": "left",
+              "show_tick": false
+            }
+          },
+          {
+            "id": 40,
+            "definition": {
+              "type": "timeseries",
+              "title": "Recovery evaluations per bucket",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:reflex.evaluations{$env AND $application AND controller:retry_recovery} by {status}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 41,
+            "definition": {
+              "type": "timeseries",
+              "title": "Recovery state-machine outcomes per bucket",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:reflex.transitions{$env AND $application AND machine:retry_recovery} by {status}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 42,
+            "definition": {
+              "type": "timeseries",
+              "title": "TypeSafe call p95 (ms) \u2014 all workloads",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "p95:typesafe.client.call.duration{$env AND $application} by {model}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "1000 * q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 43,
+            "definition": {
+              "type": "timeseries",
+              "title": "TypeSafe tokens per bucket \u2014 all workloads",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:typesafe.client.tokens{$env AND $application} by {direction}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

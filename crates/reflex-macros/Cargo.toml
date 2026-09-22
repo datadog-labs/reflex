@@ -1,0 +1,15 @@
+[package]
+name = "reflex-macros"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish = false
+description = "Declarative state-machine macro for Reflex"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn.workspace = true
+quote.workspace = true
+proc-macro2.workspace = true

@@ -1,0 +1,12 @@
+node_modules/
+.DS_Store
+artifacts/
+*.log
+.env*
+!.env.example
+
+# Rust workspace
+/target/
+
+# Generated simulation reports
+/output/

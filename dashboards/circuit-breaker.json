@@ -1,0 +1,1231 @@
+{
+  "title": "Reflex | Circuit breaker operations",
+  "description": "Client outcomes, server pressure, circuit state and application-wide Jev telemetry. Select a simulation_run and its historical time range. HTTP and breaker widgets target Datadog-evidence mode; SDK widgets are application-wide.",
+  "layout_type": "ordered",
+  "reflow_type": "auto",
+  "template_variables": [
+    {
+      "name": "env",
+      "prefix": "env",
+      "defaults": [
+        "local"
+      ]
+    },
+    {
+      "name": "policy",
+      "prefix": "policy",
+      "defaults": [
+        "jev"
+      ]
+    },
+    {
+      "name": "run",
+      "prefix": "simulation_run",
+      "defaults": [
+        "*"
+      ]
+    },
+    {
+      "name": "application",
+      "prefix": "service",
+      "defaults": [
+        "reflex"
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "id": 1,
+      "definition": {
+        "type": "note",
+        "content": "## Circuit breaker operations\nSelect an environment, policy and **simulation run**; choose the corresponding time range. This dashboard targets run-tagged metrics from Datadog-evidence mode. Run `*` combines runs; select one run to interpret breaker state.\n**Closed** allows traffic \u00b7 **Open** blocks traffic \u00b7 **Probe** admits a recovery request. No change is a decision, not a fourth state.\nRequests are counted at their terminal outcome. Rates use wall time; HTTP durations use simulation time (aligned at 1\u00d7 playback). Missing data is not treated as healthy.",
+        "background_color": "white",
+        "font_size": "14",
+        "text_align": "left",
+        "show_tick": false
+      }
+    },
+    {
+      "id": 6,
+      "definition": {
+        "type": "group",
+        "title": "Client outcomes \u2014 selected time range",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "blue",
+        "widgets": [
+          {
+            "id": 2,
+            "definition": {
+              "type": "query_value",
+              "title": "Completed client requests",
+              "requests": [
+                {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search)}.as_count()",
+                      "aggregator": "sum"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ]
+                }
+              ],
+              "precision": 0,
+              "autoscale": true
+            }
+          },
+          {
+            "id": 3,
+            "definition": {
+              "type": "query_value",
+              "title": "Successful client requests",
+              "requests": [
+                {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome:success}.as_count()",
+                      "aggregator": "sum"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ]
+                }
+              ],
+              "precision": 0,
+              "autoscale": true
+            }
+          },
+          {
+            "id": 4,
+            "definition": {
+              "type": "query_value",
+              "title": "Client failure % \u2014 excludes blocked",
+              "requests": [
+                {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome IN (http_error,timeout)}.as_count()",
+                      "aggregator": "sum"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "q2",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome IN (success,http_error,timeout)}.as_count()",
+                      "aggregator": "sum"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "100 * q1 / q2"
+                    }
+                  ]
+                }
+              ],
+              "precision": 1,
+              "autoscale": true,
+              "custom_unit": "%"
+            }
+          },
+          {
+            "id": 5,
+            "definition": {
+              "type": "query_value",
+              "title": "Blocked client requests",
+              "requests": [
+                {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome:circuit_open}.as_count()",
+                      "aggregator": "sum"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ]
+                }
+              ],
+              "precision": 0,
+              "autoscale": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "definition": {
+        "type": "group",
+        "title": "Circuit state and recovery",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "purple",
+        "widgets": [
+          {
+            "id": 7,
+            "definition": {
+              "type": "timeseries",
+              "title": "catalog \u2014 breaker state (1 = current)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:catalog AND state:closed}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "Closed \u2014 traffic allowed"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "green",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:catalog AND state:probe}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "Probe \u2014 recovery check"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "orange",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:catalog AND state:open}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "Open \u2014 traffic blocked"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "red",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "max": "1.1",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 8,
+            "definition": {
+              "type": "timeseries",
+              "title": "payments \u2014 breaker state (1 = current)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:payments AND state:closed}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "Closed \u2014 traffic allowed"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "green",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:payments AND state:probe}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "Probe \u2014 recovery check"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "orange",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:payments AND state:open}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "Open \u2014 traffic blocked"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "red",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "max": "1.1",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 9,
+            "definition": {
+              "type": "timeseries",
+              "title": "search \u2014 breaker state (1 = current)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:search AND state:closed}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "Closed \u2014 traffic allowed"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "green",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:search AND state:probe}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "Probe \u2014 recovery check"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "orange",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                },
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:search AND state:open}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1",
+                      "alias": "Open \u2014 traffic blocked"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "red",
+                    "line_type": "solid",
+                    "line_width": "thick"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "max": "1.1",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 10,
+            "definition": {
+              "type": "timeseries",
+              "title": "Actual state transitions per bucket",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:circuit_breaker.transitions{$env AND $policy AND $run AND upstream IN (catalog,payments,search)} by {upstream,from,to}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 11,
+            "definition": {
+              "type": "timeseries",
+              "title": "Recovery probe outcomes per bucket",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:circuit_breaker.probes{$env AND $policy AND $run AND upstream IN (catalog,payments,search)} by {upstream,outcome}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 19,
+      "definition": {
+        "type": "group",
+        "title": "Client experience",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "blue",
+        "widgets": [
+          {
+            "id": 13,
+            "definition": {
+              "type": "timeseries",
+              "title": "Client completions/s by service",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search)} by {upstream}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 14,
+            "definition": {
+              "type": "timeseries",
+              "title": "Client completions/s by outcome",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search)} by {outcome}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 15,
+            "definition": {
+              "type": "timeseries",
+              "title": "Client failure % by service \u2014 excludes blocked",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome IN (http_error,timeout)} by {upstream}.as_rate()"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "q2",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome IN (success,http_error,timeout)} by {upstream}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "100 * q1 / q2"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true,
+                "max": "100"
+              }
+            }
+          },
+          {
+            "id": 16,
+            "definition": {
+              "type": "timeseries",
+              "title": "Blocked requests/s by service",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome:circuit_open} by {upstream}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 17,
+            "definition": {
+              "type": "timeseries",
+              "title": "Client p95 latency (ms) \u2014 excludes blocked",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "p95:http.client.request.duration{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome IN (success,http_error,timeout)} by {upstream}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "1000 * q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 18,
+            "definition": {
+              "type": "timeseries",
+              "title": "Client requests in flight",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:http.client.in_flight{$env AND $policy AND $run AND upstream IN (catalog,payments,search)} by {upstream}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 27,
+      "definition": {
+        "type": "group",
+        "title": "Service capacity and work",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "orange",
+        "widgets": [
+          {
+            "id": 20,
+            "definition": {
+              "type": "timeseries",
+              "title": "Server completions/s by service and HTTP status",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:http.server.requests{$env AND $policy AND $run AND service IN (catalog,payments,search)} by {service,http.status_code}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 21,
+            "definition": {
+              "type": "timeseries",
+              "title": "Queued requests",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:http.server.queue.depth{$env AND $policy AND $run AND service IN (catalog,payments,search)} by {service}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 22,
+            "definition": {
+              "type": "timeseries",
+              "title": "Active requests",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:http.server.active{$env AND $policy AND $run AND service IN (catalog,payments,search)} by {service}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 23,
+            "definition": {
+              "type": "timeseries",
+              "title": "Worker utilization (%)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:http.server.utilization{$env AND $policy AND $run AND service IN (catalog,payments,search)} by {service}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "100 * q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true,
+                "max": "100"
+              }
+            }
+          },
+          {
+            "id": 24,
+            "definition": {
+              "type": "timeseries",
+              "title": "Active work whose client already timed out",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:http.server.timed_out_work{$env AND $policy AND $run AND service IN (catalog,payments,search)} by {service}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 25,
+            "definition": {
+              "type": "timeseries",
+              "title": "Server p95 latency including queue (ms)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "p95:http.server.request.duration{$env AND $policy AND $run AND service IN (catalog,payments,search)} by {service}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "1000 * q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 26,
+            "definition": {
+              "type": "timeseries",
+              "title": "Queue wait p95 (ms)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "p95:http.server.queue.wait{$env AND $policy AND $run AND service IN (catalog,payments,search)} by {service}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "1000 * q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 34,
+      "definition": {
+        "type": "group",
+        "title": "Jev and Reflex \u2014 application-wide",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "green",
+        "widgets": [
+          {
+            "id": 28,
+            "definition": {
+              "type": "note",
+              "content": "These metrics use only the **environment** and **application** filters. They include all workloads in that application and do **not** carry policy or simulation-run tags. Reflex evaluation outcomes describe proposals and evaluation errors; actual circuit changes appear in the state-transition charts above. Tokens measure usage, not dollar cost.",
+              "background_color": "white",
+              "font_size": "14",
+              "text_align": "left",
+              "show_tick": false
+            }
+          },
+          {
+            "id": 29,
+            "definition": {
+              "type": "timeseries",
+              "title": "TypeSafe HTTP attempts/s by status",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:typesafe.client.requests{$env AND $application} by {status}.as_rate()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 30,
+            "definition": {
+              "type": "timeseries",
+              "title": "TypeSafe end-to-end call p95 (ms)",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "p95:typesafe.client.call.duration{$env AND $application} by {model}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "1000 * q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 31,
+            "definition": {
+              "type": "timeseries",
+              "title": "TypeSafe calls in flight",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:typesafe.client.calls.in_flight{$env AND $application}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 32,
+            "definition": {
+              "type": "timeseries",
+              "title": "Token usage per bucket",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:typesafe.client.tokens{$env AND $application} by {direction}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 33,
+            "definition": {
+              "type": "timeseries",
+              "title": "Reflex evaluations per bucket",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:reflex.evaluations{$env AND $application} by {status}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

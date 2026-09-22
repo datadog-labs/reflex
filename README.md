@@ -170,7 +170,7 @@ cargo test --workspace --doc --locked
 
 Reflex is licensed under [Apache-2.0](LICENSE). See [NOTICE](NOTICE) for attribution. Third-party dependencies and assets retain their own licenses.
 
-Third-party components and notices are listed in [LICENSE-3rdparty.csv](LICENSE-3rdparty.csv). See the [inventory notes](third_party/README.md) for coverage, sources, and unresolved entries.
+Third-party components are listed in [LICENSE-3rdparty.csv](LICENSE-3rdparty.csv). See the [inventory notes](third_party/README.md) for coverage, sources, and unresolved entries.
 
 ## Ownership
 

@@ -154,13 +154,8 @@ impl Session {
                 "set TYPESAFE_API_KEY before selecting Jev".into(),
             ));
         }
-        if settings.max_evaluations == 0
-            || settings.max_evaluations > 1000
-            || settings.model.trim().is_empty()
-        {
-            return Err(Error::Invalid(
-                "Jev requires a model and a call limit between 1 and 1000".into(),
-            ));
+        if settings.model.trim().is_empty() {
+            return Err(Error::Invalid("Jev requires a model".into()));
         }
         let driver = Driver::new(evaluator, settings);
         if driver.datadog() && policy != PolicyKind::Jev {
@@ -208,6 +203,11 @@ impl Session {
         }
     }
     pub async fn command(&mut self, command: Command) -> Result<(), Error> {
+        if matches!(command, Command::Policy { policy: PolicyKind::Threshold }) {
+            return Err(Error::Invalid(
+                "The circuit-breaker playground supports only Jev + Reflex".into(),
+            ));
+        }
         if self.driver.datadog()
             && matches!(
                 command,
@@ -632,8 +632,18 @@ pub async fn serve(seed: u64, port: u16, open: bool) -> Result<(), Error> {
         seed,
         port,
         open,
-        PolicyKind::Threshold,
-        None,
+        PolicyKind::Jev,
+        Some(Arc::new(crate::jev::LiveEvaluator::new(
+            typesafe_ai::TypeSafeClient::builder()
+                .api_key(std::env::var("TYPESAFE_API_KEY").map_err(|_| {
+                    Error::Invalid("set TYPESAFE_API_KEY before starting the playground".into())
+                })?)
+                .timeout(std::time::Duration::from_secs(2))
+                .max_retries(0)
+                .build()
+                .map_err(|error| Error::Invalid(error.to_string()))?,
+            JevSettings::default().model,
+        ))),
         JevSettings::default(),
     )
     .await
@@ -705,6 +715,14 @@ pub async fn serve_with_forecasts(
     recovery_evaluator: Option<Arc<dyn crate::recovery::judge::Evaluator>>,
     forecaster: Option<Arc<dyn crate::capacity::forecast::Forecaster>>,
 ) -> Result<(), Error> {
+    if policy != PolicyKind::Jev {
+        return Err(Error::Invalid(
+            "The circuit-breaker playground supports only Jev + Reflex".into(),
+        ));
+    }
+    if evaluator.is_none() {
+        return Err(Error::Invalid("set TYPESAFE_API_KEY before starting the playground".into()));
+    }
     let recovery = Arc::new(Mutex::new(crate::recovery::Session::new(
         seed,
         recovery_evaluator,
@@ -732,7 +750,12 @@ pub async fn serve_with_forecasts(
     let scheduler = Arc::new(Mutex::new(crate::scheduler::Session::new(
         seed,
         scheduler_evaluator,
-        settings.clone(),
+        JevSettings {
+            // Three default arrivals/s need headroom above one placement/s.
+            // Keep evaluations serial; only the scheduler's dispatch spacing changes.
+            dispatch_interval: std::time::Duration::from_millis(200),
+            ..settings.clone()
+        },
     )?));
     scheduler.lock().await.forecast.provider = forecaster.clone();
     let scheduler_clock = scheduler.clone();
@@ -876,7 +899,6 @@ mod forecast_tests {
         let input = Arc::new(StdMutex::new(vec![]));
         let settings = JevSettings {
             dispatch_interval: std::time::Duration::ZERO,
-            max_evaluations: 1000,
             ..Default::default()
         };
         let mut session = Session::configured(

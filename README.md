@@ -145,7 +145,7 @@ Inject failures, change client traffic, adjust scheduling priorities, and inspec
 The simulations can query **Datadog** for observed state. An application-supplied forecasting provider can add forecasts to Jev’s evidence; no live forecasting adapter is bundled. These integrations belong to the application layer, outside the core SDK.
 
 - [Playground setup, scenarios, and simulation model](crates/reflex-sim/README.md)
-- [Forecasting interface and actual-versus-forecast charts](crates/reflex-sim/FORECASTING.md)
+- [Forecasting interface](crates/reflex-sim/FORECASTING.md)
 - [Datadog telemetry and dashboards](dashboards/README.md)
 - [Capacity research: workloads, algorithms, methods, and results](studies/capacity/README.md)
 

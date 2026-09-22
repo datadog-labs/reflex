@@ -22,9 +22,9 @@ impl Scenario {
     pub(super) fn description(self, remote: bool) -> String {
         let k = if remote { 3 } else { 1 };
         match self {
-            Self::Cyclical=>"Smooth demand waves repeat every 60s for six minutes (ten in Datadog mode). Local forecasts use observed 10-second mean demand, after three real cycles (180s). Compare a forecast from 180s or later against the following cycles; Toto never sees the schedule.".into(),
+            Self::Cyclical=>"Whole-number demand waves repeat every 60s for six minutes (ten in Datadog mode). Local forecasts use observed 10-second mean demand, after three real cycles (180s). Compare a forecast from 180s or later against the following cycles; Toto never sees the schedule.".into(),
             Self::Sandbox=>"Set each client's traffic and job sizes. No scheduled changes.".into(),
-            Self::TrafficBurst=>format!("Three clients start at 0.15 jobs/s each. At {}s each jumps to 0.6 jobs/s; at {}s arrivals ease to 0.1 jobs/s. Watch the queue build and drain.",75*k,115*k),
+            Self::TrafficBurst=>format!("Three clients start at 2 jobs/s each. At {}s each jumps to 6 jobs/s; at {}s arrivals ease to 1 job/s. Watch the queue build and drain.",75*k,115*k),
             Self::ResourceMix=>format!("At {}s, Client 2 requests CPU-heavy jobs (8 CPU / 2 GiB) and Client 3 requests memory-heavy jobs (2 CPU / 24 GiB). Original sizes return at {}s; arrival rates stay fixed.",75*k,125*k),
         }
     }
@@ -35,7 +35,7 @@ pub(super) fn clients() -> Vec<Client> {
         .enumerate()
         .map(|(i, (cpu, memory_gib, duration_ms))| {
             let config = ClientConfig {
-                rate: 0.15,
+                rate: 2.,
                 cpu,
                 memory_gib,
                 duration_ms,
@@ -54,7 +54,7 @@ pub(super) fn clients() -> Vec<Client> {
 }
 pub(super) fn update(scenario: Scenario, stage: usize, c: &mut Client) {
     match scenario {
-        Scenario::TrafficBurst => c.config.rate = if stage == 0 { 0.6 } else { 0.1 },
+        Scenario::TrafficBurst => c.config.rate = if stage == 0 { 6. } else { 1. },
         Scenario::ResourceMix => {
             if stage == 0 {
                 match c.id {
@@ -82,7 +82,7 @@ pub(super) fn update(scenario: Scenario, stage: usize, c: &mut Client) {
 }
 
 pub(super) fn cycle_rate(seconds: f64) -> f64 {
-    0.18 + 0.1 * (std::f64::consts::TAU * seconds / 60.).sin()
+    (2. + (std::f64::consts::TAU * seconds / 60.).sin()).round()
 }
 
 #[cfg(test)]
@@ -125,7 +125,7 @@ mod tests {
             .view()
             .clients
             .iter()
-            .all(|c| (c.config.rate - 0.18).abs() < 1e-9));
+            .all(|c| c.config.rate == 2.));
         a.command(Command::Scenario {
             scenario: Scenario::Sandbox,
         })

@@ -42,7 +42,7 @@ fn recovery_trace_survives_pause_rejection_error_and_cancellation() {
             let endpoint=format!("http://{}/systemone",listener.local_addr().unwrap());
             let server=tokio::spawn(async move { axum::serve(listener,app).await.unwrap(); });
             let client=typesafe_ai::TypeSafeClient::builder().api_key("test-key").endpoint(endpoint).max_retries(0).build().unwrap();
-            let mut s=Session::new(42,Some(Arc::new(LiveEvaluator::new(client,"jev-test".into()))),JevSettings { max_evaluations:1,dispatch_interval:Duration::ZERO,..Default::default() }).unwrap();
+            let mut s=Session::new(42,Some(Arc::new(LiveEvaluator::new(client,"jev-test".into()))),JevSettings { dispatch_interval:Duration::from_secs(60),..Default::default() }).unwrap();
             s.command(Command::Step).await.unwrap();
             tokio::time::timeout(Duration::from_secs(3),started.notified()).await.unwrap();
             if expected!="cancelled_in_flight" {

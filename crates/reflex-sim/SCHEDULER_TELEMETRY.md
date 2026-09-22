@@ -54,7 +54,7 @@ The `reflex_sim::scheduler` target logs placement outcomes, terminal rejections,
 With `DD_API_KEY`, `TYPESAFE_API_KEY`, `DD_SERVICE=reflex`, and `DD_ENV=local` in the process environment:
 
 ```sh
-cargo run -p reflex-sim --locked --example datadog_playground -- --port 8743 --duration-secs 120 --max-evaluations 60
+cargo run -p reflex-sim --locked --example datadog_playground -- --port 8743 --duration-secs 120
 ```
 
 Open `http://127.0.0.1:8743/scheduler`. Both playgrounds start paused; the runner enables live Jev for the scheduler and circuit breaker, and flushes all telemetry when its wall-clock limit expires. Each playground has its own call budget, reset per incident. It does not load env files automatically.

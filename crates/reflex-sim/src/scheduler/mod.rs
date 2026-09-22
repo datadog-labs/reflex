@@ -42,12 +42,13 @@ impl ClientConfig {
     fn validate(&self) -> Result<(), Error> {
         if !self.rate.is_finite()
             || self.rate < 0.
+            || self.rate.fract() != 0.
             || !(1..=32).contains(&self.cpu)
             || !(1..=64).contains(&self.memory_gib)
             || !(1000..=30000).contains(&self.duration_ms)
         {
             return Err(Error::Invalid(
-                "Client limits: finite nonnegative jobs/s, 1–32 CPU, 1–64 GiB, 1–30 seconds".into(),
+                "Client limits: finite nonnegative whole-number jobs/s, 1–32 CPU, 1–64 GiB, 1–30 seconds".into(),
             ));
         }
         Ok(())
@@ -112,6 +113,7 @@ pub struct Decision {
 }
 #[derive(Clone, Serialize)]
 pub struct Sample {
+    pub nodes: Vec<engine::Node>,
     pub clients: Vec<engine::ClientLag>,
     pub at_ms: u64,
     pub queued: usize,
@@ -149,7 +151,6 @@ pub struct View {
     pub decisions: Vec<Decision>,
     pub pending_job: Option<u64>,
     pub calls: usize,
-    pub call_limit: usize,
     pub cost: CostStatus,
     pub status: String,
     pub evidence_source: String,
@@ -234,7 +235,9 @@ impl Session {
         settings: JevSettings,
         meter: Meter,
     ) -> Result<Self, Error> {
-        let clients = [(0.3, 1, 2, 4000), (0.2, 3, 6, 8000), (0.1, 6, 12, 12000)]
+        // At 1 job/s per client, these jobs offer 12 CPU-seconds/s and
+        // 24 GiB-seconds/s: one third of the pool, before runtime variation.
+        let clients = [(1., 1, 2, 2000), (1., 2, 4, 2000), (1., 3, 6, 2000)]
             .into_iter()
             .enumerate()
             .map(|(i, (rate, cpu, memory_gib, duration_ms))| {
@@ -412,8 +415,6 @@ impl Session {
             "Jev is evaluating; arrivals and running jobs continue"
         } else if d.at_ms >= self.horizon() {
             "Session complete; unfinished jobs remain in the snapshot"
-        } else if self.policy == Policy::Jev && self.calls >= self.settings.max_evaluations {
-            "Call budget exhausted; only forced single-choice placements can run"
         } else if queued > 0 && judge::evidence(&d).is_none() {
             "Client queue heads are waiting for capacity"
         } else if self.paused {
@@ -485,7 +486,6 @@ impl Session {
             decisions: self.decisions.iter().rev().take(20).cloned().collect(),
             pending_job: self.pending.as_ref().map(|p| p.evidence.candidate.id),
             calls: self.calls,
-            call_limit: self.settings.max_evaluations,
             cost: self.cost.lock().unwrap().clone(),
             status,
             evidence_source: if self.uses_datadog() {
@@ -626,7 +626,7 @@ impl Session {
                     return Err(Error::Invalid("At most eight clients".into()));
                 }
                 let config = ClientConfig {
-                    rate: 0.1,
+                    rate: 1.,
                     cpu: 2,
                     memory_gib: 4,
                     duration_ms: 6000,
@@ -824,6 +824,7 @@ impl Session {
         if self.history.last().is_none_or(|s| target >= s.at_ms + 250) {
             let d = self.data();
             self.history.push(Sample {
+                nodes: d.nodes.clone(),
                 clients: self
                     .telemetry_clients()
                     .iter()
@@ -1094,10 +1095,9 @@ impl Session {
             self.apply(e, Some(choice), None).await?;
             return Ok(());
         }
-        if self.calls >= self.settings.max_evaluations
-            || self
-                .last_dispatch
-                .is_some_and(|t| t.elapsed() < self.settings.dispatch_interval)
+        if self
+            .last_dispatch
+            .is_some_and(|t| t.elapsed() < self.settings.dispatch_interval)
         {
             return Ok(());
         }

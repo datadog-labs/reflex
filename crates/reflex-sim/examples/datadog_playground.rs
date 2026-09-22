@@ -21,8 +21,6 @@ struct Args {
     /// Stop the server and flush all telemetry after this many wall-clock seconds.
     #[arg(long, default_value_t = 120, value_parser = clap::value_parser!(u16).range(10..=600))]
     duration_secs: u16,
-    #[arg(long, default_value_t = 60, value_parser = clap::value_parser!(u16).range(1..=100))]
-    max_evaluations: u16,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
@@ -46,7 +44,6 @@ fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
             .build()?;
         let settings = JevSettings {
             model: model.clone(),
-            max_evaluations: usize::from(args.max_evaluations),
             ..Default::default()
         };
         let mut scheduler: Arc<dyn reflex_sim::scheduler::judge::Evaluator> = Arc::new(

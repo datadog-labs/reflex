@@ -64,8 +64,8 @@ async fn new_session(
         Some(Arc::new(LiveEvaluator::new(client, "jev-test".into()))),
         JevSettings {
             model: "jev-test".into(),
-            max_evaluations: 1,
-            dispatch_interval: Duration::ZERO,
+            // Keep this trace fixture to one evaluation without relying on a call cap.
+            dispatch_interval: Duration::from_secs(3600),
         },
     )
     .unwrap();

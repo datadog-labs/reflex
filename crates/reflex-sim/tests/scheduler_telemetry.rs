@@ -319,7 +319,6 @@ async fn deferral_and_inference_failure_are_placement_outcomes_not_terminal_jobs
         42,
         Some(judge.clone()),
         JevSettings {
-            max_evaluations: 2,
             dispatch_interval: Duration::ZERO,
             ..Default::default()
         },

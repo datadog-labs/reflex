@@ -170,7 +170,6 @@ impl Evaluator for MockEvaluator {
 fn settings() -> JevSettings {
     JevSettings {
         model: "test-model".into(),
-        max_evaluations: 30,
         dispatch_interval: Duration::ZERO,
     }
 }
@@ -261,13 +260,12 @@ async fn recorded_model_replay_makes_no_calls_and_preserves_outcomes() {
     );
 }
 #[tokio::test]
-async fn budget_and_pausing_bound_live_inference() {
+async fn pausing_still_bounds_inference_without_a_call_cap() {
     let mock = Arc::new(MockEvaluator {
         calls: AtomicUsize::new(0),
         delay: Duration::from_millis(1),
     });
-    let mut config = settings();
-    config.max_evaluations = 1;
+    let config = settings();
     let mut session = Session::configured(42, PolicyKind::Jev, Some(mock.clone()), config).unwrap();
     session.command(Command::Step).await.unwrap();
     tokio::time::sleep(Duration::from_millis(5)).await;
@@ -278,9 +276,12 @@ async fn budget_and_pausing_bound_live_inference() {
     assert_eq!(session.view().decisions.len(), 1);
     for _ in 0..10 {
         session.command(Command::Step).await.unwrap();
+        tokio::time::sleep(Duration::from_millis(5)).await;
     }
-    assert_eq!(mock.calls.load(Ordering::SeqCst), 1);
-    assert!(session.view().inference.budget_exhausted);
+    assert!(mock.calls.load(Ordering::SeqCst) > 1);
+    let calls = session.view().inference.calls;
+    session.tick(1000.0).await.unwrap();
+    assert_eq!(session.view().inference.calls, calls);
     assert!(Session::configured(42, PolicyKind::Jev, None, settings()).is_err());
 }
 
@@ -350,9 +351,9 @@ impl Evaluator for MeteredEvaluator {
     }
 }
 #[tokio::test]
-async fn cost_counts_paused_responses_once_and_survives_replay_reset_and_policy_changes() {
+async fn cost_counts_paused_responses_once_and_survives_replay_reset_and_rejected_policy_changes() {
     let mut config = settings();
-    config.max_evaluations = 1;
+    config.dispatch_interval = Duration::from_secs(3600);
     let mut session = Session::configured(
         42,
         PolicyKind::Jev,
@@ -391,12 +392,13 @@ async fn cost_counts_paused_responses_once_and_survives_replay_reset_and_policy_
     }
     session.command(Command::Reset).await.unwrap();
     assert_eq!(session.view().inference.calls, 0);
-    session
+    assert!(session
         .command(Command::Policy {
             policy: PolicyKind::Threshold,
         })
         .await
-        .unwrap();
+        .is_err());
+    assert_eq!(session.view().policy, PolicyKind::Jev);
     assert_eq!(
         serde_json::to_value(session.view().inference.cost).unwrap(),
         serde_json::to_value(original).unwrap()

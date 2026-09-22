@@ -363,7 +363,7 @@ impl Session {
     pub fn view(&self) -> Value {
         let now = self.at();
         let lanes:Vec<_>=self.engines.iter().enumerate().map(|(i,e)|{let d=e.data();let jobs:Vec<_>=d.jobs.iter().filter(|j|matches!(j.phase,JobPhase::Running|JobPhase::Queued)).collect();let completed=d.jobs.iter().filter(|j|j.phase==JobPhase::Completed).count();let rejected=d.jobs.iter().filter(|j|j.phase==JobPhase::Rejected).count();json!({"id":i,"label":LABELS[i],"nodes":d.nodes,"jobs":jobs,"queued":d.queued(),"running":d.running(),"completed":completed,"rejected":rejected,"offered":d.offered,"mean_wait_ms":d.mean_wait(),"node_seconds":d.node_seconds,"ready":d.count(Lifecycle::Ready),"starting":d.count(Lifecycle::Starting),"changes":d.changes})}).collect();
-        json!({"at_ms":now,"duration_ms":self.replay.as_ref().map_or(HORIZON_MS,|r|r.end_ms),"paused":self.paused,"speed":self.speed,"scenario":self.scenario,"clients":self.clients,"settings":self.settings,"lanes":lanes,"history":self.history.iter().filter(|b|b.at_ms>=0).map(|b|json!({"at_ms":b.at_ms,"values":b.values})).collect::<Vec<_>>(),"trend":self.trend,"forecast":self.latest,"forecast_fresh":self.latest.as_ref().is_some_and(|f|f.fresh(now)),"forecast_status":if self.replay.is_some(){"Recorded replay".into()}else{self.forecaster.as_ref().map_or("Toto disconnected · reactive fallback".to_string(),|f|f.description())},"forecast_pending":self.pending_forecast.is_some(),"forecast_error":self.forecast_error,"forecast_calls":self.forecast_calls,"forecast_mean_latency_ms":self.forecast_latency/self.forecast_successes.max(1)as f64,"accuracy":self.accuracy,"jev_available":self.evaluator.is_some(),"jev_pending":self.pending_judge.is_some(),"jev_calls":self.jev_calls,"jev_limit":self.jev_settings.max_evaluations,"cost":self.cost.lock().unwrap().clone(),"replay":self.replay.is_some(),"decisions":self.decisions.iter().rev().take(60).collect::<Vec<_>>(),"error":self.error})
+        json!({"at_ms":now,"duration_ms":self.replay.as_ref().map_or(HORIZON_MS,|r|r.end_ms),"paused":self.paused,"speed":self.speed,"scenario":self.scenario,"clients":self.clients,"settings":self.settings,"lanes":lanes,"history":self.history.iter().filter(|b|b.at_ms>=0).map(|b|json!({"at_ms":b.at_ms,"values":b.values})).collect::<Vec<_>>(),"trend":self.trend,"forecast":self.latest,"forecast_fresh":self.latest.as_ref().is_some_and(|f|f.fresh(now)),"forecast_status":if self.replay.is_some(){"Recorded replay".into()}else{self.forecaster.as_ref().map_or("Toto disconnected · reactive fallback".to_string(),|f|f.description())},"forecast_pending":self.pending_forecast.is_some(),"forecast_error":self.forecast_error,"forecast_calls":self.forecast_calls,"forecast_mean_latency_ms":self.forecast_latency/self.forecast_successes.max(1)as f64,"accuracy":self.accuracy,"jev_available":self.evaluator.is_some(),"jev_pending":self.pending_judge.is_some(),"jev_calls":self.jev_calls,"cost":self.cost.lock().unwrap().clone(),"replay":self.replay.is_some(),"decisions":self.decisions.iter().rev().take(60).collect::<Vec<_>>(),"error":self.error})
     }
     pub async fn command(&mut self, c: Command) -> Result<(), Error> {
         if self.replay.is_some()
@@ -665,7 +665,6 @@ impl Session {
             .await?;
             if !fresh
                 || self.evaluator.is_none()
-                || self.jev_calls >= self.jev_settings.max_evaluations
             {
                 self.thresholds(
                     2,
@@ -673,7 +672,7 @@ impl Session {
                     if !fresh {
                         "reactive fallback · forecast unavailable"
                     } else {
-                        "reactive fallback · Jev unavailable or budget exhausted"
+                        "reactive fallback · Jev unavailable"
                     },
                 )
                 .await?;
@@ -706,12 +705,11 @@ impl Session {
         }
         if decision_due
             && self.pending_judge.is_none()
-            && self.jev_calls < self.jev_settings.max_evaluations
             && self.latest.as_ref().is_some_and(|f| f.fresh(now))
             && self.last_judge_sim.is_none_or(|t| now >= t + 10_000)
             && self
                 .last_judge_wall
-                .is_none_or(|t| t.elapsed() >= Duration::from_secs(1))
+                .is_none_or(|t| t.elapsed() >= self.jev_settings.dispatch_interval)
         {
             if let Some(j) = &self.evaluator {
                 let j = j.clone();

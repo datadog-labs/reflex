@@ -14,7 +14,7 @@ const scaleFor=(maximum,integer)=>{
 };
 
 // Reflex-owned SVG chart. Coordinates are CSS pixels so type and strokes do not shrink.
-export function TimeChart({series,start,end,leftLabel,rightLabel,leftMax,rightMax,leftInteger=false,rightInteger=false,label}) {
+export function TimeChart({series,markers=[],start,end,leftLabel,rightLabel,leftMax,rightMax,leftInteger=false,rightInteger=false,label}) {
   const id=useId().replaceAll(':',''),container=useRef(null),[width,setWidth]=useState(440),[hover,setHover]=useState(null),[pointerY,setPointerY]=useState(null);
   useEffect(()=>{
     const observer=new ResizeObserver(([entry])=>{if(entry.contentRect.width>0)setWidth(entry.contentRect.width);});
@@ -46,7 +46,7 @@ export function TimeChart({series,start,end,leftLabel,rightLabel,leftMax,rightMa
       {Array.from({length:Math.round(scales[0].max/scales[0].step)+1},(_,i)=>i*scales[0].step).map(v=><g key={v}><line x1={left} x2={right} y1={y(v,false)} y2={y(v,false)} className="reflex-chart-grid"/><text x={left-8} y={y(v,false)+4} textAnchor="end">{axisFmt(v)}</text></g>)}
       {rightLabel&&Array.from({length:Math.round(scales[1].max/scales[1].step)+1},(_,i)=>i*scales[1].step).map(v=><text key={v} x={right+8} y={y(v,true)+4}>{axisFmt(v)}</text>)}
       {Array.from({length:tickCount+1},(_,i)=>i/tickCount).map(t=><text key={t} x={left+(right-left)*t} y={bottom+22} textAnchor="middle">{simulationTime(start+(end-start)*t)}</text>)}
-      <g clipPath={`url(#${id})`}>{series.map(s=>{
+      <g clipPath={`url(#${id})`}>{markers.filter(m=>m.at>=start&&m.at<=end).map((m,i)=><line key={`marker-${i}`} x1={x(m.at)} x2={x(m.at)} y1={top} y2={bottom} stroke={m.color||'#626c76'} strokeDasharray="3 5" opacity=".6"><title>{m.label}</title></line>)}{series.map(s=>{
         let move=true;
         const d=s.points.map(([t,v])=>{if(!Number.isFinite(v)){move=true;return '';}const command=move?`M${x(t)},${y(v,!!s.right)}`:s.step?`H${x(t)}V${y(v,!!s.right)}`:`L${x(t)},${y(v,!!s.right)}`;move=false;return command;}).join(' ');
         return <g key={s.name} opacity={highlighted&&highlighted.name!==s.name?0.3:1}><path d={d} fill="none" stroke={color(s)} strokeWidth="2" strokeLinejoin="round" strokeDasharray={s.dashed?'5 4':undefined}/>{s.points.length===1&&Number.isFinite(s.points[0][1])&&<circle cx={x(s.points[0][0])} cy={y(s.points[0][1],!!s.right)} r="3" fill={color(s)}/>}</g>;

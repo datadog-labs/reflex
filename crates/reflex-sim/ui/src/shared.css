@@ -17,8 +17,8 @@
 .reflex-map-node-heading{display:flex;align-items:center;gap:8px;min-height:44px;padding:10px;flex:none}
 .reflex-map-node-heading>svg{flex:none;width:26px;height:26px;padding:5px;border:1px solid #a9b8c6;border-radius:5px;background:linear-gradient(#fff,#f3f5f7);color:#1c2b34}
 .reflex-node-label{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
-.reflex-node-name{font-size:16px!important;font-weight:400!important;line-height:16px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.reflex-node-label>span:not(.reflex-node-name){font-size:12px;line-height:12px;color:#67737e}
+.reflex-node-name{font-size:16px!important;font-weight:400!important;line-height:20px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.reflex-node-label>span:not(.reflex-node-name){font-size:12px;line-height:16px;color:#67737e}
 .reflex-map-metrics{display:flex;flex-direction:column;gap:1px;width:100%;border-radius:4px;overflow:hidden;flex:none}
 .reflex-map-metric{display:block;text-align:center;padding:9px 6px 6px;width:100%;height:35px;font-size:16px!important;line-height:20px!important;font-weight:400;background:#f3f5f7;font-variant-numeric:tabular-nums}
 .reflex-map-metric[data-level=danger]{background:#fdebed;color:#bc2b3c}
@@ -75,3 +75,10 @@
 [data-node-status=success] .reflex-node-phase{background:#41c464!important}
 [data-node-status=danger] .reflex-node-phase{background:#eb364b!important}
 [data-node-status=warning] .reflex-node-phase{background:#f99d02!important;color:#1c2b34!important}
+
+/* Scenario selection applies to the whole simulation, outside node inspection. */
+.simulation-scenario-bar{flex:none;display:flex;align-items:center;flex-wrap:wrap;gap:8px 20px;padding:10px 16px;border-bottom:1px solid var(--ui-border,#dce0ed);background:var(--ui-background,#fff)}
+.simulation-scenario-controls{display:flex;align-items:center;flex-wrap:wrap;gap:8px;max-width:100%}
+.simulation-scenario-picker{width:270px;max-width:100%;min-width:0}
+.simulation-scenario-copy{display:flex;flex-direction:column;gap:4px;flex:1;min-width:220px}
+@media(max-width:700px){.simulation-scenario-bar{padding:8px}.simulation-scenario-copy{min-width:0;flex-basis:100%}.simulation-scenario-controls{width:100%}.simulation-scenario-picker{flex:1;min-width:160px}}

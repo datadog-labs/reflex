@@ -19,7 +19,7 @@ export function FlowMap({nodes, edges, running, speed=1, onSelect, panelOpen, se
     const columns=new Map();
     nodes.forEach(n=>{const col=columns.get(n.column)||[];col.push(n);columns.set(n.column,col);});
     const nodeWidth=240, columnStep=columns.has(3)?312:352, rowGap=20, inset=20;
-    const nodeHeight=n=>n.kind==='client'?100:52+(n.metrics?.length||0)*36+(n.subtext?7:0)+(Number.isFinite(n.ratio)?33:0)+(n.annotation?26:0);
+    const nodeHeight=n=>n.kind==='client'?100:56+(n.metrics?.length||0)*36+(n.subtext?11+16*((n.subtextLines||1)-1):0)+(Number.isFinite(n.ratio)?33:0)+(n.annotation?26:0);
     const columnHeight=col=>col.reduce((total,n)=>total+nodeHeight(n),0)+Math.max(0,col.length-1)*rowGap;
     const height=Math.max(400,...Array.from(columns.values(),columnHeight))+inset*2;
     const width=Math.max(0,...columns.keys())*columnStep+nodeWidth+inset*2;

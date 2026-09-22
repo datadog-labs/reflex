@@ -120,10 +120,10 @@ identify any tests you could not run.
 Keep unrelated cleanup separate. Respond to review feedback and keep code,
 examples, and documentation consistent as the change evolves.
 
-## Contributor License Agreement
+## License
 
-CLA requirements and the signing workflow are pending maintainer confirmation.
-This guide will link to the agreement and signing instructions once confirmed.
+Contributions must be compatible with Apache-2.0. By contributing to Reflex,
+you agree to license your contributions under Apache-2.0.
 
 ## Use of AI coding assistants
 

@@ -3,6 +3,7 @@ name = "reflex"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
+license.workspace = true
 publish = false
 description = "Typed model recommendations and guarded state-machine execution"
 

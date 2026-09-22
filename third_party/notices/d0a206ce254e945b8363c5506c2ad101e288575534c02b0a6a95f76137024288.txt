@@ -1,0 +1,490 @@
+Component,Origin,Licence,Copyright,Reference
+@babel/code-frame,npm,MIT,The Babel Team (https://babel.dev/team),npm:7.27.1
+@babel/helper-validator-identifier,npm,MIT,The Babel Team (https://babel.dev/team),npm:7.27.1
+@blocz/react-responsive,npm,MIT,Ayc0 (https://github.com/bloczjs/react-responsive#readme),npm:5.0.0
+@dnd-kit/accessibility,npm,MIT,Claudéric Demers (https://github.com/clauderic/dnd-kit),npm:3.0.1
+@dnd-kit/core,npm,MIT,Claudéric Demers (https://github.com/clauderic/dnd-kit),npm:6.0.6
+@dnd-kit/modifiers,npm,MIT,Claudéric Demers (https://github.com/clauderic/dnd-kit),npm:6.0.1
+@dnd-kit/sortable,npm,MIT,Claudéric Demers (https://github.com/clauderic/dnd-kit),npm:7.0.1
+@dnd-kit/utilities,npm,MIT,Claudéric Demers (https://github.com/clauderic/dnd-kit),npm:3.2.1
+@fastify/busboy,npm,MIT,Brian White (https://github.com/fastify/busboy),npm:2.1.1
+@figma/code-connect,npm,MIT,Figma (https://github.com/figma/code-connect#readme),npm:1.3.3
+@formatjs/ecma402-abstract,npm,MIT,Long Ho (https://github.com/formatjs/formatjs),npm:2.3.4
+@formatjs/fast-memoize,npm,MIT,Long Ho (https://github.com/formatjs/formatjs#readme),npm:2.2.7
+@formatjs/intl-datetimeformat,npm,MIT,Long Ho (https://github.com/formatjs/formatjs#readme),npm:6.18.0
+@formatjs/intl-localematcher,npm,MIT,Long Ho (https://github.com/formatjs/formatjs#readme),npm:0.6.1
+@isaacs/cliui,npm,ISC,Ben Coe (yargs/cliui),npm:8.0.2
+@monaco-editor/loader,npm,MIT,Suren Atoyan (https://github.com/suren-atoyan/monaco-loader),npm:1.4.0
+@monaco-editor/react,npm,MIT,Suren Atoyan (https://github.com/suren-atoyan/monaco-react#readme),npm:4.6.0
+@mswjs/cookies,npm,MIT,Artem Zakharchenko (https://github.com/mswjs/cookies),npm:0.2.2
+@mswjs/interceptors,npm,MIT,Artem Zakharchenko (https://github.com/mswjs/interceptors),npm:0.16.6
+@nodelib/fs.scandir,npm,MIT,(https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.scandir),npm:2.1.3
+@nodelib/fs.stat,npm,MIT,(https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.stat),npm:2.0.3
+@nodelib/fs.walk,npm,MIT,(https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.walk),npm:1.2.4
+@open-draft/until,npm,MIT,Artem Zakharchenko (open-draft/until),npm:1.0.3
+@popperjs/core,npm,MIT,Federico Zivolo (github:popperjs/popper-core),npm:2.11.8
+@sqltools/formatter,npm,MIT,(https://github.com/mtxr/vscode-sqltools),npm:1.2.5
+@testing-library/dom,npm,MIT,Kent C. Dodds (https://kentcdodds.com),npm:10.3.1
+@testing-library/react,npm,MIT,Kent C. Dodds (https://kentcdodds.com),npm:16.3.0
+@tippyjs/react,npm,MIT,atomiks (https://github.com/atomiks/tippyjs-react#readme),npm:4.2.6
+@ts-morph/common,npm,MIT,David Sherret (https://github.com/dsherret/ts-morph),npm:0.24.0
+@types/aria-query,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/aria-query),npm:5.0.1
+@types/color-name,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped),npm:1.1.1
+@types/cookie,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/cookie),npm:0.4.1
+@types/debug,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/debug),npm:4.1.7
+@types/estree,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/estree),npm:1.0.0
+@types/estree-jsx,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/estree-jsx),npm:1.0.0
+@types/extend,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped),npm:3.0.1
+@types/hast,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/hast),npm:2.3.4
+@types/hast,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/hast),npm:3.0.4
+@types/history,npm,MIT,(https://www.github.com/DefinitelyTyped/DefinitelyTyped),npm:2.0.49
+@types/js-levenshtein,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/js-levenshtein),npm:1.1.1
+@types/mdast,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/mdast),npm:3.0.10
+@types/mdast,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/mdast),npm:4.0.4
+@types/ms,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped),npm:0.7.31
+@types/node,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node),npm:24.12.2
+@types/prismjs,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/prismjs),npm:1.26.6
+@types/react,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react),npm:19.1.13
+@types/react-dom,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-dom),npm:18.2.23
+@types/set-cookie-parser,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/set-cookie-parser),npm:2.4.1
+@types/unist,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/unist),npm:2.0.6
+@types/unist,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/unist),npm:3.0.3
+@types/vimeo__player,npm,MIT,(https://github.com/DefinitelyTyped/DefinitelyTyped),npm:2.10.0
+@u-wave/react-vimeo,npm,MIT,Renée Kooi (https://github.com/u-wave/react-vimeo#readme),npm:0.9.10
+@ungap/event-target,npm,ISC,Andrea Giammarchi (https://github.com/ungap/event-target#readme),npm:0.2.4
+@ungap/structured-clone,npm,ISC,Andrea Giammarchi (https://github.com/ungap/structured-clone#readme),npm:1.3.0
+@vimeo/player,npm,MIT,Vimeo (vimeo/player.js),npm:2.18.0
+@wojtekmaj/date-utils,npm,MIT,Wojciech Maj (https://github.com/wojtekmaj/date-utils),npm:1.5.1
+@xmldom/xmldom,npm,MIT,(https://github.com/xmldom/xmldom),npm:0.8.10
+afterframe,npm,MIT,(https://github.com/andrewiggins/afterframe#readme),npm:1.0.2
+agent-base,npm,MIT,Nathan Rajlich (http://n8.io/),npm:7.1.0
+ansi-align,npm,ISC,nexdrew (https://github.com/nexdrew/ansi-align#readme),npm:3.0.1
+ansi-escapes,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:4.3.2
+ansi-regex,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:5.0.1
+ansi-regex,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:6.0.1
+ansi-styles,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:4.2.1
+ansi-styles,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:5.2.0
+ansi-styles,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:6.2.1
+anymatch,npm,ISC,Elan Shanker (https://github.com/es128),npm:3.1.2
+aria-query,npm,Apache-2.0,Jesse Beach (https://github.com/A11yance/aria-query#readme),npm:5.3.0
+asynckit,npm,MIT,Alex Indigo (https://github.com/alexindigo/asynckit#readme),npm:0.4.0
+bail,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.2
+balanced-match,npm,MIT,Julian Gruber (http://juliangruber.com),npm:1.0.0
+base64-js,npm,MIT,T. Jameson Little (https://github.com/beatgammit/base64-js),npm:1.5.1
+binary-extensions,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:2.0.0
+bl,npm,MIT,(https://github.com/rvagg/bl),npm:4.1.0
+boxen,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:5.1.1
+brace-expansion,npm,MIT,Julian Gruber (http://juliangruber.com),npm:2.0.3
+braces,npm,MIT,Jon Schlinkert (https://github.com/jonschlinkert),npm:3.0.3
+buffer,npm,MIT,Feross Aboukhadijeh (https://feross.org),npm:5.7.1
+camelcase,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:6.3.0
+case,npm,(MIT OR GPL-3.0-or-later),Nathan Bubna (http://www.esha.com/),npm:1.6.3
+ccount,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+chalk,npm,MIT,(chalk/chalk),npm:4.1.1
+chalk,npm,MIT,(chalk/chalk),npm:4.1.2
+character-entities,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.0
+character-entities-html4,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.1.0
+character-entities-legacy,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.0.0
+character-reference-invalid,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.0
+chardet,npm,MIT,Dmitry Shirokov (https://github.com/runk/node-chardet),npm:0.7.0
+chokidar,npm,MIT,Paul Miller (https://paulmillr.com),npm:3.5.3
+classnames,npm,MIT,Jed Watson (https://github.com/JedWatson/classnames),npm:2.3.2
+cli-boxes,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:2.2.1
+cli-cursor,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:3.1.0
+cli-spinners,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:2.6.1
+cli-width,npm,ISC,Ilya Radchenko (https://github.com/knownasilya/cli-width),npm:3.0.0
+cliui,npm,ISC,Ben Coe (yargs/cliui),npm:8.0.1
+clone,npm,MIT,Paul Vorbach (http://paul.vorba.ch/),npm:1.0.4
+clsx,npm,MIT,Luke Edwards (https://lukeed.com),npm:2.1.1
+code-block-writer,npm,MIT,David Sherret (https://github.com/dsherret/code-block-writer#readme),npm:13.0.1
+color-convert,npm,MIT,Heather Arthur (Qix-/color-convert),npm:2.0.1
+color-name,npm,MIT,DY (https://github.com/colorjs/color-name),npm:1.1.4
+combined-stream,npm,MIT,Felix Geisendörfer (http://debuggable.com/),npm:1.0.8
+comma-separated-tokens,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.2
+commander,npm,MIT,TJ Holowaychuk (https://github.com/tj/commander.js),npm:11.1.0
+compare-versions,npm,MIT,Ole Michelsen (https://github.com/omichelsen/compare-versions#readme),npm:6.1.1
+cookie,npm,MIT,Roman Shtylman (jshttp/cookie),npm:0.7.2
+copy-to-clipboard,npm,MIT,sudodoki (https://github.com/sudodoki/copy-to-clipboard),npm:3.3.3
+core-js,npm,MIT,Denis Pushkarev (http://zloirock.ru),npm:3.44.0
+cross-spawn,npm,MIT,André Cruz (https://github.com/moxystudio/node-cross-spawn),npm:7.0.6
+cssstyle,npm,MIT,Jon Sakas (https://jon.sakas.co/),npm:4.0.1
+csstype,npm,MIT,Fredrik Nicol (https://github.com/frenic/csstype),npm:3.1.1
+culori,npm,MIT,Dan Burzo (https://github.com/Evercoder/culori),npm:4.0.1
+data-urls,npm,MIT,Domenic Denicola (https://domenic.me/),npm:5.0.0
+date-fns,npm,MIT,Sasha Koss (https://github.com/date-fns/date-fns),npm:1.30.1
+debug,npm,MIT,Josh Junon (https://github.com/debug-js/debug),npm:4.3.4
+decimal.js,npm,MIT,Michael Mclaughlin (https://github.com/MikeMcl/decimal.js),npm:10.4.3
+decode-named-character-reference,npm,MIT,Titus Wormer (https://wooorm.com),npm:1.0.1
+defaults,npm,MIT,Elijah Insua (https://github.com/tmpvar/defaults),npm:1.0.3
+delayed-stream,npm,MIT,Felix Geisendörfer (http://debuggable.com/),npm:1.0.0
+dequal,npm,MIT,Luke Edwards (https://lukeed.com),npm:2.0.2
+dequal,npm,MIT,Luke Edwards (https://lukeed.com),npm:2.0.3
+detect-browser,npm,MIT,Damon Oehlman (https://github.com/DamonOehlman/detect-browser),npm:4.8.0
+devlop,npm,MIT,Titus Wormer (https://wooorm.com),npm:1.1.0
+dom-accessibility-api,npm,MIT,(https://github.com/eps1lon/dom-accessibility-api),npm:0.5.9
+dompurify,npm,(MPL-2.0 OR Apache-2.0),Dr.-Ing. Mario Heiderich  Cure53 (https://cure53.de/),npm:3.1.6
+dotenv,npm,BSD-2-Clause,(https://github.com/motdotla/dotenv),npm:16.4.5
+eastasianwidth,npm,MIT,Masaki Komagata (https://github.com/komagata/eastasianwidth),npm:0.2.0
+emoji-regex,npm,MIT,Mathias Bynens (https://mathiasbynens.be/),npm:8.0.0
+emoji-regex,npm,MIT,Mathias Bynens (https://mathiasbynens.be/),npm:9.2.2
+entities,npm,BSD-2-Clause,Felix Boehm (https://github.com/fb55/entities),npm:4.3.1
+entities,npm,BSD-2-Clause,Felix Boehm (https://github.com/fb55/entities),npm:4.5.0
+escalade,npm,MIT,Luke Edwards (https://lukeed.com),npm:3.1.1
+escape-string-regexp,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:1.0.5
+escape-string-regexp,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:5.0.0
+estree-util-is-identifier-name,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.0.0
+events,npm,MIT,Irakli Gozalishvili (http://jeditoolkit.com),npm:3.3.0
+exenv,npm,BSD-3-Clause,Jed Watson (https://github.com/JedWatson/exenv),npm:1.2.2
+extend,npm,MIT,Stefan Thomas (http://www.justmoon.net),npm:3.0.2
+external-editor,npm,MIT,Kevin Gravier (https://mrkmg.com),npm:3.0.3
+fake-indexeddb,npm,Apache-2.0,Jeremy Scheff (https://dumbmatter.com/),npm:6.0.1
+fast-fuzzy,npm,ISC,Ethan Rutherford (https://github.com/EthanRutherford/fast-fuzzy#readme),npm:1.12.0
+fast-glob,npm,MIT,Denis Malinochkin (https://mrmlnc.com),npm:3.3.2
+fast-myers-diff,npm,MIT,Logan R. Kearsley (https://github.com/gliese1337/fast-myers-diff#readme),npm:3.0.1
+fastq,npm,ISC,Matteo Collina (https://github.com/mcollina/fastq#readme),npm:1.13.0
+figures,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:3.2.0
+file-saver,npm,MIT,Eli Grey (https://github.com/eligrey/FileSaver.js#readme),npm:2.0.5
+filesize,npm,BSD-3-Clause,Jason Mulligan (https://filesizejs.com),npm:7.0.0
+fill-range,npm,MIT,Jon Schlinkert (https://github.com/jonschlinkert),npm:7.1.1
+find-up,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:5.0.0
+focus-trap,npm,MIT,David Clark (http://davidtheclark.com/),npm:7.8.0
+focus-trap-react,npm,MIT,David Clark (http://davidtheclark.com/),npm:11.0.4
+foreground-child,npm,ISC,Isaac Z. Schlueter (http://blog.izs.me/),npm:3.1.1
+form-data,npm,MIT,Felix Geisendörfer (http://debuggable.com/),npm:4.0.0
+get-caller-file,npm,ISC,Stefan Penner (https://github.com/stefanpenner/get-caller-file#readme),npm:2.0.5
+get-user-locale,npm,MIT,Wojciech Maj (https://github.com/wojtekmaj/get-user-locale),npm:2.3.2
+glob,npm,ISC,Isaac Z. Schlueter (https://blog.izs.me/),npm:10.3.10
+glob-parent,npm,ISC,Gulp Team (https://gulpjs.com/),npm:5.1.2
+graphemesplit,npm,MIT,Nao Yonashiro (github:orisano/graphemesplit),npm:2.4.4
+graphql,npm,MIT,(https://github.com/graphql/graphql-js),npm:16.11.0
+has-flag,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:4.0.0
+hast-util-embedded,npm,MIT,Titus Wormer (https://wooorm.com),npm:1.0.6
+hast-util-from-html,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.3
+hast-util-from-parse5,npm,MIT,Titus Wormer (https://wooorm.com),npm:8.0.3
+hast-util-has-property,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.0
+hast-util-is-element,npm,MIT,Titus Wormer (https://wooorm.com),npm:1.1.0
+hast-util-is-element,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.1.1
+hast-util-parse-selector,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.1.1
+hast-util-parse-selector,npm,MIT,Titus Wormer (https://wooorm.com),npm:4.0.0
+hast-util-to-html,npm,MIT,Titus Wormer (https://wooorm.com),npm:9.0.5
+hast-util-to-jsx-runtime,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.3.6
+hast-util-to-mdast,npm,MIT,Seth Vincent (https://sethvincent.com),npm:8.1.0
+hast-util-to-text,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.1.1
+hast-util-whitespace,npm,MIT,Titus Wormer (https://wooorm.com),npm:1.0.4
+hast-util-whitespace,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.0.0
+hastscript,npm,MIT,Titus Wormer (https://wooorm.com),npm:7.2.0
+hastscript,npm,MIT,Titus Wormer (https://wooorm.com),npm:8.0.0
+hastscript,npm,MIT,Titus Wormer (https://wooorm.com),npm:9.0.1
+headers-polyfill,npm,MIT,Artem Zakharchenko (https://github.com/mswjs/headers-polyfill),npm:3.0.10
+highlight-words-core,npm,MIT,Brian Vaughn (github.com/bvaughn/highlight-words-core),npm:1.2.0
+html-encoding-sniffer,npm,MIT,Domenic Denicola (https://domenic.me/),npm:4.0.0
+html-url-attributes,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.0.1
+html-void-elements,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.0.0
+http-proxy-agent,npm,MIT,Nathan Rajlich (http://n8.io/),npm:7.0.2
+https-proxy-agent,npm,MIT,Nathan Rajlich (http://n8.io/),npm:7.0.5
+iconv-lite,npm,MIT,Alexander Shtuchkin (https://github.com/ashtuchkin/iconv-lite),npm:0.4.24
+iconv-lite,npm,MIT,Alexander Shtuchkin (https://github.com/ashtuchkin/iconv-lite),npm:0.6.3
+ieee754,npm,BSD-3-Clause,Feross Aboukhadijeh (https://feross.org),npm:1.2.1
+inherits,npm,ISC,(https://github.com/isaacs/inherits),npm:2.0.4
+inline-style-parser,npm,MIT,(https://github.com/remarkablemark/inline-style-parser),npm:0.2.7
+inquirer,npm,MIT,Simon Boudrias (SBoudrias/Inquirer.js),npm:8.2.5
+intersection-observer,npm,W3C-20150513,Philip Walton (http://philipwalton.com),npm:0.12.0
+is-alphabetical,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.0
+is-alphanumerical,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.0
+is-binary-path,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:2.1.0
+is-decimal,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.0
+is-extglob,npm,MIT,Jon Schlinkert (https://github.com/jonschlinkert),npm:2.1.1
+is-fullwidth-code-point,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:3.0.0
+is-glob,npm,MIT,Jon Schlinkert (https://github.com/jonschlinkert),npm:4.0.3
+is-hexadecimal,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.0
+is-interactive,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:1.0.0
+is-node-process,npm,MIT,(https://www.npmjs.com/package/is-node-process),npm:1.0.1
+is-number,npm,MIT,Jon Schlinkert (https://github.com/jonschlinkert),npm:7.0.0
+is-plain-obj,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:4.0.0
+is-potential-custom-element-name,npm,MIT,Mathias Bynens (https://mathiasbynens.be/),npm:1.0.1
+is-unicode-supported,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:0.1.0
+isexe,npm,ISC,Isaac Z. Schlueter (http://blog.izs.me/),npm:2.0.0
+jackspeak,npm,BlueOak-1.0.0,Isaac Z. Schlueter (https://github.com/isaacs/jackspeak),npm:2.3.6
+js-base64,npm,BSD-3-Clause,Dan Kogai (https://github.com/dankogai/js-base64),npm:3.7.7
+js-cookie,npm,MIT,Klaus Hartl (https://github.com/js-cookie/js-cookie),npm:3.0.5
+js-levenshtein,npm,MIT,Gustaf Andersson (gustf/js-levenshtein),npm:1.1.6
+js-tokens,npm,MIT,Simon Lydell (lydell/js-tokens),npm:4.0.0
+jsdom,npm,MIT,Elijah Insua (http://tmpvar.com),npm:24.1.3
+jsonc-parser,npm,MIT,Microsoft Corporation (https://github.com/microsoft/node-jsonc-parser),npm:3.0.0
+kleur,npm,MIT,Luke Edwards (lukeed.com),npm:3.0.3
+locate-path,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:6.0.0
+lodash,npm,MIT,John-David Dalton (https://lodash.com/),npm:4.17.21
+lodash,npm,MIT,John-David Dalton (https://lodash.com/),npm:4.18.1
+log-symbols,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:4.1.0
+longest-streak,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.0.0
+loose-envify,npm,MIT,Andres Suarez (https://github.com/zertosh/loose-envify),npm:1.4.0
+lru-cache,npm,ISC,Isaac Z. Schlueter (https://github.com/isaacs/node-lru-cache),npm:10.0.1
+lz-string,npm,MIT,pieroxy (http://pieroxy.net/blog/pages/lz-string/index.html),npm:1.5.0
+map-age-cleaner,npm,MIT,Sam Verschueren (github.com/SamVerschueren),npm:0.1.3
+markdown-table,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.0.4
+matchmedia-polyfill,npm,MIT,Scott Jehl (http://github.com/paulirish/matchMedia.js),npm:0.3.2
+mdast-util-find-and-replace,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.0.2
+mdast-util-from-markdown,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.3
+mdast-util-gfm,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.1.0
+mdast-util-gfm-autolink-literal,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+mdast-util-gfm-footnote,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.1.0
+mdast-util-gfm-strikethrough,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.0
+mdast-util-gfm-table,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.0
+mdast-util-gfm-task-list-item,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.0
+mdast-util-mdx-expression,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+mdast-util-mdx-jsx,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.2.0
+mdast-util-mdxjs-esm,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+mdast-util-phrasing,npm,MIT,Victor Felder (https://draft.li),npm:3.0.0
+mdast-util-phrasing,npm,MIT,Victor Felder (https://draft.li),npm:4.1.0
+mdast-util-to-hast,npm,MIT,Titus Wormer (https://wooorm.com),npm:13.2.1
+mdast-util-to-markdown,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.1.2
+mdast-util-to-string,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.1.0
+mdast-util-to-string,npm,MIT,Titus Wormer (https://wooorm.com),npm:4.0.0
+mem,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:8.1.1
+memoize-one,npm,MIT,Alex Reardon (https://github.com/alexreardon/memoize-one),npm:4.0.3
+memoize-one,npm,MIT,Alex Reardon (https://github.com/alexreardon/memoize-one),npm:5.0.5
+merge2,npm,MIT,(https://github.com/teambition/merge2),npm:1.4.1
+micromark,npm,MIT,Titus Wormer (https://wooorm.com),npm:4.0.2
+micromark-core-commonmark,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.3
+micromark-extension-gfm,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.0.0
+micromark-extension-gfm-autolink-literal,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.1.0
+micromark-extension-gfm-footnote,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.1.0
+micromark-extension-gfm-strikethrough,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.1.0
+micromark-extension-gfm-table,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.1.1
+micromark-extension-gfm-tagfilter,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.0
+micromark-extension-gfm-task-list-item,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.1.0
+micromark-factory-destination,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+micromark-factory-label,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+micromark-factory-space,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+micromark-factory-title,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+micromark-factory-whitespace,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+micromark-util-character,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.1.1
+micromark-util-chunked,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+micromark-util-classify-character,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+micromark-util-combine-extensions,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+micromark-util-decode-numeric-character-reference,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.2
+micromark-util-decode-string,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+micromark-util-encode,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+micromark-util-html-tag-name,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+micromark-util-normalize-identifier,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+micromark-util-resolve-all,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+micromark-util-sanitize-uri,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+micromark-util-subtokenize,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.1.0
+micromark-util-symbol,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+micromark-util-types,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.2
+micromatch,npm,MIT,Jon Schlinkert (https://github.com/jonschlinkert),npm:4.0.8
+mime-db,npm,MIT,(jshttp/mime-db),npm:1.52.0
+mime-types,npm,MIT,(jshttp/mime-types),npm:2.1.35
+mimic-fn,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:2.1.0
+mimic-fn,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:3.1.0
+minimatch,npm,ISC,Isaac Z. Schlueter (http://blog.izs.me),npm:9.0.4
+minipass,npm,ISC,Isaac Z. Schlueter (http://blog.izs.me/),npm:7.0.4
+mkdirp,npm,MIT,(https://github.com/isaacs/node-mkdirp),npm:3.0.1
+monaco-editor,npm,MIT,Microsoft Corporation (https://github.com/microsoft/monaco-editor),npm:0.45.0
+monaco-languageserver-types,npm,MIT,Remco Haszing (https://github.com/remcohaszing/monaco-languageserver-types),npm:0.4.0
+monaco-marker-data-provider,npm,MIT,Remco Haszing (https://github.com/remcohaszing/monaco-marker-data-provider#readme),npm:1.2.3
+monaco-types,npm,MIT,Remco Haszing (https://github.com/remcohaszing/monaco-types#readme),npm:0.1.0
+monaco-worker-manager,npm,MIT,Remco Haszing (https://github.com/remcohaszing/monaco-worker-manager#readme),npm:2.0.1
+monaco-yaml,npm,MIT,Kevin Decker (http://incaseofstairs.com),npm:5.2.2
+mousetrap,npm,Apache-2.0,Craig Campbell (https://github.com/ccampbell/mousetrap),npm:1.6.1
+ms,npm,MIT,(zeit/ms),npm:2.1.2
+msw,npm,MIT,Artem Zakharchenko (https://github.com/kettanaito),npm:0.43.1
+mute-stream,npm,ISC,Isaac Z. Schlueter (http://blog.izs.me/),npm:0.0.8
+native-promise-only,npm,MIT,Kyle Simpson (http://github.com/getify/native-promise-only),npm:0.8.1
+node-fetch,npm,MIT,David Frank (https://github.com/bitinn/node-fetch),npm:2.7.0
+normalize-path,npm,MIT,Jon Schlinkert (https://github.com/jonschlinkert),npm:3.0.0
+nwsapi,npm,MIT,Diego Perini (http://javascript.nwbox.com/nwsapi/),npm:2.2.12
+object-assign,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:4.1.1
+odiff,npm,UNKNOWN,(https://github.com/Tixit/odiff),npm:1.4.2
+onetime,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:5.1.2
+ora,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:5.4.1
+os-tmpdir,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:1.0.2
+outvariant,npm,MIT,Artem Zakharchenko (https://github.com/open-draft/outvariant),npm:1.3.0
+p-defer,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:1.0.0
+p-limit,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:3.1.0
+p-locate,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:5.0.0
+pako,npm,MIT,(https://github.com/nodeca/pako),npm:0.2.9
+parse-entities,npm,MIT,Titus Wormer (https://wooorm.com),npm:4.0.0
+parse5,npm,MIT,Ivan Nikulin (https://github.com/inikulin),npm:7.0.0
+parse5,npm,MIT,Ivan Nikulin (https://github.com/inikulin),npm:7.1.2
+path-browserify,npm,MIT,James Halliday (http://substack.net),npm:1.0.1
+path-exists,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:4.0.0
+path-key,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:3.1.1
+path-scurry,npm,BlueOak-1.0.0,Isaac Z. Schlueter (https://blog.izs.me),npm:1.10.1
+path-to-regexp,npm,MIT,(https://github.com/pillarjs/path-to-regexp),npm:6.3.0
+picocolors,npm,ISC,Alexey Raspopov (alexeyraspopov/picocolors),npm:1.1.1
+picomatch,npm,MIT,Jon Schlinkert (https://github.com/jonschlinkert),npm:2.3.2
+pluralize,npm,MIT,Blake Embrey (http://blakeembrey.me),npm:8.0.0
+prettier,npm,MIT,James Long (https://prettier.io),npm:2.8.8
+pretty-format,npm,MIT,James Kyle (https://github.com/facebook/jest),npm:27.5.1
+process,npm,MIT,Roman Shtylman (https://github.com/shtylman/node-process),npm:0.11.10
+prompts,npm,MIT,Terkel Gjervig (https://terkel.com),npm:2.4.2
+prop-types,npm,MIT,(https://facebook.github.io/react/),npm:15.8.1
+property-information,npm,MIT,Titus Wormer (https://wooorm.com),npm:6.1.1
+property-information,npm,MIT,Titus Wormer (https://wooorm.com),npm:7.1.0
+psl,npm,MIT,Lupo Montero (https://lupomontero.com/),npm:1.9.0
+punycode,npm,MIT,Mathias Bynens (https://mathiasbynens.be/),npm:2.1.1
+punycode,npm,MIT,Mathias Bynens (https://mathiasbynens.be/),npm:2.3.1
+qr.js,npm,MIT,Roman Shtylman (https://github.com/shtylman/qr.js),npm:0.0.0
+querystringify,npm,MIT,Arnout Kazemier (https://github.com/unshiftio/querystringify),npm:2.2.0
+rc-slider,npm,MIT,(http://github.com/react-component/slider/),npm:11.1.9
+rc-util,npm,MIT,(http://github.com/react-component/util),npm:5.44.4
+react,npm,MIT,(https://reactjs.org/),npm:18.3.1
+react-calendar,npm,MIT,Wojciech Maj (https://github.com/wojtekmaj/react-calendar),npm:5.0.0
+react-dom,npm,MIT,(https://reactjs.org/),npm:18.3.1
+react-fast-compare,npm,MIT,Chris Bolin (https://github.com/FormidableLabs/react-fast-compare),npm:3.2.0
+react-fast-compare,npm,MIT,Chris Bolin (https://github.com/FormidableLabs/react-fast-compare),npm:3.2.2
+react-highlight-words,npm,MIT,Brian Vaughn (https://github.com/bvaughn/react-highlight-words#readme),npm:0.17.0
+react-is,npm,MIT,(https://reactjs.org/),npm:16.13.1
+react-is,npm,MIT,(https://reactjs.org/),npm:17.0.2
+react-is,npm,MIT,(https://reactjs.org/),npm:18.2.0
+react-is,npm,MIT,(https://reactjs.org/),npm:18.3.1
+react-lifecycles-compat,npm,MIT,(reactjs/react-lifecycles-compat),npm:3.0.4
+react-markdown,npm,MIT,Espen Hovlandsdal (remarkjs/react-markdown),npm:10.1.0
+react-modal,npm,MIT,(https://github.com/reactjs/react-modal),npm:3.8.1
+react-popper,npm,MIT,Travis Arnold (http://souporserious.com),npm:2.3.0
+react-qr-code,npm,MIT,Ross Khanas (https://github.com/rosskhanas/react-qr-code),npm:2.0.18
+react-simple-code-editor,npm,MIT,Satyajit Sahoo (https://github.com/satya164/),npm:0.10.0
+react-split-pane,npm,MIT,tomkp (https://github.com/tomkp/react-split-pane),npm:0.1.92
+react-style-proptype,npm,MIT,Frankie Bagnardi (https://github.com/brigand/react-style-proptype#readme),npm:3.2.2
+react-table,npm,MIT,(https://react-table.tanstack.com),npm:7.8.0
+react-tether,npm,MIT,Travis Arnold (http://souporserious.com),npm:2.0.8
+react-window,npm,MIT,Brian Vaughn (https://github.com/bvaughn/),npm:1.8.11
+readable-stream,npm,MIT,(https://github.com/nodejs/readable-stream),npm:3.6.2
+readdirp,npm,MIT,Thorsten Lorenz (thlorenz.com),npm:3.6.0
+refractor,npm,MIT,Titus Wormer (https://wooorm.com),npm:4.9.0
+regenerator-runtime,npm,MIT,Ben Newman (https://github.com/facebook/regenerator/tree/main/packages/runtime),npm:0.14.0
+rehype-document,npm,MIT,Titus Wormer (https://wooorm.com),npm:7.0.3
+rehype-minify-whitespace,npm,MIT,Titus Wormer (https://wooorm.com),npm:4.0.5
+rehype-parse,npm,MIT,Titus Wormer (https://wooorm.com),npm:9.0.1
+rehype-stringify,npm,MIT,Titus Wormer (https://wooorm.com),npm:10.0.1
+remark-gfm,npm,MIT,Titus Wormer (https://wooorm.com),npm:4.0.1
+remark-parse,npm,MIT,Titus Wormer (https://wooorm.com),npm:11.0.0
+remark-rehype,npm,MIT,Titus Wormer (https://wooorm.com),npm:11.1.2
+remark-stringify,npm,MIT,Titus Wormer (https://wooorm.com),npm:11.0.0
+repeat-string,npm,MIT,Jon Schlinkert (http://github.com/jonschlinkert),npm:1.6.1
+requestidlecallback-polyfill,npm,MIT AND Apache-2.0,Pedro Ladaria (https://github.com/pladaria/requestidlecallback-polyfill#readme),npm:1.0.2
+require-directory,npm,MIT,Troy Goode (http://github.com/troygoode/),npm:2.1.1
+requires-port,npm,MIT,Arnout Kazemier (https://github.com/unshiftio/requires-port),npm:1.0.0
+resize-observer-polyfill,npm,MIT,Denis Rul (https://github.com/que-etc/resize-observer-polyfill),npm:1.5.1
+restore-cursor,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:3.1.0
+reusify,npm,MIT,Matteo Collina (https://github.com/mcollina/reusify#readme),npm:1.0.4
+rrweb-cssom,npm,MIT,Nikita Vasilyev (rrweb-io/CSSOM),npm:0.6.0
+rrweb-cssom,npm,MIT,Nikita Vasilyev (rrweb-io/CSSOM),npm:0.7.1
+run-async,npm,MIT,Simon Boudrias (SBoudrias/run-async),npm:2.4.1
+run-parallel,npm,MIT,Feross Aboukhadijeh (http://feross.org/),npm:1.1.9
+rxjs,npm,Apache-2.0,Ben Lesh (https://rxjs.dev),npm:7.5.5
+safe-buffer,npm,MIT,Feross Aboukhadijeh (https://feross.org),npm:5.2.1
+safer-buffer,npm,MIT,Nikita Skovoroda (https://github.com/ChALkeR),npm:2.1.2
+saxes,npm,ISC,Louis-Dominique Dubeau (https://github.com/lddubeau/saxes),npm:6.0.0
+scheduler,npm,MIT,(https://reactjs.org/),npm:0.23.2
+scheduler-polyfill,npm,Apache-2.0,The Chromium Authors (https://github.com/GoogleChromeLabs/scheduler-polyfill),npm:1.3.0
+set-cookie-parser,npm,MIT,Nathan Friedly (http://nfriedly.com/),npm:2.4.8
+shebang-command,npm,MIT,Kevin Mårtensson (github.com/kevva),npm:2.0.0
+shebang-regex,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:3.0.0
+signal-exit,npm,ISC,Ben Coe (https://github.com/tapjs/signal-exit),npm:3.0.7
+signal-exit,npm,ISC,Ben Coe (https://github.com/tapjs/signal-exit),npm:4.0.2
+sisteransi,npm,MIT,Terkel Gjervig (https://terkel.com),npm:1.0.5
+space-separated-tokens,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+state-local,npm,MIT,Suren Atoyan (https://github.com/suren-atoyan/state-local#readme),npm:1.0.7
+statuses,npm,MIT,(jshttp/statuses),npm:2.0.1
+store2,npm,MIT,Nathan Bubna (http://www.esha.com/),npm:2.14.4
+strict-event-emitter,npm,MIT,Artem Zakharchenko (https://github.com/open-draft/strict-event-emitter),npm:0.2.4
+string_decoder,npm,MIT,(https://github.com/nodejs/string_decoder),npm:1.3.0
+string-width,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:4.2.3
+string-width,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:5.1.2
+string-width-cjs,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:string-width@4.2.3
+stringify-entities,npm,MIT,Titus Wormer (https://wooorm.com),npm:4.0.3
+strip-ansi,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:6.0.1
+strip-ansi,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:7.0.1
+strip-ansi-cjs,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:strip-ansi@6.0.1
+style-to-js,npm,MIT,Mark (https://github.com/remarkablemark/style-to-js),npm:1.1.21
+style-to-object,npm,MIT,Mark (https://github.com/remarkablemark/style-to-object),npm:1.0.14
+supports-color,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:7.1.0
+symbol-tree,npm,MIT,Joris van der Wel (https://github.com/jsdom/js-symbol-tree#symbol-tree),npm:3.2.4
+tabbable,npm,MIT,David Clark (http://davidtheclark.com/),npm:6.4.0
+temporal-polyfill,npm,MIT,Adam Shaw (http://arshaw.com/),npm:1.0.4
+temporal-spec,npm,Apache-2.0,Adam Shaw (http://arshaw.com/),npm:1.0.1
+temporal-utils,npm,MIT,Adam Shaw (http://arshaw.com/),npm:1.0.2
+tether,npm,MIT,Nicholas Hwang (https://github.com/HubSpot/tether),npm:1.4.7
+text-encoding-utf-8,npm,UNKNOWN,Erik Arvidsson (https://github.com/arv/text-encoding-utf-8),npm:1.0.2
+textarea-caret,npm,MIT,(component/textarea-caret-position),npm:3.1.0
+through,npm,MIT,Dominic Tarr (dominictarr.com),npm:2.3.8
+tiny-inflate,npm,MIT,Devon Govett (https://github.com/devongovett/tiny-inflate),npm:1.0.3
+tippy.js,npm,MIT,atomiks (https://atomiks.github.io/tippyjs/),npm:6.3.7
+tmp,npm,MIT,KARASZI István (http://raszi.hu/),npm:0.0.33
+to-regex-range,npm,MIT,Jon Schlinkert (https://github.com/jonschlinkert),npm:5.0.1
+toggle-selection,npm,MIT,sudodoki (sudodoki.name),npm:1.0.6
+tough-cookie,npm,BSD-3-Clause,Jeremy Stashewsky (https://github.com/salesforce/tough-cookie),npm:4.1.4
+tr46,npm,MIT,Sebastian Mayr (https://github.com/Sebmaster/tr46.js#readme),npm:0.0.3
+tr46,npm,MIT,Sebastian Mayr (https://github.com/jsdom/tr46),npm:5.0.0
+trim-lines,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.0.1
+trim-trailing-lines,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.0
+trough,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.2
+ts-morph,npm,MIT,David Sherret (https://github.com/dsherret/ts-morph#readme),npm:23.0.0
+ts-pattern,npm,MIT,Gabriel Vergnaud (https://github.com/gvergnaud/ts-pattern#readme),npm:5.8.0
+tslib,npm,0BSD,Microsoft Corp. (https://www.typescriptlang.org/),npm:2.5.0
+tslib,npm,0BSD,Microsoft Corp. (https://www.typescriptlang.org/),npm:2.8.1
+type-fest,npm,(MIT OR CC0-1.0),Sindre Sorhus (https://sindresorhus.com),npm:0.20.2
+type-fest,npm,(MIT OR CC0-1.0),Sindre Sorhus (https://sindresorhus.com),npm:0.21.3
+type-fest,npm,(MIT OR CC0-1.0),Sindre Sorhus (https://sindresorhus.com),npm:2.19.0
+typescript,npm,Apache-2.0,Microsoft Corp. (https://www.typescriptlang.org/),npm:5.5.4
+undici,npm,MIT,(https://undici.nodejs.org),npm:5.29.0
+undici-types,npm,MIT,(https://undici.nodejs.org),npm:7.16.0
+unicode-trie,npm,MIT,Devon Govett (https://github.com/devongovett/unicode-trie),npm:2.0.0
+unified,npm,MIT,Titus Wormer (https://wooorm.com),npm:11.0.5
+unist-util-find-after,npm,MIT,Titus Wormer (https://wooorm.com),npm:4.0.0
+unist-util-is,npm,MIT,Titus Wormer (https://wooorm.com),npm:4.0.2
+unist-util-is,npm,MIT,Titus Wormer (https://wooorm.com),npm:5.1.1
+unist-util-is,npm,MIT,Titus Wormer (https://wooorm.com),npm:6.0.0
+unist-util-position,npm,MIT,Titus Wormer (https://wooorm.com),npm:5.0.0
+unist-util-stringify-position,npm,MIT,Titus Wormer (https://wooorm.com),npm:4.0.0
+unist-util-visit,npm,MIT,Titus Wormer (https://wooorm.com),npm:3.1.0
+unist-util-visit,npm,MIT,Titus Wormer (https://wooorm.com),npm:4.1.0
+unist-util-visit,npm,MIT,Titus Wormer (https://wooorm.com),npm:5.1.0
+unist-util-visit-parents,npm,MIT,Titus Wormer (https://wooorm.com),npm:4.1.1
+unist-util-visit-parents,npm,MIT,Titus Wormer (https://wooorm.com),npm:5.1.0
+unist-util-visit-parents,npm,MIT,Titus Wormer (https://wooorm.com),npm:6.0.1
+universalify,npm,MIT,Ryan Zimmerman (https://github.com/RyanZim/universalify#readme),npm:0.2.0
+url-parse,npm,MIT,Arnout Kazemier (https://github.com/unshiftio/url-parse),npm:1.5.10
+use-effect-event,npm,MIT,Sanity.io (https://github.com/sanity-io/use-effect-event),npm:2.0.3
+util-deprecate,npm,MIT,Nathan Rajlich (http://n8.io/),npm:1.0.2
+uuid,npm,MIT,(https://github.com/uuidjs/uuid),npm:9.0.1
+vfile,npm,MIT,Titus Wormer (https://wooorm.com),npm:6.0.3
+vfile-location,npm,MIT,Titus Wormer (https://wooorm.com),npm:5.0.3
+vfile-message,npm,MIT,Titus Wormer (https://wooorm.com),npm:4.0.2
+vscode-jsonrpc,npm,MIT,Microsoft Corporation (https://github.com/Microsoft/vscode-languageserver-node),npm:8.2.0
+vscode-languageserver-protocol,npm,MIT,Microsoft Corporation (https://github.com/Microsoft/vscode-languageserver-node),npm:3.17.5
+vscode-languageserver-textdocument,npm,MIT,Microsoft Corporation (https://github.com/Microsoft/vscode-languageserver-node),npm:1.0.12
+vscode-languageserver-types,npm,MIT,Microsoft Corporation (https://github.com/Microsoft/vscode-languageserver-node),npm:3.17.5
+vscode-uri,npm,MIT,Microsoft (https://github.com/microsoft/vscode-uri#readme),npm:3.0.8
+w3c-xmlserializer,npm,MIT,(jsdom/w3c-xmlserializer),npm:5.0.0
+warning,npm,BSD-3-Clause,Berkeley Martinez (http://www.freecodecamp.com),npm:3.0.0
+warning,npm,MIT,Berkeley Martinez (http://www.berkeleytrue.com),npm:4.0.3
+wcwidth,npm,MIT,Tim Oxley (https://github.com/timoxley/wcwidth#readme),npm:1.0.1
+weakmap-polyfill,npm,MIT,polygonplanet (https://github.com/polygonplanet/weakmap-polyfill),npm:2.0.4
+web-namespaces,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.1
+webidl-conversions,npm,BSD-2-Clause,Domenic Denicola (https://domenic.me/),npm:3.0.1
+webidl-conversions,npm,BSD-2-Clause,Domenic Denicola (https://domenic.me/),npm:7.0.0
+whatwg-encoding,npm,MIT,Domenic Denicola (https://domenic.me/),npm:3.1.1
+whatwg-fetch,npm,MIT,(github/fetch),npm:3.6.2
+whatwg-mimetype,npm,MIT,Domenic Denicola (https://domenic.me/),npm:4.0.0
+whatwg-url,npm,MIT,Sebastian Mayr (jsdom/whatwg-url),npm:5.0.0
+whatwg-url,npm,MIT,Sebastian Mayr (jsdom/whatwg-url),npm:14.0.0
+which,npm,ISC,Isaac Z. Schlueter (http://blog.izs.me),npm:2.0.2
+widest-line,npm,MIT,Sindre Sorhus (sindresorhus.com),npm:3.1.0
+wrap-ansi,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:7.0.0
+wrap-ansi,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:8.1.0
+wrap-ansi-cjs,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:wrap-ansi@7.0.0
+ws,npm,MIT,Einar Otto Stangvik (http://2x.io),npm:8.18.0
+xml-name-validator,npm,Apache-2.0,Domenic Denicola (https://domenic.me/),npm:5.0.0
+xmlchars,npm,MIT,Louis-Dominique Dubeau (https://github.com/lddubeau/xmlchars),npm:2.2.0
+y18n,npm,ISC,Ben Coe (https://github.com/yargs/y18n),npm:5.0.8
+yaml,npm,ISC,Eemeli Aro (https://eemeli.org/yaml/),npm:2.2.2
+yargs,npm,MIT,(https://yargs.js.org/),npm:17.7.2
+yargs-parser,npm,ISC,Ben Coe (https://github.com/yargs/yargs-parser),npm:21.1.1
+yocto-queue,npm,MIT,Sindre Sorhus (https://sindresorhus.com),npm:0.1.0
+zod,npm,MIT,Colin McDonnell (https://zod.dev),npm:3.23.8
+zod-validation-error,npm,MIT,Dimitrios C. Michalakos (https://github.com/jmike),npm:3.4.0
+zwitch,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.2
+zwitch,npm,MIT,Titus Wormer (https://wooorm.com),npm:2.0.4

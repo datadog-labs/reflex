@@ -165,3 +165,13 @@ npm run build --prefix crates/reflex-sim/ui
 cargo test --workspace --all-targets --locked
 cargo test --workspace --doc --locked
 ```
+
+## License
+
+Reflex is licensed under [Apache-2.0](LICENSE). See [NOTICE](NOTICE) for attribution. Third-party dependencies and assets retain their own licenses.
+
+Third-party components and notices are listed in [LICENSE-3rdparty.csv](LICENSE-3rdparty.csv). See the [inventory notes](third_party/README.md) for coverage, sources, and unresolved entries.
+
+## Ownership
+
+Owned by Datadog, Inc. See [maintenance responsibilities](MAINTAINERS.md).

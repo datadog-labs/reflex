@@ -1,0 +1,386 @@
+[
+  {
+    "Component": "asset:NotoSans (embedded in @datadog/druids@0.1.0)",
+    "Origin": "https://registry.npmjs.org/@datadog/druids/-/druids-0.1.0.tgz",
+    "License": "OFL-1.1",
+    "Copyright": "Copyright 2015-2021 Google LLC. All Rights Reserved.",
+    "Evidence": {
+      "source": "@datadog/druids@0.1.0/dist/styles.css",
+      "font_metadata": [
+        {
+          "sha256": "88f00438d26021a325247c4427898f7c778a22976df9f1a9d9876429778bf265",
+          "name_table": {
+            "0": [
+              "Copyright 2015-2021 Google LLC. All Rights Reserved."
+            ],
+            "1": [
+              "Noto Sans"
+            ],
+            "5": [
+              "Version 2.007"
+            ],
+            "13": [],
+            "14": [
+              "http://scripts.sil.org/OFL"
+            ]
+          }
+        },
+        {
+          "sha256": "09d7a52512bc7dccc149e0d126aadd413152c43376848cf0141faec29d79cd85",
+          "name_table": {
+            "0": [
+              "Copyright 2015-2021 Google LLC. All Rights Reserved."
+            ],
+            "1": [
+              "Noto Sans SemiBold"
+            ],
+            "5": [
+              "Version 2.007"
+            ],
+            "13": [],
+            "14": [
+              "http://scripts.sil.org/OFL"
+            ]
+          }
+        },
+        {
+          "sha256": "c1c30918a861cb6a985ab55d54ad7e861682354197f164cb3b7194f20eed67ac",
+          "name_table": {
+            "0": [
+              "Copyright 2015-2021 Google LLC. All Rights Reserved."
+            ],
+            "1": [
+              "Noto Sans"
+            ],
+            "5": [
+              "Version 2.007"
+            ],
+            "13": [],
+            "14": [
+              "http://scripts.sil.org/OFL"
+            ]
+          }
+        },
+        {
+          "sha256": "1aea802d16476a74c8683213c1f62c53c76006d007ee244b3899f304ebcc52e0",
+          "name_table": {
+            "0": [
+              "Copyright 2015-2021 Google LLC. All Rights Reserved."
+            ],
+            "1": [
+              "Noto Sans Light"
+            ],
+            "5": [
+              "Version 2.007"
+            ],
+            "13": [],
+            "14": [
+              "http://scripts.sil.org/OFL"
+            ]
+          }
+        },
+        {
+          "sha256": "420f8e3b772990108a7a5e260b53420123a1bd22a82848984595452c9355ab1f",
+          "name_table": {
+            "0": [
+              "Copyright 2015-2021 Google LLC. All Rights Reserved."
+            ],
+            "1": [
+              "Noto Sans"
+            ],
+            "5": [
+              "Version 2.007"
+            ],
+            "13": [],
+            "14": [
+              "http://scripts.sil.org/OFL"
+            ]
+          }
+        },
+        {
+          "sha256": "74c47c54c2f99f97a2ecb03c001433b43657f5c9ca160a32be0f40c98dafa123",
+          "name_table": {
+            "0": [
+              "Copyright 2015-2021 Google LLC. All Rights Reserved."
+            ],
+            "1": [
+              "Noto Sans SemiBold"
+            ],
+            "5": [
+              "Version 2.007"
+            ],
+            "13": [],
+            "14": [
+              "http://scripts.sil.org/OFL"
+            ]
+          }
+        },
+        {
+          "sha256": "8c357781bf89d971e4aced299202c71c94eccae63401887400dd3a89d7f336e5",
+          "name_table": {
+            "0": [
+              "Copyright 2015-2021 Google LLC. All Rights Reserved."
+            ],
+            "1": [
+              "Noto Sans"
+            ],
+            "5": [
+              "Version 2.007"
+            ],
+            "13": [],
+            "14": [
+              "http://scripts.sil.org/OFL"
+            ]
+          }
+        },
+        {
+          "sha256": "5296b124a9a0baffa76971803b4f62f4bbd61197378306e9ae9d75213c41678c",
+          "name_table": {
+            "0": [
+              "Copyright 2015-2021 Google LLC. All Rights Reserved."
+            ],
+            "1": [
+              "Noto Sans Light"
+            ],
+            "5": [
+              "Version 2.007"
+            ],
+            "13": [],
+            "14": [
+              "http://scripts.sil.org/OFL"
+            ]
+          }
+        }
+      ]
+    },
+    "Scope": "UI embedded fonts"
+  },
+  {
+    "Component": "asset:Roboto Mono (embedded in @datadog/druids@0.1.0)",
+    "Origin": "https://registry.npmjs.org/@datadog/druids/-/druids-0.1.0.tgz",
+    "License": "Apache-2.0",
+    "Copyright": "Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)",
+    "Evidence": {
+      "source": "@datadog/druids@0.1.0/dist/styles.css",
+      "font_metadata": [
+        {
+          "sha256": "cf92a53da658769825de13f15c6b60b28340443d9bcb1d1e97121ee26a6e9044",
+          "name_table": {
+            "0": [
+              "Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)"
+            ],
+            "1": [
+              "Roboto Mono"
+            ],
+            "5": [
+              "Version 3.000"
+            ],
+            "13": [],
+            "14": [
+              "http://www.apache.org/licenses/LICENSE-2.0"
+            ]
+          }
+        },
+        {
+          "sha256": "24503ab8cdd7507731f384e05c075fa6f81cf3dadbd433c2ff334c465b72299a",
+          "name_table": {
+            "0": [
+              "Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)"
+            ],
+            "1": [
+              "Roboto Mono"
+            ],
+            "5": [
+              "Version 3.000"
+            ],
+            "13": [],
+            "14": [
+              "http://www.apache.org/licenses/LICENSE-2.0"
+            ]
+          }
+        },
+        {
+          "sha256": "78cfe003c83d1e00bd170e7237c090181dd12b40b7f4e7a56cb84880f68f789f",
+          "name_table": {
+            "0": [
+              "Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)"
+            ],
+            "1": [
+              "Roboto Mono"
+            ],
+            "5": [
+              "Version 3.000"
+            ],
+            "13": [],
+            "14": [
+              "http://www.apache.org/licenses/LICENSE-2.0"
+            ]
+          }
+        },
+        {
+          "sha256": "9c35468205e289d179a7ee242495623afcd7151828b30ee5c95fd63cf7ab53ab",
+          "name_table": {
+            "0": [
+              "Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)"
+            ],
+            "1": [
+              "Roboto Mono"
+            ],
+            "5": [
+              "Version 3.000"
+            ],
+            "13": [],
+            "14": [
+              "http://www.apache.org/licenses/LICENSE-2.0"
+            ]
+          }
+        },
+        {
+          "sha256": "7506126105f8c919807770aa9b9993b8af488c13dac272be49e7145911f46570",
+          "name_table": {
+            "0": [
+              "Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)"
+            ],
+            "1": [
+              "Roboto Mono"
+            ],
+            "5": [
+              "Version 3.000"
+            ],
+            "13": [],
+            "14": [
+              "http://www.apache.org/licenses/LICENSE-2.0"
+            ]
+          }
+        },
+        {
+          "sha256": "4beea8a2229b22009e1b4d7527c81798f4ca74432e42365f5b17653b42b1c765",
+          "name_table": {
+            "0": [
+              "Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)"
+            ],
+            "1": [
+              "Roboto Mono"
+            ],
+            "5": [
+              "Version 3.000"
+            ],
+            "13": [],
+            "14": [
+              "http://www.apache.org/licenses/LICENSE-2.0"
+            ]
+          }
+        },
+        {
+          "sha256": "f5f96b42be286969f714967e42969c822de1c33d00e3478ff0ae4e3d59bdacd1",
+          "name_table": {
+            "0": [
+              "Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)"
+            ],
+            "1": [
+              "Roboto Mono"
+            ],
+            "5": [
+              "Version 3.000"
+            ],
+            "13": [],
+            "14": [
+              "http://www.apache.org/licenses/LICENSE-2.0"
+            ]
+          }
+        },
+        {
+          "sha256": "6999c2b8f04fa9f63a687180dc0d9e425cd76c48015fef3a217f423ecfd206f3",
+          "name_table": {
+            "0": [
+              "Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)"
+            ],
+            "1": [
+              "Roboto Mono"
+            ],
+            "5": [
+              "Version 3.000"
+            ],
+            "13": [],
+            "14": [
+              "http://www.apache.org/licenses/LICENSE-2.0"
+            ]
+          }
+        },
+        {
+          "sha256": "44dcdc7fff90f330f04be95c7739c5c7d246ecac9a6be2c80772e530f8ff5509",
+          "name_table": {
+            "0": [
+              "Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)"
+            ],
+            "1": [
+              "Roboto Mono"
+            ],
+            "5": [
+              "Version 3.000"
+            ],
+            "13": [],
+            "14": [
+              "http://www.apache.org/licenses/LICENSE-2.0"
+            ]
+          }
+        },
+        {
+          "sha256": "ae6dfcd2dbd47a3a79b7d696ef18eb9dcd6c0101331eb3dabdafe8e389005dd8",
+          "name_table": {
+            "0": [
+              "Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)"
+            ],
+            "1": [
+              "Roboto Mono"
+            ],
+            "5": [
+              "Version 3.000"
+            ],
+            "13": [],
+            "14": [
+              "http://www.apache.org/licenses/LICENSE-2.0"
+            ]
+          }
+        },
+        {
+          "sha256": "57d4821260ca65ce6e0d57c73d173c8a696be4cfe7eee4ab0480b69d672bf5c0",
+          "name_table": {
+            "0": [
+              "Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)"
+            ],
+            "1": [
+              "Roboto Mono"
+            ],
+            "5": [
+              "Version 3.000"
+            ],
+            "13": [],
+            "14": [
+              "http://www.apache.org/licenses/LICENSE-2.0"
+            ]
+          }
+        },
+        {
+          "sha256": "c7dd144163721cef3b11282607dffe203646a44ac7275874c7fe09669f76ea02",
+          "name_table": {
+            "0": [
+              "Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)"
+            ],
+            "1": [
+              "Roboto Mono"
+            ],
+            "5": [
+              "Version 3.000"
+            ],
+            "13": [],
+            "14": [
+              "http://www.apache.org/licenses/LICENSE-2.0"
+            ]
+          }
+        }
+      ]
+    },
+    "Scope": "UI embedded fonts"
+  }
+]

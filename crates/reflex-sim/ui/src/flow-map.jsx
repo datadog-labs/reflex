@@ -19,7 +19,7 @@ export function FlowMap({nodes, edges, running, speed=1, onSelect, panelOpen, se
     const columns=new Map();
     nodes.forEach(n=>{const col=columns.get(n.column)||[];col.push(n);columns.set(n.column,col);});
     const nodeWidth=240, columnStep=columns.has(3)?312:352, rowGap=20, inset=20;
-    const nodeHeight=n=>n.kind==='client'?100:56+(n.metrics?.length||0)*36+(n.subtext?11+16*((n.subtextLines||1)-1):0)+(Number.isFinite(n.ratio)?33:0)+(n.annotation?26:0);
+    const nodeHeight=n=>n.kind==='client'?100:56+(n.metrics?.length||0)*36+(n.subtext?11+16*((n.subtextLines||1)-1):0)+(Number.isFinite(n.ratio)?33:0)+(n.annotation?26:0)+(n.circuits?.length||0)*36;
     const columnHeight=col=>col.reduce((total,n)=>total+nodeHeight(n),0)+Math.max(0,col.length-1)*rowGap;
     const height=Math.max(400,...Array.from(columns.values(),columnHeight))+inset*2;
     const width=Math.max(0,...columns.keys())*columnStep+nodeWidth+inset*2;
@@ -80,6 +80,7 @@ export function FlowMap({nodes, edges, running, speed=1, onSelect, panelOpen, se
         {Array.from(layout.positions.values(),n=>{const Icon=n.kind==='client'?UsersIcon:n.kind==='hub'?GlobeIcon:ServerIcon;return <foreignObject key={n.key} x={n.x} y={n.y} width={n.width} height={n.height}><button type="button" className={`reflex-map-node ${n.kind==='client'?'reflex-map-client':''}`} data-node-kind={n.kind} data-node-status={n.status||'default'} aria-label={`Inspect ${n.name}`} aria-pressed={!!n.selected} onClick={()=>onSelect?.(n.key)}>
           {n.annotation&&<span className="reflex-map-annotation">{n.annotation}</span>}<span className="reflex-map-node-heading"><Icon/><span className="reflex-node-label"><Text className="reflex-node-name">{n.name}</Text>{n.subtext&&<Text size="sm" variant="secondary">{n.subtext}</Text>}</span>{n.phase&&<StatusPill className="reflex-node-phase" size="xs" level={n.status||'default'}>{n.phase}</StatusPill>}</span>
           {n.metrics?.length>0&&<span className="reflex-map-metrics">{n.metrics.map((value,i)=><Text key={i} size="sm" className="reflex-map-metric" data-level={n.metricLevels?.[i]||'default'}>{value}</Text>)}</span>}
+          {n.circuits?.length>0&&<span className="reflex-gateway-circuits" aria-label="Gateway circuit breakers">{n.circuits.map(circuit=><span key={circuit.name} className="reflex-gateway-circuit" data-node-status={circuit.status}><Text size="sm">{circuit.name}</Text><StatusPill className="reflex-node-phase" size="xs" level={circuit.status}>{circuit.phase}</StatusPill></span>)}</span>}
           {Number.isFinite(n.ratio)&&<progress style={{'--progress-color':n.ratio>.65?'#eb364b':n.ratio>.3?'#f99d02':'#41c464'}} max="1" value={Math.max(0,Math.min(1,n.ratio))} aria-label={`${n.name} utilization`}/>}
         </button></foreignObject>;})}
       </g>

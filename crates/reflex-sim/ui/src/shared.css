@@ -110,3 +110,6 @@
 @media(max-width:900px){.simulation-intro{grid-template-columns:minmax(0,1fr);padding:16px}.simulation-intro>.simulation-scenario-bar,.simulation-intro-controls{grid-column:1;grid-row:2}.simulation-intro .simulation-title{font-size:22px;line-height:28px}}
 
 .simulation-intro-copy{display:flex;flex-direction:column;gap:8px;min-width:0}
+
+.reflex-gateway-circuits{display:flex;flex-direction:column;width:100%}
+.reflex-gateway-circuit{display:flex;align-items:center;justify-content:space-between;gap:8px;height:36px;padding:4px 10px;border-top:1px solid #e2e5ed;text-align:left}

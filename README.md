@@ -129,6 +129,8 @@ That example evaluates a recommendation; the circuit-breaker example above demon
 The repository includes a local playground for circuit breaking, resource scheduling, and retry/recovery. Start it without an API key to use deterministic policies:
 
 ```sh
+npm ci --prefix crates/reflex-sim/ui
+npm run build --prefix crates/reflex-sim/ui
 cargo run -p reflex-sim --locked -- --playground
 ```
 
@@ -158,6 +160,8 @@ The simulations can query **Datadog** for observed state. An application-supplie
 To run the workspace tests:
 
 ```sh
+npm ci --prefix crates/reflex-sim/ui
+npm run build --prefix crates/reflex-sim/ui
 cargo test --workspace --all-targets --locked
 cargo test --workspace --doc --locked
 ```

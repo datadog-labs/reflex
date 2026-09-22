@@ -26,7 +26,14 @@ pub fn write_report(report: &Report, directory: &Path) -> Result<PathBuf, Error>
         .replace('\u{2028}', "\\u2028")
         .replace('\u{2029}', "\\u2029");
     let html = include_str!("web/report.html")
-        .replace("/*REPORT_CSS*/", include_str!("web/report.css"))
+        .replace(
+            "/*REPORT_CSS*/",
+            concat!(
+                include_str!("typography.css"),
+                "\n",
+                include_str!("web/report.css")
+            ),
+        )
         .replace("/*REPORT_JS*/", include_str!("web/report.js"))
         .replace("__REPORT_DATA__", &safe);
     let file = directory.join("index.html");

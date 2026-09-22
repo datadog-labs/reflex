@@ -1,0 +1,59 @@
+/* Reflex typography values for native markup. Public DRUIDS components own their styles. */
+:root {
+  --dd-font-sans: 'NotoSans', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
+  --dd-font-mono: 'Roboto Mono', Menlo, 'Liberation Mono', Courier, monospace;
+  --dd-text-xxs: 8px;
+  --dd-text-xs: 11px;
+  --dd-text-sm: 12px;
+  --dd-text-md: 13px;
+  --dd-text-lg: 15px;
+  --dd-text-xl: 18px;
+  --dd-text-xxl: 23px;
+  --dd-mono-xs: 8px;
+  --dd-mono-sm: 10px;
+  --dd-mono-md: 12px;
+  --dd-mono-lg: 14px;
+  --dd-mono-xl: 16px;
+  --dd-mono-xxl: 22px;
+  --dd-title-xs: 12px;
+  --dd-title-sm: 14px;
+  --dd-title-md: 18px;
+  --dd-title-lg: 22px;
+  --dd-title-xl: 26px;
+  --dd-title-xxl: 32px;
+  --dd-title-3xl: 42px;
+  --dd-title-4xl: 54px;
+  --dd-leading-body: 1.5;
+  --dd-leading-title-xs: 20px;
+  --dd-leading-title-sm: 24px;
+  --dd-leading-title-md: 24px;
+  --dd-leading-title-lg: 32px;
+  --dd-leading-title-xl: 36px;
+  --dd-leading-title-xxl: 42px;
+  --dd-leading-title-3xl: 54px;
+  --dd-leading-title-4xl: 62px;
+  --dd-weight-thin: 300;
+  --dd-weight-normal: 400;
+  --dd-weight-semibold: 600;
+  --dd-weight-bold: 700;
+  --dd-tracking-normal: 0;
+  --dd-tracking-title-xs: .5px;
+  --dd-tracking-title-sm: .4px;
+  --dd-tracking-title-md: 0;
+  --dd-tracking-title-lg: -.2px;
+  --dd-tracking-title-xl: -.3px;
+  --dd-tracking-title-xxl: -.4px;
+  --dd-tracking-title-3xl: -.5px;
+  --dd-tracking-title-4xl: -.6px;
+  --mono: var(--dd-font-mono);
+  --sans: var(--dd-font-sans);
+}
+body { font-family: var(--dd-font-sans); font-size: var(--dd-text-md); font-weight: var(--dd-weight-normal); line-height: var(--dd-leading-body); letter-spacing: var(--dd-tracking-normal); }
+button, input, select, textarea { font-family: inherit; }
+h1 { font-family: var(--dd-font-sans); font-size: var(--dd-title-xxl); line-height: var(--dd-leading-title-xxl); font-weight: var(--dd-weight-semibold); letter-spacing: var(--dd-tracking-title-xxl); }
+h2 { font-family: var(--dd-font-sans); font-size: var(--dd-title-lg); line-height: var(--dd-leading-title-lg); font-weight: var(--dd-weight-semibold); letter-spacing: var(--dd-tracking-title-lg); }
+h3, h4, h5, h6 { font-family: var(--dd-font-sans); font-size: var(--dd-title-md); line-height: var(--dd-leading-title-md); font-weight: var(--dd-weight-semibold); letter-spacing: var(--dd-tracking-title-md); }
+strong, b, th { font-weight: var(--dd-weight-semibold); }
+code, pre, kbd, samp { font-family: var(--dd-font-mono); font-size: var(--dd-mono-md); line-height: var(--dd-leading-body); letter-spacing: var(--dd-tracking-normal); }
+small { font-size: var(--dd-text-xs); }
+svg text { font-family: var(--dd-font-sans); font-size: var(--dd-text-xs); letter-spacing: var(--dd-tracking-normal); }

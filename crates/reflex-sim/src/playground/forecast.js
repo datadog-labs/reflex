@@ -12,7 +12,7 @@
     if (!runs.some(r => r.origin_ms === selected.get(title))) selected.set(title,runs[0]?.origin_ms);
     const c = runs.find(r => r.origin_ms === selected.get(title));
     const key = JSON.stringify([view,title,policy,disabled,selected.get(title)]);
-    if (key === signature) return;
+    if (key === signature && panel.childElementCount) return;
     signature = key;
     const focus = panel.contains(document.activeElement) ? document.activeElement.id : null;
     const f = view?.forecast, remote = view?.source === 'datadog_observations';

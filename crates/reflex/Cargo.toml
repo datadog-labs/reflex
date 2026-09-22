@@ -14,12 +14,12 @@ futures-util.workspace = true
 reflex-macros.workspace = true
 tracing = "0.1"
 pin-project-lite = "0.2"
-opentelemetry = { version = "0.31", default-features = false, features = ["metrics"] }
+opentelemetry = { version = "0.32", default-features = false, features = ["metrics"] }
 
 [dev-dependencies]
 tokio = { workspace = true, features = ["test-util"] }
 trybuild = "1"
 
-opentelemetry_sdk = { version = "0.31", features = ["testing"] }
-tracing-opentelemetry = "0.32"
+opentelemetry_sdk = { version = "0.32.1", features = ["testing"] }
+tracing-opentelemetry = "0.33"
 tracing-subscriber = { version = "0.3", features = ["registry"] }

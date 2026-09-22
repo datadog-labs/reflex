@@ -1,0 +1,813 @@
+Component,Origin,License,Copyright
+asset:NotoSans (embedded in @datadog/druids@0.1.0),https://registry.npmjs.org/@datadog/druids/-/druids-0.1.0.tgz,OFL-1.1,Copyright 2015-2021 Google LLC. All Rights Reserved.
+asset:Roboto Mono (embedded in @datadog/druids@0.1.0),https://registry.npmjs.org/@datadog/druids/-/druids-0.1.0.tgz,Apache-2.0,Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)
+bundled:cargo:ring@0.17.14/LICENSE-BoringSSL,https://crates.io/crates/ring/0.17.14,BSD-3-Clause,Copyright (c) 2009 The Go Authors. All rights reserved. | Copyright 2015 The Chromium Authors. All rights reserved.
+bundled:cargo:ring@0.17.14/third_party/fiat/LICENSE,https://crates.io/crates/ring/0.17.14,Apache-2.0,Copyright 2015-2020 the fiat-crypto authors (see the AUTHORS file)
+bundled:cargo:tracing-core@0.1.36/src/spin/LICENSE,https://crates.io/crates/tracing-core/0.1.36,MIT,Copyright (c) 2014 Mathijs van de Nes
+bundled:pypi:fonttools@4.65.0/Adobe AGL & AGLFN,https://pypi.org/project/fonttools/4.65.0/,BSD-3-Clause,NOASSERTION — no copyright notice identified in supplied files
+bundled:pypi:fonttools@4.65.0/Iosevka,https://pypi.org/project/fonttools/4.65.0/,OFL-1.1,Copyright (c) 2015-2020 Belleve Invis (belleve@typeof.net).
+bundled:pypi:fonttools@4.65.0/Lobster,https://pypi.org/project/fonttools/4.65.0/,OFL-1.1,"Copyright (c) 2010, Pablo Impallari (www.impallari.com|impallari@gmail.com), with Reserved Font Name Lobster."
+bundled:pypi:fonttools@4.65.0/Noto Fonts,https://pypi.org/project/fonttools/4.65.0/,OFL-1.1,NOASSERTION — no copyright notice identified in supplied files
+bundled:pypi:fonttools@4.65.0/PyFilesystem2-derived code,https://pypi.org/project/fonttools/4.65.0/,MIT,Copyright (c) 2017-2021 The PyFilesystem2 contributors | Copyright (c) 2016-2019 Will McGugan
+bundled:pypi:fonttools@4.65.0/XITS font project,https://pypi.org/project/fonttools/4.65.0/,OFL-1.1,"Copyright (c) 2001-2010 by the STI Pub Companies, consisting of the American"
+bundled:pypi:fonttools@4.65.0/cu2qu,https://pypi.org/project/fonttools/4.65.0/,Apache-2.0,"FontTools includes cu2qu, which is Copyright 2016 Google Inc. All Rights Reserved."
+bundled:pypi:matplotlib@3.11.2/AMS Fonts,https://pypi.org/project/matplotlib/3.11.2/,OFL-1.1,"Copyright (c) 1997, 2009, American Mathematical Society (http://www.ams.org)."
+bundled:pypi:matplotlib@3.11.2/BaKoMa Fonts,https://pypi.org/project/matplotlib/3.11.2/,LicenseRef-BaKoMa,"Copyright (C) 1994, 1995, Basil K. Malyshev. All Rights Reserved."
+bundled:pypi:matplotlib@3.11.2/ColorBrewer Color Schemes,https://pypi.org/project/matplotlib/3.11.2/,Apache-2.0,"Copyright (c) 2002 Cynthia Brewer, Mark Harrower, and The Pennsylvania State University."
+bundled:pypi:matplotlib@3.11.2/Courier 10,https://pypi.org/project/matplotlib/3.11.2/,Bitstream-Charter,"(c) Copyright 1989-1992, Bitstream Inc., Cambridge, MA."
+bundled:pypi:matplotlib@3.11.2/FreeType,https://pypi.org/project/matplotlib/3.11.2/,FTL OR GPL-2.0-or-later,NOASSERTION — no copyright notice identified in supplied files
+bundled:pypi:matplotlib@3.11.2/HarfBuzz,https://pypi.org/project/matplotlib/3.11.2/,MIT-Modern-Variant,"Copyright © 2010-2022  Google, Inc. | Copyright © 2015-2020  Ebrahim Byagowi | Copyright © 2019,2020  Facebook, Inc. | Copyright © 2012,2015  Mozilla Foundation | Copyright © 2011  Codethink Limited | Copyright © 2008,2010  Nokia Corporation and/or its subsidiary(-ies) | Copyright © 2009  Keith Stribley | Copyright © 2011  Martin Hosken and SIL International | Copyright © 2007  Chris Wilson | Copyright © 2005,2006,2020,2021,2022,2023  Behdad Esfahbod | Copyright © 2004,2007,2008,2009,2010,2013,2021,2022,2023  Red Hat, Inc. | Copyright © 1998-2005  David Turner and Werner Lemberg | Copyright © 2016  Igalia S.L. | Copyright © 2022  Matthias Clasen | Copyright © 2018,2021  Khaled Hosny | Copyright © 2018,2019,2020  Adobe, Inc | Copyright © 2013-2015  Alexei Podtelezhnikov"
+bundled:pypi:matplotlib@3.11.2/JSXTools resize observer,https://pypi.org/project/matplotlib/3.11.2/,CC0-1.0,NOASSERTION — no copyright notice identified in supplied files
+bundled:pypi:matplotlib@3.11.2/Last Resort fonts,https://pypi.org/project/matplotlib/3.11.2/,OFL-1.1,NOASSERTION — no copyright notice identified in supplied files
+bundled:pypi:matplotlib@3.11.2/QHull,https://pypi.org/project/matplotlib/3.11.2/,Qhull,"Qhull, Copyright (c) 1993-2020 "
+bundled:pypi:matplotlib@3.11.2/Qt4 Editor,https://pypi.org/project/matplotlib/3.11.2/,MIT,Copyright (c) 2009 Pierre Raybaut
+bundled:pypi:matplotlib@3.11.2/SheenBidi,https://pypi.org/project/matplotlib/3.11.2/,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+bundled:pypi:matplotlib@3.11.2/Solarized,https://pypi.org/project/matplotlib/3.11.2/,MIT,Copyright (c) 2011 Ethan Schoonover
+bundled:pypi:matplotlib@3.11.2/Stix fonts,https://pypi.org/project/matplotlib/3.11.2/,OFL-1.1,"Copyright (c) 2001-2010 by the STI Pub Companies, consisting of the American | Portions copyright (c) 1998-2003 by MicroPress, Inc. (www.micropress-inc.com), with Reserved Font Name TM Math. To obtain additional mathematical fonts, please | Portions copyright (c) 1990 by Elsevier, Inc."
+bundled:pypi:matplotlib@3.11.2/Yorick Colormaps,https://pypi.org/project/matplotlib/3.11.2/,LicenseRef-Yorick-Colormaps,Copyright (c) 1996.  The Regents of the University of California.
+bundled:pypi:matplotlib@3.11.2/libraqm,https://pypi.org/project/matplotlib/3.11.2/,MIT,Copyright © 2015 Information Technology Authority (ITA) <foss@ita.gov.om> | Copyright © 2016-2023 Khaled Hosny <khaled@aliftype.com>
+bundled:pypi:matplotlib@3.11.2/matplotlib/mpl-data/fonts/ttf/LICENSE_DEJAVU,https://pypi.org/project/matplotlib/3.11.2/,LicenseRef-DejaVu-Bundle,"Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved. Bitstream Vera is | Copyright (c) 2006 by Tavmjong Bah. All Rights Reserved."
+bundled:pypi:matplotlib@3.11.2/matplotlib/mpl-data/fonts/ttf/LICENSE_STIX,https://pypi.org/project/matplotlib/3.11.2/,OFL-1.1,"Copyright (c) 2001-2010 by the STI Pub Companies, consisting of the American | Portions copyright (c) 1998-2003 by MicroPress, Inc. (www.micropress-inc.com), with Reserved Font Name TM Math. To obtain additional mathematical fonts, please | Portions copyright (c) 1990 by Elsevier, Inc."
+bundled:pypi:numpy@2.5.3/GCC runtime library,https://pypi.org/project/numpy/2.5.3/,GPL-3.0-or-later WITH GCC-exception-3.1,"Copyright (C) 2002-2017 Free Software Foundation, Inc. | Copyright (C) 2009 Free Software Foundation, Inc. <https://fsf.org/> | Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>"
+bundled:pypi:numpy@2.5.3/LAPACK,https://pypi.org/project/numpy/2.5.3/,BSD-3-Clause-Open-MPI,Copyright (c) 1992-2013 The University of Tennessee and The University | Copyright (c) 2000-2013 The University of California Berkeley. All | Copyright (c) 2006-2013 The University of Colorado Denver.  All rights
+bundled:pypi:numpy@2.5.3/OpenBLAS,https://pypi.org/project/numpy/2.5.3/,BSD-3-Clause,"Copyright (c) 2011-2014, The OpenBLAS Project"
+bundled:pypi:numpy@2.5.3/libquadmath,https://pypi.org/project/numpy/2.5.3/,LGPL-2.1-or-later,"Copyright (C) 2010-2019 Free Software Foundation, Inc."
+bundled:pypi:numpy@2.5.3/numpy/_core/include/numpy/libdivide/LICENSE.txt,https://pypi.org/project/numpy/2.5.3/,Zlib,"Copyright (C) 2010 - 2019 ridiculous_fish, <libdivide@ridiculousfish.com> | Copyright (C) 2016 - 2019 Kim Walisch, <kim.walisch@gmail.com>"
+bundled:pypi:numpy@2.5.3/numpy/_core/include/numpy/random/LICENSE.txt,https://pypi.org/project/numpy/2.5.3/,Zlib,"Copyright (C) 2010 - 2019 ridiculous_fish, <libdivide@ridiculousfish.com> | Copyright (C) 2016 - 2019 Kim Walisch, <kim.walisch@gmail.com>"
+bundled:pypi:numpy@2.5.3/numpy/_core/src/common/pythoncapi-compat/COPYING,https://pypi.org/project/numpy/2.5.3/,ISC,Copyright Contributors to the pythoncapi_compat project.
+bundled:pypi:numpy@2.5.3/numpy/_core/src/highway/LICENSE,https://pypi.org/project/numpy/2.5.3/,(Apache-2.0 OR BSD-3-Clause) AND CC0-1.0,Copyright (c) The Highway Project Authors. All rights reserved.
+bundled:pypi:numpy@2.5.3/numpy/_core/src/npysort/x86-simd-sort/LICENSE.md,https://pypi.org/project/numpy/2.5.3/,BSD-3-Clause,"Copyright (c) 2022, Intel. All rights reserved."
+bundled:pypi:numpy@2.5.3/numpy/_core/src/umath/svml/LICENSE,https://pypi.org/project/numpy/2.5.3/,BSD-3-Clause,"Copyright (c) 2005-2021, NumPy Developers."
+bundled:pypi:numpy@2.5.3/numpy/fft/pocketfft/LICENSE.md,https://pypi.org/project/numpy/2.5.3/,BSD-3-Clause,Copyright (C) 2010-2018 Max-Planck-Society
+bundled:pypi:numpy@2.5.3/numpy/linalg/lapack_lite/LICENSE.txt,https://pypi.org/project/numpy/2.5.3/,BSD-3-Clause,Copyright (c) 1992-2013 The University of Tennessee and The University | Copyright (c) 2000-2013 The University of California Berkeley. All | Copyright (c) 2006-2013 The University of Colorado Denver.  All rights
+bundled:pypi:numpy@2.5.3/numpy/ma/LICENSE,https://pypi.org/project/numpy/2.5.3/,BSD-3-Clause,"Copyright (c) 2006, University of Georgia and Pierre G.F. Gerard-Marchant"
+bundled:pypi:numpy@2.5.3/numpy/random/LICENSE.md,https://pypi.org/project/numpy/2.5.3/,MIT,Copyright (c) 2019 Kevin Sheppard. All rights reserved.
+bundled:pypi:numpy@2.5.3/numpy/random/src/distributions/LICENSE.md,https://pypi.org/project/numpy/2.5.3/,MIT,"Copyright (c) 2005-2017, NumPy Developers. | Copyright (c) 2009-2019: Jeff Bezanson, Stefan Karpinski, Viral B. Shah, and other contributors:"
+bundled:pypi:numpy@2.5.3/numpy/random/src/mt19937/LICENSE.md,https://pypi.org/project/numpy/2.5.3/,MIT,"Copyright (c) 2003-2005, Jean-Sebastien Roy (js@jeannot.org) | Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura, All rights reserved."
+bundled:pypi:numpy@2.5.3/numpy/random/src/pcg64/LICENSE.md,https://pypi.org/project/numpy/2.5.3/,MIT,Copyright 2014 Melissa O'Neill <oneill@pcg-random.org>
+bundled:pypi:numpy@2.5.3/numpy/random/src/philox/LICENSE.md,https://pypi.org/project/numpy/2.5.3/,BSD-3-Clause,"Copyright 2010-2012, D. E. Shaw Research."
+bundled:pypi:numpy@2.5.3/numpy/random/src/sfc64/LICENSE.md,https://pypi.org/project/numpy/2.5.3/,MIT,Copyright (c) 2018 Melissa E. O'Neill
+bundled:pypi:numpy@2.5.3/numpy/random/src/splitmix64/LICENSE.md,https://pypi.org/project/numpy/2.5.3/,CC0-1.0,NOASSERTION — no copyright notice identified in supplied files
+bundled:pypi:pillow@12.3.0/AOM,https://pypi.org/project/pillow/12.3.0/,BSD-2-Clause AND LicenseRef-AOM-Patent,"Copyright (c) 2016, Alliance for Open Media. All rights reserved."
+bundled:pypi:pillow@12.3.0/BROTLI,https://pypi.org/project/pillow/12.3.0/,MIT,"Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors."
+bundled:pypi:pillow@12.3.0/BZIP2,https://pypi.org/project/pillow/12.3.0/,bzip2-1.0.6,"documentation, are copyright (C) 1996-2019 Julian R Seward.  All"
+bundled:pypi:pillow@12.3.0/DAV1D,https://pypi.org/project/pillow/12.3.0/,BSD-2-Clause,"Copyright © 2018-2019, VideoLAN and dav1d authors"
+bundled:pypi:pillow@12.3.0/FREETYPE2,https://pypi.org/project/pillow/12.3.0/,FTL OR GPL-2.0-only,"Copyright 1996-2002, 2006 by David Turner, Robert Wilhelm, and Werner Lemberg | The FreeType  Project is copyright (C) 1996-2000  by David Turner, Robert Wilhelm, and Werner Lemberg.  All rights reserved except as | Copyright (C) 2001-2002 by Francesco Zappa Nardelli | Copyright 2000 Computing Research Labs, New Mexico State University | Copyright 2001-2002, 2011 Francesco Zappa Nardelli | Copyright (C) 2000 by Francesco Zappa Nardelli"
+bundled:pypi:pillow@12.3.0/HARFBUZZ,https://pypi.org/project/pillow/12.3.0/,MIT-Modern-Variant,"Copyright © 2010-2022  Google, Inc. | Copyright © 2015-2020  Ebrahim Byagowi | Copyright © 2019,2020  Facebook, Inc. | Copyright © 2012,2015  Mozilla Foundation | Copyright © 2011  Codethink Limited | Copyright © 2008,2010  Nokia Corporation and/or its subsidiary(-ies) | Copyright © 2009  Keith Stribley | Copyright © 2011  Martin Hosken and SIL International | Copyright © 2007  Chris Wilson | Copyright © 2005,2006,2020,2021,2022,2023  Behdad Esfahbod | Copyright © 2004,2007,2008,2009,2010,2013,2021,2022,2023  Red Hat, Inc. | Copyright © 1998-2005  David Turner and Werner Lemberg | Copyright © 2016  Igalia S.L. | Copyright © 2022  Matthias Clasen | Copyright © 2018,2021  Khaled Hosny | Copyright © 2018,2019,2020  Adobe, Inc | Copyright © 2013-2015  Alexei Podtelezhnikov"
+bundled:pypi:pillow@12.3.0/LCMS2,https://pypi.org/project/pillow/12.3.0/,MIT,Copyright (c) 1998-2020 Marti Maria Saguer
+bundled:pypi:pillow@12.3.0/LIBAVIF,https://pypi.org/project/pillow/12.3.0/,BSD-3-Clause,"Copyright 2019 Joe Drago. All rights reserved. | Copyright © 2018-2019, VideoLAN and dav1d authors | This software is copyright (C) 1991-2013, Thomas G. Lane, Guido Vollbeding. | Copyright 2020 Emmanuel Gil Peyrot. All rights reserved. | Copyright 2011 The LibYuv Project Authors. All rights reserved."
+bundled:pypi:pillow@12.3.0/LIBJPEG,https://pypi.org/project/pillow/12.3.0/,LicenseRef-libjpeg-turbo-bundle,"This software is copyright (C) 1991-2020, Thomas G. Lane, Guido Vollbeding."
+bundled:pypi:pillow@12.3.0/LIBLZMA,https://pypi.org/project/pillow/12.3.0/,LicenseRef-XZ-bundle,NOASSERTION — no copyright notice identified in supplied files
+bundled:pypi:pillow@12.3.0/LIBPNG,https://pypi.org/project/pillow/12.3.0/,libpng-2.0,"Copyright (c) 1995-2022 The PNG Reference Library Authors. | Copyright (c) 2018-2022 Cosmin Truta. | Copyright (c) 2000-2002, 2004, 2006-2018 Glenn Randers-Pehrson. | Copyright (c) 1996-1997 Andreas Dilger. | Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc. | Copyright (c) 2000-2002, 2004, 2006-2018 Glenn Randers-Pehrson, are | Copyright (c) 1998-2000 Glenn Randers-Pehrson, are derived from | Copyright (c) 1996-1997 Andreas Dilger, are derived from libpng-0.88, and are distributed according to the same disclaimer and license as"
+bundled:pypi:pillow@12.3.0/LIBTIFF,https://pypi.org/project/pillow/12.3.0/,libtiff,"Copyright (c) 1988-1997 Sam Leffler | Copyright (c) 1991-1997 Silicon Graphics, Inc."
+bundled:pypi:pillow@12.3.0/LIBWEBP,https://pypi.org/project/pillow/12.3.0/,BSD-3-Clause,"Copyright (c) 2010, Google Inc. All rights reserved."
+bundled:pypi:pillow@12.3.0/LIBYUV,https://pypi.org/project/pillow/12.3.0/,BSD-3-Clause,Copyright 2011 The LibYuv Project Authors. All rights reserved.
+bundled:pypi:pillow@12.3.0/OPENJPEG,https://pypi.org/project/pillow/12.3.0/,BSD-2-Clause,"Copyright (c) 2002-2014, Universite catholique de Louvain (UCL), Belgium | Copyright (c) 2002-2014, Professor Benoit Macq | Copyright (c) 2003-2014, Antonin Descampe | Copyright (c) 2003-2009, Francois-Olivier Devaux | Copyright (c) 2005, Herve Drolon, FreeImage Team | Copyright (c) 2002-2003, Yannick Verschueren | Copyright (c) 2001-2003, David Janssens | Copyright (c) 2011-2012, Centre National d'Etudes Spatiales (CNES), France | Copyright (c) 2012, CS Systemes d'Information, France"
+bundled:pypi:pillow@12.3.0/RAQM,https://pypi.org/project/pillow/12.3.0/,MIT,Copyright © 2015 Information Technology Authority (ITA) <foss@ita.gov.om> | Copyright © 2016 Khaled Hosny <khaledhosny@eglug.org>
+bundled:pypi:pillow@12.3.0/TCL_TK,https://pypi.org/project/pillow/12.3.0/,TCL,"This software is copyrighted by the Regents of the University of California, Sun Microsystems, Inc., Scriptics Corporation, and other parties."
+bundled:pypi:pillow@12.3.0/XAU,https://pypi.org/project/pillow/12.3.0/,MIT-open-group,"Copyright 1988, 1993, 1994, 1998  The Open Group"
+bundled:pypi:pillow@12.3.0/XCB,https://pypi.org/project/pillow/12.3.0/,MIT,"Copyright (C) 2001-2006 Bart Massey, Jamey Sharp, and Josh Triplett."
+bundled:pypi:pillow@12.3.0/XDMCP,https://pypi.org/project/pillow/12.3.0/,MIT-open-group,"Copyright 1989, 1998  The Open Group"
+bundled:pypi:pillow@12.3.0/ZLIB,https://pypi.org/project/pillow/12.3.0/,Zlib,(C) 1995-2017 Jean-loup Gailly and Mark Adler
+bundled:pypi:pillow@12.3.0/ZSTD,https://pypi.org/project/pillow/12.3.0/,BSD-3-Clause,"Copyright (c) Meta Platforms, Inc. and affiliates. All rights reserved."
+cargo:anstream@1.0.0,https://crates.io/crates/anstream/1.0.0,MIT OR Apache-2.0,Copyright (c) Individual contributors
+cargo:anstyle-parse@1.0.0,https://crates.io/crates/anstyle-parse/1.0.0,MIT OR Apache-2.0,Copyright (c) Individual contributors
+cargo:anstyle-query@1.1.5,https://crates.io/crates/anstyle-query/1.1.5,MIT OR Apache-2.0,Copyright (c) Individual contributors
+cargo:anstyle-wincon@3.0.11,https://crates.io/crates/anstyle-wincon/3.0.11,MIT OR Apache-2.0,Copyright (c) Individual contributors
+cargo:anstyle@1.0.14,https://crates.io/crates/anstyle/1.0.14,MIT OR Apache-2.0,Copyright (c) Individual contributors
+cargo:anyhow@1.0.104,https://crates.io/crates/anyhow/1.0.104,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:async-trait@0.1.92,https://crates.io/crates/async-trait/0.1.92,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:atomic-waker@1.1.2,https://crates.io/crates/atomic-waker/1.1.2,Apache-2.0 OR MIT,Copyright (c) 2016 Alex Crichton | Copyright (c) 2017 The Tokio Authors
+cargo:axum-core@0.5.6,https://crates.io/crates/axum-core/0.5.6,MIT,Copyright (c) 2019–2025 axum Contributors
+cargo:axum@0.8.9,https://crates.io/crates/axum/0.8.9,MIT,Copyright (c) 2019 axum Contributors
+cargo:base64@0.22.1,https://crates.io/crates/base64/0.22.1,MIT OR Apache-2.0,Copyright (c) 2015 Alice Maz
+cargo:bitflags@2.13.2,https://crates.io/crates/bitflags/2.13.2,MIT OR Apache-2.0,Copyright (c) 2014 The Rust Project Developers
+cargo:bumpalo@3.20.3,https://crates.io/crates/bumpalo/3.20.3,MIT OR Apache-2.0,Copyright (c) 2019 Nick Fitzgerald
+cargo:bytes@1.12.1,https://crates.io/crates/bytes/1.12.1,MIT,Copyright (c) 2018 Carl Lerche
+cargo:cc@1.4.7,https://crates.io/crates/cc/1.4.7,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
+cargo:cfg-if@1.0.5,https://crates.io/crates/cfg-if/1.0.5,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
+cargo:cfg_aliases@0.2.2,https://crates.io/crates/cfg_aliases/0.2.2,MIT,Copyright (c) 2020 Katharos Technology
+cargo:chacha20@0.10.2,https://crates.io/crates/chacha20/0.10.2,MIT OR Apache-2.0,Copyright (c) 2019-2026 The RustCrypto Project Developers
+cargo:clap@4.6.7,https://crates.io/crates/clap/4.6.7,MIT OR Apache-2.0,Copyright Individual contributors | Copyright (c) Individual contributors
+cargo:clap_builder@4.6.7,https://crates.io/crates/clap_builder/4.6.7,MIT OR Apache-2.0,Copyright Individual contributors | Copyright (c) Individual contributors
+cargo:clap_derive@4.6.7,https://crates.io/crates/clap_derive/4.6.7,MIT OR Apache-2.0,Copyright Individual contributors | Copyright (c) Individual contributors
+cargo:clap_lex@1.1.1,https://crates.io/crates/clap_lex/1.1.1,MIT OR Apache-2.0,Copyright Individual contributors | Copyright (c) Individual contributors
+cargo:colorchoice@1.0.5,https://crates.io/crates/colorchoice/1.0.5,MIT OR Apache-2.0,Copyright (c) Individual contributors
+cargo:core-foundation-sys@0.8.7,https://crates.io/crates/core-foundation-sys/0.8.7,MIT OR Apache-2.0,Copyright (c) 2012-2013 Mozilla Foundation
+cargo:core-foundation@0.10.1,https://crates.io/crates/core-foundation/0.10.1,MIT OR Apache-2.0,Copyright (c) 2012-2013 Mozilla Foundation
+cargo:cpufeatures@0.3.1,https://crates.io/crates/cpufeatures/0.3.1,MIT OR Apache-2.0,Copyright (c) 2020-2026 The RustCrypto Project Developers
+cargo:displaydoc@0.2.7,https://crates.io/crates/displaydoc/0.2.7,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:either@1.18.0,https://crates.io/crates/either/1.18.0,MIT OR Apache-2.0,Copyright (c) 2015 
+cargo:equivalent@1.0.2,https://crates.io/crates/equivalent/1.0.2,Apache-2.0 OR MIT,Copyright (c) 2016--2023 
+cargo:find-msvc-tools@0.1.13,https://crates.io/crates/find-msvc-tools/0.1.13,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
+cargo:form_urlencoded@1.2.2,https://crates.io/crates/form_urlencoded/1.2.2,MIT OR Apache-2.0,Copyright (c) 2013-2016 The rust-url developers
+cargo:futures-channel@0.3.34,https://crates.io/crates/futures-channel/0.3.34,MIT OR Apache-2.0,Copyright (c) 2016 Alex Crichton | Copyright (c) 2017 The Tokio Authors
+cargo:futures-core@0.3.34,https://crates.io/crates/futures-core/0.3.34,MIT OR Apache-2.0,Copyright (c) 2016 Alex Crichton | Copyright (c) 2017 The Tokio Authors
+cargo:futures-executor@0.3.34,https://crates.io/crates/futures-executor/0.3.34,MIT OR Apache-2.0,Copyright (c) 2016 Alex Crichton | Copyright (c) 2017 The Tokio Authors
+cargo:futures-io@0.3.34,https://crates.io/crates/futures-io/0.3.34,MIT OR Apache-2.0,Copyright (c) 2016 Alex Crichton | Copyright (c) 2017 The Tokio Authors
+cargo:futures-macro@0.3.34,https://crates.io/crates/futures-macro/0.3.34,MIT OR Apache-2.0,Copyright (c) 2016 Alex Crichton | Copyright (c) 2017 The Tokio Authors
+cargo:futures-sink@0.3.34,https://crates.io/crates/futures-sink/0.3.34,MIT OR Apache-2.0,Copyright (c) 2016 Alex Crichton | Copyright (c) 2017 The Tokio Authors
+cargo:futures-task@0.3.34,https://crates.io/crates/futures-task/0.3.34,MIT OR Apache-2.0,Copyright (c) 2016 Alex Crichton | Copyright (c) 2017 The Tokio Authors
+cargo:futures-util@0.3.34,https://crates.io/crates/futures-util/0.3.34,MIT OR Apache-2.0,Copyright (c) 2016 Alex Crichton | Copyright (c) 2017 The Tokio Authors
+cargo:getrandom@0.2.17,https://crates.io/crates/getrandom/0.2.17,MIT OR Apache-2.0,Copyright (c) 2018-2024 The rust-random Project Developers | Copyright (c) 2014 The Rust Project Developers
+cargo:getrandom@0.3.4,https://crates.io/crates/getrandom/0.3.4,MIT OR Apache-2.0,Copyright (c) 2018-2025 The rust-random Project Developers | Copyright (c) 2014 The Rust Project Developers
+cargo:getrandom@0.4.3,https://crates.io/crates/getrandom/0.4.3,MIT OR Apache-2.0,Copyright (c) 2018-2026 The rust-random Project Developers | Copyright (c) 2014 The Rust Project Developers
+cargo:glob@0.3.4,https://crates.io/crates/glob/0.3.4,MIT OR Apache-2.0,Copyright (c) 2014 The Rust Project Developers
+cargo:hashbrown@0.17.1,https://crates.io/crates/hashbrown/0.17.1,MIT OR Apache-2.0,Copyright (c) 2016 Amanieu d'Antras
+cargo:heck@0.5.0,https://crates.io/crates/heck/0.5.0,MIT OR Apache-2.0,Copyright (c) 2015 The Rust Project Developers
+cargo:http-body-util@0.1.5,https://crates.io/crates/http-body-util/0.1.5,MIT,Copyright (c) 2019-2026 Sean McArthur & Hyper Contributors
+cargo:http-body@1.1.0,https://crates.io/crates/http-body/1.1.0,MIT,Copyright (c) 2019-2026 Sean McArthur & Hyper Contributors
+cargo:http@1.5.0,https://crates.io/crates/http/1.5.0,MIT OR Apache-2.0,Copyright 2017 http-rs authors | Copyright (c) 2017 http-rs authors
+cargo:httparse@1.10.1,https://crates.io/crates/httparse/1.10.1,MIT OR Apache-2.0,Copyright (c) 2015-2025 Sean McArthur
+cargo:httpdate@1.0.3,https://crates.io/crates/httpdate/1.0.3,MIT OR Apache-2.0,Copyright (c) 2016 Pyfisch
+cargo:hyper-rustls@0.27.9,https://crates.io/crates/hyper-rustls/0.27.9,Apache-2.0 OR ISC OR MIT,"Copyright (c) 2016, Joseph Birr-Pixton <jpixton@gmail.com> | Copyright (c) 2016 Joseph Birr-Pixton <jpixton@gmail.com>"
+cargo:hyper-util@0.1.20,https://crates.io/crates/hyper-util/0.1.20,MIT,Copyright (c) 2023-2025 Sean McArthur
+cargo:hyper@1.11.1,https://crates.io/crates/hyper/1.11.1,MIT,Copyright (c) 2014-2026 Sean McArthur
+cargo:icu_collections@2.3.0,https://crates.io/crates/icu_collections/2.3.0,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:icu_locale_core@2.3.0,https://crates.io/crates/icu_locale_core/2.3.0,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:icu_normalizer@2.3.0,https://crates.io/crates/icu_normalizer/2.3.0,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:icu_normalizer_data@2.3.0,https://crates.io/crates/icu_normalizer_data/2.3.0,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:icu_properties@2.3.0,https://crates.io/crates/icu_properties/2.3.0,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:icu_properties_data@2.3.0,https://crates.io/crates/icu_properties_data/2.3.0,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:icu_provider@2.3.1,https://crates.io/crates/icu_provider/2.3.1,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:idna@1.1.0,https://crates.io/crates/idna/1.1.0,MIT OR Apache-2.0,Copyright (c) 2013-2025 The rust-url developers
+cargo:idna_adapter@1.2.2,https://crates.io/crates/idna_adapter/1.2.2,Apache-2.0 OR MIT,Copyright (c) The rust-url developers
+cargo:indexmap@2.14.2,https://crates.io/crates/indexmap/2.14.2,Apache-2.0 OR MIT,Copyright (c) 2016--2017 
+cargo:ipnet@2.12.2,https://crates.io/crates/ipnet/2.12.2,MIT OR Apache-2.0,"Copyright 2017 Juniper Networks, Inc."
+cargo:is_terminal_polyfill@1.70.2,https://crates.io/crates/is_terminal_polyfill/1.70.2,MIT OR Apache-2.0,Copyright (c) Individual contributors
+cargo:itertools@0.14.0,https://crates.io/crates/itertools/0.14.0,MIT OR Apache-2.0,Copyright (c) 2015 
+cargo:itoa@1.0.18,https://crates.io/crates/itoa/1.0.18,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:js-sys@0.3.105,https://crates.io/crates/js-sys/0.3.105,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
+cargo:lazy_static@1.5.0,https://crates.io/crates/lazy_static/1.5.0,MIT OR Apache-2.0,Copyright (c) 2010 The Rust Project Developers
+cargo:libc@0.2.189,https://crates.io/crates/libc/0.2.189,MIT OR Apache-2.0,Copyright (c) The Rust Project Developers
+cargo:litemap@0.8.3,https://crates.io/crates/litemap/0.8.3,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:log@0.4.34,https://crates.io/crates/log/0.4.34,MIT OR Apache-2.0,Copyright (c) 2014 The Rust Project Developers
+cargo:lru-slab@0.1.3,https://crates.io/crates/lru-slab/0.1.3,MIT OR Apache-2.0 OR Zlib,Copyright (c) 2024 The lru-slab Developers
+cargo:matchit@0.8.4,https://crates.io/crates/matchit/0.8.4,MIT AND BSD-3-Clause,"Copyright (c) 2022 Ibraheem Ahmed | Copyright (c) 2013, Julien Schmidt"
+cargo:memchr@2.8.3,https://crates.io/crates/memchr/2.8.3,Unlicense OR MIT,Copyright (c) 2015 Andrew Gallant
+cargo:mime@0.3.17,https://crates.io/crates/mime/0.3.17,MIT OR Apache-2.0,Copyright (c) 2014 Sean McArthur
+cargo:mio@1.2.3,https://crates.io/crates/mio/1.2.3,MIT,Copyright (c) 2014 Carl Lerche and other MIO contributors
+cargo:nu-ansi-term@0.50.3,https://crates.io/crates/nu-ansi-term/0.50.3,MIT,Copyright (c) 2014 Benjamin Sago | Copyright (c) 2021-2022 The Nushell Project Developers
+cargo:once_cell@1.21.4,https://crates.io/crates/once_cell/1.21.4,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:once_cell_polyfill@1.70.2,https://crates.io/crates/once_cell_polyfill/1.70.2,MIT OR Apache-2.0,Copyright (c) Individual contributors
+cargo:openssl-probe@0.2.1,https://crates.io/crates/openssl-probe/0.2.1,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
+cargo:opentelemetry-appender-tracing@0.31.1,https://crates.io/crates/opentelemetry-appender-tracing/0.31.1,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry-http@0.31.0,https://crates.io/crates/opentelemetry-http/0.31.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry-otlp@0.31.1,https://crates.io/crates/opentelemetry-otlp/0.31.1,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry-proto@0.31.0,https://crates.io/crates/opentelemetry-proto/0.31.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry@0.31.0,https://crates.io/crates/opentelemetry/0.31.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry_sdk@0.31.0,https://crates.io/crates/opentelemetry_sdk/0.31.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:percent-encoding@2.3.2,https://crates.io/crates/percent-encoding/2.3.2,MIT OR Apache-2.0,Copyright (c) 2013-2025 The rust-url developers
+cargo:pin-project-internal@1.1.13,https://crates.io/crates/pin-project-internal/1.1.13,Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
+cargo:pin-project-lite@0.2.17,https://crates.io/crates/pin-project-lite/0.2.17,Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
+cargo:pin-project@1.1.13,https://crates.io/crates/pin-project/1.1.13,Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
+cargo:potential_utf@0.1.6,https://crates.io/crates/potential_utf/0.1.6,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:ppv-lite86@0.2.21,https://crates.io/crates/ppv-lite86/0.2.21,MIT OR Apache-2.0,Copyright 2019 The CryptoCorrosion Contributors | Copyright (c) 2019 The CryptoCorrosion Contributors
+cargo:proc-macro2@1.0.107,https://crates.io/crates/proc-macro2/1.0.107,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:prost-derive@0.14.4,https://crates.io/crates/prost-derive/0.14.4,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:prost@0.14.4,https://crates.io/crates/prost/0.14.4,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:quinn-proto@0.11.18,https://crates.io/crates/quinn-proto/0.11.18,MIT OR Apache-2.0,Copyright (c) 2018 The quinn Developers
+cargo:quinn-udp@0.5.15,https://crates.io/crates/quinn-udp/0.5.15,MIT OR Apache-2.0,Copyright (c) 2018 The quinn Developers
+cargo:quinn@0.11.12,https://crates.io/crates/quinn/0.11.12,MIT OR Apache-2.0,Copyright (c) 2018 The quinn Developers
+cargo:quote@1.0.47,https://crates.io/crates/quote/1.0.47,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:r-efi@5.3.0,https://crates.io/crates/r-efi/5.3.0,MIT OR Apache-2.0 OR LGPL-2.1-or-later,NOASSERTION — no copyright notice identified in supplied files
+cargo:r-efi@6.0.0,https://crates.io/crates/r-efi/6.0.0,MIT OR Apache-2.0 OR LGPL-2.1-or-later,NOASSERTION — no copyright notice identified in supplied files
+cargo:rand@0.10.2,https://crates.io/crates/rand/0.10.2,MIT OR Apache-2.0,Copyright 2018 Developers of the Rand project | Copyright (c) 2014 The Rust Project Developers
+cargo:rand@0.9.5,https://crates.io/crates/rand/0.9.5,MIT OR Apache-2.0,Copyright 2018 Developers of the Rand project | Copyright (c) 2014 The Rust Project Developers
+cargo:rand_chacha@0.9.0,https://crates.io/crates/rand_chacha/0.9.0,MIT OR Apache-2.0,Copyright 2018 Developers of the Rand project | Copyright (c) 2014 The Rust Project Developers
+cargo:rand_core@0.10.1,https://crates.io/crates/rand_core/0.10.1,MIT OR Apache-2.0,Copyright (c) 2018-2026 The Rand Project Developers
+cargo:rand_core@0.9.5,https://crates.io/crates/rand_core/0.9.5,MIT OR Apache-2.0,Copyright 2018 Developers of the Rand project | Copyright (c) 2014 The Rust Project Developers
+cargo:rand_pcg@0.10.2,https://crates.io/crates/rand_pcg/0.10.2,MIT OR Apache-2.0,Copyright (c) 2014-2017 Melissa O'Neill and PCG Project contributors | Copyright 2018 Developers of the Rand project
+cargo:reqwest@0.12.28,https://crates.io/crates/reqwest/0.12.28,MIT OR Apache-2.0,Copyright 2016 Sean McArthur | Copyright (c) 2016-2025 Sean McArthur
+cargo:ring@0.17.14,https://crates.io/crates/ring/0.17.14,Apache-2.0 AND ISC,Copyright (c) 2009 The Go Authors. All rights reserved. | Copyright 2015 The Chromium Authors. All rights reserved. | Copyright 2015-2025 Brian Smith. | Copyright 2015-2020 the fiat-crypto authors (see the AUTHORS file)
+cargo:rustc-hash@2.1.3,https://crates.io/crates/rustc-hash/2.1.3,Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
+cargo:rustls-native-certs@0.8.4,https://crates.io/crates/rustls-native-certs/0.8.4,Apache-2.0 OR ISC OR MIT,"Copyright (c) 2016, Joseph Birr-Pixton <jpixton@gmail.com> | Copyright (c) 2016 Joseph Birr-Pixton <jpixton@gmail.com>"
+cargo:rustls-pki-types@1.15.1,https://crates.io/crates/rustls-pki-types/1.15.1,MIT OR Apache-2.0,Copyright 2023 Dirkjan Ochtman | Copyright (c) 2023 Dirkjan Ochtman <dirkjan@ochtman.nl>
+cargo:rustls-webpki@0.103.15,https://crates.io/crates/rustls-webpki/0.103.15,ISC,Copyright 2015 Brian Smith.
+cargo:rustls@0.23.45,https://crates.io/crates/rustls/0.23.45,Apache-2.0 OR ISC OR MIT,"Copyright (c) 2016, Joseph Birr-Pixton <jpixton@gmail.com> | Copyright (c) 2016 Joseph Birr-Pixton <jpixton@gmail.com>"
+cargo:rustversion@1.0.23,https://crates.io/crates/rustversion/1.0.23,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:ryu@1.0.23,https://crates.io/crates/ryu/1.0.23,Apache-2.0 OR BSL-1.0,Copyright 2018 Ulf Adams
+cargo:schannel@0.1.29,https://crates.io/crates/schannel/0.1.29,MIT,Copyright (c) 2015 steffengy
+cargo:security-framework-sys@2.17.0,https://crates.io/crates/security-framework-sys/2.17.0,MIT OR Apache-2.0,Copyright (c) 2015 Steven Fackler
+cargo:security-framework@3.7.0,https://crates.io/crates/security-framework/3.7.0,MIT OR Apache-2.0,Copyright (c) 2015 Steven Fackler
+cargo:serde@1.0.229,https://crates.io/crates/serde/1.0.229,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:serde_core@1.0.229,https://crates.io/crates/serde_core/1.0.229,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:serde_derive@1.0.229,https://crates.io/crates/serde_derive/1.0.229,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:serde_json@1.0.151,https://crates.io/crates/serde_json/1.0.151,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:serde_path_to_error@0.1.20,https://crates.io/crates/serde_path_to_error/0.1.20,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:serde_spanned@1.1.1,https://crates.io/crates/serde_spanned/1.1.1,MIT OR Apache-2.0,Copyright (c) Individual contributors
+cargo:serde_urlencoded@0.7.1,https://crates.io/crates/serde_urlencoded/0.7.1,MIT OR Apache-2.0,Copyright (c) 2016 Anthony Ramine
+cargo:sharded-slab@0.1.7,https://crates.io/crates/sharded-slab/0.1.7,MIT,Copyright (c) 2019 Eliza Weisman
+cargo:shlex@2.0.1,https://crates.io/crates/shlex/2.0.1,MIT OR Apache-2.0,Copyright 2015 Nicholas Allegra (comex). | Copyright (c) 2015 Nicholas Allegra (comex).
+cargo:slab@0.4.12,https://crates.io/crates/slab/0.4.12,MIT,Copyright (c) 2019 Carl Lerche
+cargo:smallvec@1.16.1,https://crates.io/crates/smallvec/1.16.1,MIT OR Apache-2.0,Copyright (c) 2018 The Servo Project Developers
+cargo:socket2@0.6.5,https://crates.io/crates/socket2/0.6.5,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
+cargo:stable_deref_trait@1.2.1,https://crates.io/crates/stable_deref_trait/1.2.1,MIT OR Apache-2.0,Copyright (c) 2017 Robert Grosse
+cargo:strsim@0.11.1,https://crates.io/crates/strsim/0.11.1,MIT,Copyright (c) 2015 Danny Guo | Copyright (c) 2016 Titus Wormer <tituswormer@gmail.com> | Copyright (c) 2018 Akash Kurdekar
+cargo:subtle@2.6.1,https://crates.io/crates/subtle/2.6.1,BSD-3-Clause,"Copyright (c) 2016-2017 Isis Agora Lovecruft, Henry de Valence. All rights reserved. | Copyright (c) 2016-2024 Isis Agora Lovecruft. All rights reserved."
+cargo:syn@2.0.119,https://crates.io/crates/syn/2.0.119,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:syn@3.0.6,https://crates.io/crates/syn/3.0.6,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:sync_wrapper@1.0.2,https://crates.io/crates/sync_wrapper/1.0.2,Apache-2.0,Copyright 2020 Actyx AG
+cargo:synstructure@0.14.0,https://crates.io/crates/synstructure/0.14.0,MIT,Copyright 2016 Nika Layzell
+cargo:target-tuple@1.0.2,https://crates.io/crates/target-tuple/1.0.2,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:termcolor@1.4.1,https://crates.io/crates/termcolor/1.4.1,Unlicense OR MIT,Copyright (c) 2015 Andrew Gallant
+cargo:thiserror-impl@2.0.20,https://crates.io/crates/thiserror-impl/2.0.20,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:thiserror@2.0.20,https://crates.io/crates/thiserror/2.0.20,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:thread_local@1.1.10,https://crates.io/crates/thread_local/1.1.10,MIT OR Apache-2.0,Copyright (c) 2016 The Rust Project Developers
+cargo:tinystr@0.8.4,https://crates.io/crates/tinystr/0.8.4,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:tinyvec@1.13.3,https://crates.io/crates/tinyvec/1.13.3,Zlib OR Apache-2.0 OR MIT,"Copyright (c) 2019 Daniel ""Lokathor"" Gee."
+cargo:tokio-macros@2.7.2,https://crates.io/crates/tokio-macros/2.7.2,MIT,Copyright (c) 2019 Yoshua Wuyts | Copyright (c) Tokio Contributors
+cargo:tokio-rustls@0.26.5,https://crates.io/crates/tokio-rustls/0.26.5,MIT OR Apache-2.0,Copyright 2017 quininer kel | Copyright (c) 2017 quininer kel
+cargo:tokio-stream@0.1.19,https://crates.io/crates/tokio-stream/0.1.19,MIT,Copyright (c) Tokio Contributors
+cargo:tokio@1.53.1,https://crates.io/crates/tokio/1.53.1,MIT,Copyright (c) Tokio Contributors
+cargo:toml@1.1.6+spec-1.1.0,https://crates.io/crates/toml/1.1.6+spec-1.1.0,MIT OR Apache-2.0,Copyright (c) Individual contributors
+cargo:toml_datetime@1.1.1+spec-1.1.0,https://crates.io/crates/toml_datetime/1.1.1+spec-1.1.0,MIT OR Apache-2.0,Copyright (c) Individual contributors
+cargo:toml_parser@1.1.3+spec-1.1.0,https://crates.io/crates/toml_parser/1.1.3+spec-1.1.0,MIT OR Apache-2.0,Copyright (c) Individual contributors
+cargo:toml_writer@1.1.2+spec-1.1.0,https://crates.io/crates/toml_writer/1.1.2+spec-1.1.0,MIT OR Apache-2.0,Copyright (c) Individual contributors
+cargo:tonic-prost@0.14.6,https://crates.io/crates/tonic-prost/0.14.6,MIT,Copyright (c) 2025 Lucio Franco
+cargo:tonic@0.14.6,https://crates.io/crates/tonic/0.14.6,MIT,Copyright (c) 2025 Lucio Franco
+cargo:tower-http@0.6.11,https://crates.io/crates/tower-http/0.6.11,MIT,Copyright (c) 2019-2021 Tower Contributors
+cargo:tower-layer@0.3.3,https://crates.io/crates/tower-layer/0.3.3,MIT,Copyright (c) 2019 Tower Contributors
+cargo:tower-service@0.3.3,https://crates.io/crates/tower-service/0.3.3,MIT,Copyright (c) 2019 Tower Contributors
+cargo:tower@0.5.3,https://crates.io/crates/tower/0.5.3,MIT,Copyright (c) 2019 Tower Contributors
+cargo:tracing-attributes@0.1.31,https://crates.io/crates/tracing-attributes/0.1.31,MIT,Copyright (c) 2019 Tokio Contributors
+cargo:tracing-core@0.1.36,https://crates.io/crates/tracing-core/0.1.36,MIT,Copyright (c) 2019 Tokio Contributors | Copyright (c) 2014 Mathijs van de Nes
+cargo:tracing-log@0.2.0,https://crates.io/crates/tracing-log/0.2.0,MIT,Copyright (c) 2019 Tokio Contributors
+cargo:tracing-opentelemetry@0.32.1,https://crates.io/crates/tracing-opentelemetry/0.32.1,MIT,Copyright (c) 2019 Tokio Contributors
+cargo:tracing-subscriber@0.3.23,https://crates.io/crates/tracing-subscriber/0.3.23,MIT,Copyright (c) 2019 Tokio Contributors
+cargo:tracing@0.1.44,https://crates.io/crates/tracing/0.1.44,MIT,Copyright (c) 2019 Tokio Contributors
+cargo:try-lock@0.2.5,https://crates.io/crates/try-lock/0.2.5,MIT,Copyright (c) 2018-2023 Sean McArthur | Copyright (c) 2016 Alex Crichton
+cargo:trybuild@1.0.121,https://crates.io/crates/trybuild/1.0.121,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:unicode-ident@1.0.26,https://crates.io/crates/unicode-ident/1.0.26,(MIT OR Apache-2.0) AND Unicode-3.0,"Copyright © 1991-2023 Unicode, Inc."
+cargo:untrusted@0.9.0,https://crates.io/crates/untrusted/0.9.0,ISC,Copyright 2015-2016 Brian Smith.
+cargo:url@2.5.8,https://crates.io/crates/url/2.5.8,MIT OR Apache-2.0,Copyright (c) 2013-2025 The rust-url developers
+cargo:utf8_iter@1.0.4,https://crates.io/crates/utf8_iter/1.0.4,Apache-2.0 OR MIT,Copyright Mozilla Foundation
+cargo:utf8parse@0.2.2,https://crates.io/crates/utf8parse/0.2.2,Apache-2.0 OR MIT,Copyright (c) 2016 Joe Wilm
+cargo:valuable@0.1.1,https://crates.io/crates/valuable/0.1.1,MIT,Copyright (c) 2021 Valuable Contributors
+cargo:want@0.3.1,https://crates.io/crates/want/0.3.1,MIT,Copyright (c) 2018-2019 Sean McArthur
+cargo:wasi@0.11.1+wasi-snapshot-preview1,https://crates.io/crates/wasi/0.11.1+wasi-snapshot-preview1,Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
+cargo:wasip2@1.0.4+wasi-0.2.12,https://crates.io/crates/wasip2/1.0.4+wasi-0.2.12,Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
+cargo:wasm-bindgen-futures@0.4.78,https://crates.io/crates/wasm-bindgen-futures/0.4.78,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
+cargo:wasm-bindgen-macro-support@0.2.128,https://crates.io/crates/wasm-bindgen-macro-support/0.2.128,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
+cargo:wasm-bindgen-macro@0.2.128,https://crates.io/crates/wasm-bindgen-macro/0.2.128,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
+cargo:wasm-bindgen-shared@0.2.128,https://crates.io/crates/wasm-bindgen-shared/0.2.128,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
+cargo:wasm-bindgen@0.2.128,https://crates.io/crates/wasm-bindgen/0.2.128,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
+cargo:web-sys@0.3.105,https://crates.io/crates/web-sys/0.3.105,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
+cargo:web-time@1.1.0,https://crates.io/crates/web-time/1.1.0,MIT OR Apache-2.0,Copyright 2023 dAxpeDDa | Copyright (c) 2023 dAxpeDDa
+cargo:webpki-roots@1.0.9,https://crates.io/crates/webpki-roots/1.0.9,CDLA-Permissive-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:winapi-util@0.1.11,https://crates.io/crates/winapi-util/0.1.11,Unlicense OR MIT,Copyright (c) 2017 Andrew Gallant
+cargo:windows-link@0.2.1,https://crates.io/crates/windows-link/0.2.1,MIT OR Apache-2.0,Copyright (c) Microsoft Corporation.
+cargo:windows-sys@0.52.0,https://crates.io/crates/windows-sys/0.52.0,MIT OR Apache-2.0,Copyright (c) Microsoft Corporation.
+cargo:windows-sys@0.61.2,https://crates.io/crates/windows-sys/0.61.2,MIT OR Apache-2.0,Copyright (c) Microsoft Corporation.
+cargo:windows-targets@0.52.6,https://crates.io/crates/windows-targets/0.52.6,MIT OR Apache-2.0,Copyright (c) Microsoft Corporation.
+cargo:windows_aarch64_gnullvm@0.52.6,https://crates.io/crates/windows_aarch64_gnullvm/0.52.6,MIT OR Apache-2.0,Copyright (c) Microsoft Corporation.
+cargo:windows_aarch64_msvc@0.52.6,https://crates.io/crates/windows_aarch64_msvc/0.52.6,MIT OR Apache-2.0,Copyright (c) Microsoft Corporation.
+cargo:windows_i686_gnu@0.52.6,https://crates.io/crates/windows_i686_gnu/0.52.6,MIT OR Apache-2.0,Copyright (c) Microsoft Corporation.
+cargo:windows_i686_gnullvm@0.52.6,https://crates.io/crates/windows_i686_gnullvm/0.52.6,MIT OR Apache-2.0,Copyright (c) Microsoft Corporation.
+cargo:windows_i686_msvc@0.52.6,https://crates.io/crates/windows_i686_msvc/0.52.6,MIT OR Apache-2.0,Copyright (c) Microsoft Corporation.
+cargo:windows_x86_64_gnu@0.52.6,https://crates.io/crates/windows_x86_64_gnu/0.52.6,MIT OR Apache-2.0,Copyright (c) Microsoft Corporation.
+cargo:windows_x86_64_gnullvm@0.52.6,https://crates.io/crates/windows_x86_64_gnullvm/0.52.6,MIT OR Apache-2.0,Copyright (c) Microsoft Corporation.
+cargo:windows_x86_64_msvc@0.52.6,https://crates.io/crates/windows_x86_64_msvc/0.52.6,MIT OR Apache-2.0,Copyright (c) Microsoft Corporation.
+cargo:winnow@1.0.4,https://crates.io/crates/winnow/1.0.4,MIT,NOASSERTION — no copyright notice identified in supplied files
+cargo:wit-bindgen@0.57.1,https://crates.io/crates/wit-bindgen/0.57.1,Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
+cargo:writeable@0.6.4,https://crates.io/crates/writeable/0.6.4,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:yoke-derive@0.8.3,https://crates.io/crates/yoke-derive/0.8.3,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:yoke@0.8.3,https://crates.io/crates/yoke/0.8.3,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:zerocopy-derive@0.8.57,https://crates.io/crates/zerocopy-derive/0.8.57,BSD-2-Clause OR Apache-2.0 OR MIT,Copyright 2023 The Fuchsia Authors | Copyright 2019 The Fuchsia Authors.
+cargo:zerocopy@0.8.57,https://crates.io/crates/zerocopy/0.8.57,BSD-2-Clause OR Apache-2.0 OR MIT,Copyright 2023 The Fuchsia Authors | Copyright 2019 The Fuchsia Authors.
+cargo:zerofrom-derive@0.1.8,https://crates.io/crates/zerofrom-derive/0.1.8,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:zerofrom@0.1.8,https://crates.io/crates/zerofrom/0.1.8,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:zeroize@1.9.0,https://crates.io/crates/zeroize/1.9.0,Apache-2.0 OR MIT,Copyright (c) 2018-2026 The RustCrypto Project Developers
+cargo:zerotrie@0.2.5,https://crates.io/crates/zerotrie/0.2.5,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:zerovec-derive@0.11.6,https://crates.io/crates/zerovec-derive/0.11.6,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:zerovec@0.11.8,https://crates.io/crates/zerovec/0.11.8,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
+cargo:zmij@1.0.23,https://crates.io/crates/zmij/1.0.23,MIT,NOASSERTION — no copyright notice identified in supplied files
+npm:@babel/code-frame@7.27.1,https://www.npmjs.com/package/@babel/code-frame/v/7.27.1,MIT,The Babel Team (https://babel.dev/team)
+npm:@babel/helper-validator-identifier@7.27.1,https://www.npmjs.com/package/@babel/helper-validator-identifier/v/7.27.1,MIT,The Babel Team (https://babel.dev/team)
+npm:@blocz/react-responsive@5.0.0,https://www.npmjs.com/package/@blocz/react-responsive/v/5.0.0,MIT,Ayc0 (https://github.com/bloczjs/react-responsive#readme)
+npm:@datadog/druids@0.1.0,https://registry.npmjs.org/@datadog/druids/-/druids-0.1.0.tgz,LicenseRef-Datadog-EULA,"Copyright 2026-present Datadog, Inc."
+npm:@dnd-kit/accessibility@3.0.1,https://www.npmjs.com/package/@dnd-kit/accessibility/v/3.0.1,MIT,Claudéric Demers (https://github.com/clauderic/dnd-kit)
+npm:@dnd-kit/core@6.0.6,https://www.npmjs.com/package/@dnd-kit/core/v/6.0.6,MIT,Claudéric Demers (https://github.com/clauderic/dnd-kit)
+npm:@dnd-kit/modifiers@6.0.1,https://www.npmjs.com/package/@dnd-kit/modifiers/v/6.0.1,MIT,Claudéric Demers (https://github.com/clauderic/dnd-kit)
+npm:@dnd-kit/sortable@7.0.1,https://www.npmjs.com/package/@dnd-kit/sortable/v/7.0.1,MIT,Claudéric Demers (https://github.com/clauderic/dnd-kit)
+npm:@dnd-kit/utilities@3.2.1,https://www.npmjs.com/package/@dnd-kit/utilities/v/3.2.1,MIT,Claudéric Demers (https://github.com/clauderic/dnd-kit)
+npm:@esbuild/aix-ppc64@0.25.12,https://registry.npmjs.org/@esbuild/aix-ppc64/-/aix-ppc64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/android-arm64@0.25.12,https://registry.npmjs.org/@esbuild/android-arm64/-/android-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/android-arm@0.25.12,https://registry.npmjs.org/@esbuild/android-arm/-/android-arm-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/android-x64@0.25.12,https://registry.npmjs.org/@esbuild/android-x64/-/android-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/darwin-arm64@0.25.12,https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/darwin-x64@0.25.12,https://registry.npmjs.org/@esbuild/darwin-x64/-/darwin-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/freebsd-arm64@0.25.12,https://registry.npmjs.org/@esbuild/freebsd-arm64/-/freebsd-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/freebsd-x64@0.25.12,https://registry.npmjs.org/@esbuild/freebsd-x64/-/freebsd-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-arm64@0.25.12,https://registry.npmjs.org/@esbuild/linux-arm64/-/linux-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-arm@0.25.12,https://registry.npmjs.org/@esbuild/linux-arm/-/linux-arm-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-ia32@0.25.12,https://registry.npmjs.org/@esbuild/linux-ia32/-/linux-ia32-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-loong64@0.25.12,https://registry.npmjs.org/@esbuild/linux-loong64/-/linux-loong64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-mips64el@0.25.12,https://registry.npmjs.org/@esbuild/linux-mips64el/-/linux-mips64el-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-ppc64@0.25.12,https://registry.npmjs.org/@esbuild/linux-ppc64/-/linux-ppc64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-riscv64@0.25.12,https://registry.npmjs.org/@esbuild/linux-riscv64/-/linux-riscv64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-s390x@0.25.12,https://registry.npmjs.org/@esbuild/linux-s390x/-/linux-s390x-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-x64@0.25.12,https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/netbsd-arm64@0.25.12,https://registry.npmjs.org/@esbuild/netbsd-arm64/-/netbsd-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/netbsd-x64@0.25.12,https://registry.npmjs.org/@esbuild/netbsd-x64/-/netbsd-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/openbsd-arm64@0.25.12,https://registry.npmjs.org/@esbuild/openbsd-arm64/-/openbsd-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/openbsd-x64@0.25.12,https://registry.npmjs.org/@esbuild/openbsd-x64/-/openbsd-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/openharmony-arm64@0.25.12,https://registry.npmjs.org/@esbuild/openharmony-arm64/-/openharmony-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/sunos-x64@0.25.12,https://registry.npmjs.org/@esbuild/sunos-x64/-/sunos-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/win32-arm64@0.25.12,https://registry.npmjs.org/@esbuild/win32-arm64/-/win32-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/win32-ia32@0.25.12,https://registry.npmjs.org/@esbuild/win32-ia32/-/win32-ia32-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/win32-x64@0.25.12,https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@fastify/busboy@2.1.1,https://www.npmjs.com/package/@fastify/busboy/v/2.1.1,MIT,Brian White (https://github.com/fastify/busboy)
+npm:@figma/code-connect@1.3.3,https://www.npmjs.com/package/@figma/code-connect/v/1.3.3,MIT,Figma (https://github.com/figma/code-connect#readme)
+npm:@formatjs/ecma402-abstract@2.3.4,https://www.npmjs.com/package/@formatjs/ecma402-abstract/v/2.3.4,MIT,Long Ho (https://github.com/formatjs/formatjs)
+npm:@formatjs/fast-memoize@2.2.7,https://www.npmjs.com/package/@formatjs/fast-memoize/v/2.2.7,MIT,Long Ho (https://github.com/formatjs/formatjs#readme)
+npm:@formatjs/intl-datetimeformat@6.18.0,https://www.npmjs.com/package/@formatjs/intl-datetimeformat/v/6.18.0,MIT,Long Ho (https://github.com/formatjs/formatjs#readme)
+npm:@formatjs/intl-localematcher@0.6.1,https://www.npmjs.com/package/@formatjs/intl-localematcher/v/0.6.1,MIT,Long Ho (https://github.com/formatjs/formatjs#readme)
+npm:@isaacs/cliui@8.0.2,https://www.npmjs.com/package/@isaacs/cliui/v/8.0.2,ISC,Ben Coe (yargs/cliui)
+npm:@monaco-editor/loader@1.4.0,https://www.npmjs.com/package/@monaco-editor/loader/v/1.4.0,MIT,Suren Atoyan (https://github.com/suren-atoyan/monaco-loader)
+npm:@monaco-editor/react@4.6.0,https://www.npmjs.com/package/@monaco-editor/react/v/4.6.0,MIT,Suren Atoyan (https://github.com/suren-atoyan/monaco-react#readme)
+npm:@mswjs/cookies@0.2.2,https://www.npmjs.com/package/@mswjs/cookies/v/0.2.2,MIT,Artem Zakharchenko (https://github.com/mswjs/cookies)
+npm:@mswjs/interceptors@0.16.6,https://www.npmjs.com/package/@mswjs/interceptors/v/0.16.6,MIT,Artem Zakharchenko (https://github.com/mswjs/interceptors)
+npm:@nodelib/fs.scandir@2.1.3,https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.3.tgz,MIT,Copyright (c) Denis Malinochkin
+npm:@nodelib/fs.stat@2.0.3,https://registry.npmjs.org/@nodelib/fs.stat/-/fs.stat-2.0.3.tgz,MIT,Copyright (c) Denis Malinochkin
+npm:@nodelib/fs.walk@1.2.4,https://registry.npmjs.org/@nodelib/fs.walk/-/fs.walk-1.2.4.tgz,MIT,Copyright (c) Denis Malinochkin
+npm:@open-draft/until@1.0.3,https://www.npmjs.com/package/@open-draft/until/v/1.0.3,MIT,Artem Zakharchenko (open-draft/until)
+npm:@popperjs/core@2.11.8,https://registry.npmjs.org/@popperjs/core/-/core-2.11.8.tgz,MIT,Copyright (c) 2019 Federico Zivolo
+npm:@sqltools/formatter@1.2.5,https://registry.npmjs.org/@sqltools/formatter/-/formatter-1.2.5.tgz,MIT,Copyright (c) 2019-present Matheus Teixeira
+npm:@testing-library/dom@10.3.1,https://www.npmjs.com/package/@testing-library/dom/v/10.3.1,MIT,Kent C. Dodds (https://kentcdodds.com)
+npm:@testing-library/react@16.3.0,https://www.npmjs.com/package/@testing-library/react/v/16.3.0,MIT,Kent C. Dodds (https://kentcdodds.com)
+npm:@tippyjs/react@4.2.6,https://registry.npmjs.org/@tippyjs/react/-/react-4.2.6.tgz,MIT,Copyright (c) 2018 atomiks
+npm:@ts-morph/common@0.24.0,https://www.npmjs.com/package/@ts-morph/common/v/0.24.0,MIT,David Sherret (https://github.com/dsherret/ts-morph)
+npm:@types/aria-query@5.0.1,https://registry.npmjs.org/@types/aria-query/-/aria-query-5.0.1.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/color-name@1.1.1,https://registry.npmjs.org/@types/color-name/-/color-name-1.1.1.tgz,MIT,Copyright (c) Microsoft Corporation. All rights reserved.
+npm:@types/cookie@0.4.1,https://registry.npmjs.org/@types/cookie/-/cookie-0.4.1.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/debug@4.1.7,https://registry.npmjs.org/@types/debug/-/debug-4.1.7.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/estree-jsx@1.0.0,https://registry.npmjs.org/@types/estree-jsx/-/estree-jsx-1.0.0.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/estree@1.0.0,https://registry.npmjs.org/@types/estree/-/estree-1.0.0.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/extend@3.0.1,https://registry.npmjs.org/@types/extend/-/extend-3.0.1.tgz,MIT,Copyright (c) Microsoft Corporation. All rights reserved.
+npm:@types/hast@2.3.4,https://registry.npmjs.org/@types/hast/-/hast-2.3.4.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/hast@3.0.4,https://registry.npmjs.org/@types/hast/-/hast-3.0.4.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/history@2.0.49,https://registry.npmjs.org/@types/history/-/history-2.0.49.tgz,MIT,Copyright (c) Microsoft Corporation. All rights reserved.
+npm:@types/js-levenshtein@1.1.1,https://registry.npmjs.org/@types/js-levenshtein/-/js-levenshtein-1.1.1.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/mdast@3.0.10,https://registry.npmjs.org/@types/mdast/-/mdast-3.0.10.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/mdast@4.0.4,https://registry.npmjs.org/@types/mdast/-/mdast-4.0.4.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/ms@0.7.31,https://registry.npmjs.org/@types/ms/-/ms-0.7.31.tgz,MIT,Copyright (c) Microsoft Corporation. All rights reserved.
+npm:@types/node@24.12.2,https://registry.npmjs.org/@types/node/-/node-24.12.2.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/prismjs@1.26.6,https://registry.npmjs.org/@types/prismjs/-/prismjs-1.26.6.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/react-dom@18.2.23,https://registry.npmjs.org/@types/react-dom/-/react-dom-18.2.23.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/react@19.1.13,https://registry.npmjs.org/@types/react/-/react-19.1.13.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/set-cookie-parser@2.4.1,https://registry.npmjs.org/@types/set-cookie-parser/-/set-cookie-parser-2.4.1.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/unist@2.0.6,https://registry.npmjs.org/@types/unist/-/unist-2.0.6.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/unist@3.0.3,https://registry.npmjs.org/@types/unist/-/unist-3.0.3.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@types/vimeo__player@2.10.0,https://registry.npmjs.org/@types/vimeo__player/-/vimeo__player-2.10.0.tgz,MIT,Copyright (c) Microsoft Corporation.
+npm:@u-wave/react-vimeo@0.9.10,https://www.npmjs.com/package/@u-wave/react-vimeo/v/0.9.10,MIT,Renée Kooi (https://github.com/u-wave/react-vimeo#readme)
+npm:@ungap/event-target@0.2.4,https://www.npmjs.com/package/@ungap/event-target/v/0.2.4,ISC,Andrea Giammarchi (https://github.com/ungap/event-target#readme)
+npm:@ungap/structured-clone@1.3.0,https://www.npmjs.com/package/@ungap/structured-clone/v/1.3.0,ISC,Andrea Giammarchi (https://github.com/ungap/structured-clone#readme)
+npm:@vimeo/player@2.18.0,https://www.npmjs.com/package/@vimeo/player/v/2.18.0,MIT,Vimeo (vimeo/player.js)
+npm:@wojtekmaj/date-utils@1.5.1,https://www.npmjs.com/package/@wojtekmaj/date-utils/v/1.5.1,MIT,Wojciech Maj (https://github.com/wojtekmaj/date-utils)
+npm:@xmldom/xmldom@0.8.10,https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.8.10.tgz,MIT,"Copyright 2019 - present Christopher J. Brody and other contributors, as listed in: https://github.com/xmldom/xmldom/graphs/contributors | Copyright 2012 - 2017 @jindw <jindw@xidea.org> and other contributors, as listed in: https://github.com/jindw/xmldom/graphs/contributors"
+npm:afterframe@1.0.2,https://registry.npmjs.org/afterframe/-/afterframe-1.0.2.tgz,MIT,Copyright (c) 2018 Andre Wiggins
+npm:agent-base@7.1.0,https://www.npmjs.com/package/agent-base/v/7.1.0,MIT,Nathan Rajlich (http://n8.io/)
+npm:ansi-align@3.0.1,https://www.npmjs.com/package/ansi-align/v/3.0.1,ISC,nexdrew (https://github.com/nexdrew/ansi-align#readme)
+npm:ansi-escapes@4.3.2,https://www.npmjs.com/package/ansi-escapes/v/4.3.2,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:ansi-regex@5.0.1,https://www.npmjs.com/package/ansi-regex/v/5.0.1,MIT,Sindre Sorhus (sindresorhus.com)
+npm:ansi-regex@6.0.1,https://www.npmjs.com/package/ansi-regex/v/6.0.1,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:ansi-styles@4.2.1,https://www.npmjs.com/package/ansi-styles/v/4.2.1,MIT,Sindre Sorhus (sindresorhus.com)
+npm:ansi-styles@5.2.0,https://www.npmjs.com/package/ansi-styles/v/5.2.0,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:ansi-styles@6.2.1,https://www.npmjs.com/package/ansi-styles/v/6.2.1,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:anymatch@3.1.2,https://www.npmjs.com/package/anymatch/v/3.1.2,ISC,Elan Shanker (https://github.com/es128)
+npm:aria-query@5.3.0,https://www.npmjs.com/package/aria-query/v/5.3.0,Apache-2.0,Jesse Beach (https://github.com/A11yance/aria-query#readme)
+npm:asynckit@0.4.0,https://www.npmjs.com/package/asynckit/v/0.4.0,MIT,Alex Indigo (https://github.com/alexindigo/asynckit#readme)
+npm:bail@2.0.2,https://www.npmjs.com/package/bail/v/2.0.2,MIT,Titus Wormer (https://wooorm.com)
+npm:balanced-match@1.0.0,https://www.npmjs.com/package/balanced-match/v/1.0.0,MIT,Julian Gruber (http://juliangruber.com)
+npm:base64-js@1.5.1,https://www.npmjs.com/package/base64-js/v/1.5.1,MIT,T. Jameson Little (https://github.com/beatgammit/base64-js)
+npm:binary-extensions@2.0.0,https://www.npmjs.com/package/binary-extensions/v/2.0.0,MIT,Sindre Sorhus (sindresorhus.com)
+npm:bl@4.1.0,https://registry.npmjs.org/bl/-/bl-4.1.0.tgz,MIT,Copyright (c) 2013-2019 bl contributors
+npm:boxen@5.1.1,https://www.npmjs.com/package/boxen/v/5.1.1,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:brace-expansion@2.0.3,https://www.npmjs.com/package/brace-expansion/v/2.0.3,MIT,Julian Gruber (http://juliangruber.com)
+npm:braces@3.0.3,https://www.npmjs.com/package/braces/v/3.0.3,MIT,Jon Schlinkert (https://github.com/jonschlinkert)
+npm:buffer@5.7.1,https://www.npmjs.com/package/buffer/v/5.7.1,MIT,Feross Aboukhadijeh (https://feross.org)
+npm:camelcase@6.3.0,https://www.npmjs.com/package/camelcase/v/6.3.0,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:case@1.6.3,https://www.npmjs.com/package/case/v/1.6.3,(MIT OR GPL-3.0-or-later),Nathan Bubna (http://www.esha.com/)
+npm:ccount@2.0.1,https://www.npmjs.com/package/ccount/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:chalk@4.1.1,https://registry.npmjs.org/chalk/-/chalk-4.1.1.tgz,MIT,Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+npm:chalk@4.1.2,https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz,MIT,Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+npm:character-entities-html4@2.1.0,https://www.npmjs.com/package/character-entities-html4/v/2.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:character-entities-legacy@3.0.0,https://www.npmjs.com/package/character-entities-legacy/v/3.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:character-entities@2.0.0,https://www.npmjs.com/package/character-entities/v/2.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:character-reference-invalid@2.0.0,https://www.npmjs.com/package/character-reference-invalid/v/2.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:chardet@0.7.0,https://www.npmjs.com/package/chardet/v/0.7.0,MIT,Dmitry Shirokov (https://github.com/runk/node-chardet)
+npm:chokidar@3.5.3,https://www.npmjs.com/package/chokidar/v/3.5.3,MIT,Paul Miller (https://paulmillr.com)
+npm:classnames@2.3.2,https://www.npmjs.com/package/classnames/v/2.3.2,MIT,Jed Watson (https://github.com/JedWatson/classnames)
+npm:cli-boxes@2.2.1,https://www.npmjs.com/package/cli-boxes/v/2.2.1,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:cli-cursor@3.1.0,https://www.npmjs.com/package/cli-cursor/v/3.1.0,MIT,Sindre Sorhus (sindresorhus.com)
+npm:cli-spinners@2.6.1,https://www.npmjs.com/package/cli-spinners/v/2.6.1,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:cli-width@3.0.0,https://www.npmjs.com/package/cli-width/v/3.0.0,ISC,Ilya Radchenko (https://github.com/knownasilya/cli-width)
+npm:cliui@8.0.1,https://www.npmjs.com/package/cliui/v/8.0.1,ISC,Ben Coe (yargs/cliui)
+npm:clone@1.0.4,https://www.npmjs.com/package/clone/v/1.0.4,MIT,Paul Vorbach (http://paul.vorba.ch/)
+npm:clsx@2.1.1,https://www.npmjs.com/package/clsx/v/2.1.1,MIT,Luke Edwards (https://lukeed.com)
+npm:code-block-writer@13.0.1,https://www.npmjs.com/package/code-block-writer/v/13.0.1,MIT,David Sherret (https://github.com/dsherret/code-block-writer#readme)
+npm:color-convert@2.0.1,https://www.npmjs.com/package/color-convert/v/2.0.1,MIT,Heather Arthur (Qix-/color-convert)
+npm:color-name@1.1.4,https://www.npmjs.com/package/color-name/v/1.1.4,MIT,DY (https://github.com/colorjs/color-name)
+npm:combined-stream@1.0.8,https://www.npmjs.com/package/combined-stream/v/1.0.8,MIT,Felix Geisendörfer (http://debuggable.com/)
+npm:comma-separated-tokens@2.0.2,https://www.npmjs.com/package/comma-separated-tokens/v/2.0.2,MIT,Titus Wormer (https://wooorm.com)
+npm:commander@11.1.0,https://www.npmjs.com/package/commander/v/11.1.0,MIT,TJ Holowaychuk (https://github.com/tj/commander.js)
+npm:compare-versions@6.1.1,https://www.npmjs.com/package/compare-versions/v/6.1.1,MIT,Ole Michelsen (https://github.com/omichelsen/compare-versions#readme)
+npm:cookie@0.7.2,https://www.npmjs.com/package/cookie/v/0.7.2,MIT,Roman Shtylman (jshttp/cookie)
+npm:copy-to-clipboard@3.3.3,https://www.npmjs.com/package/copy-to-clipboard/v/3.3.3,MIT,sudodoki (https://github.com/sudodoki/copy-to-clipboard)
+npm:core-js@3.44.0,https://www.npmjs.com/package/core-js/v/3.44.0,MIT,Denis Pushkarev (http://zloirock.ru)
+npm:cross-spawn@7.0.6,https://www.npmjs.com/package/cross-spawn/v/7.0.6,MIT,André Cruz (https://github.com/moxystudio/node-cross-spawn)
+npm:cssstyle@4.0.1,https://www.npmjs.com/package/cssstyle/v/4.0.1,MIT,Jon Sakas (https://jon.sakas.co/)
+npm:csstype@3.1.1,https://www.npmjs.com/package/csstype/v/3.1.1,MIT,Fredrik Nicol (https://github.com/frenic/csstype)
+npm:culori@4.0.1,https://www.npmjs.com/package/culori/v/4.0.1,MIT,Dan Burzo (https://github.com/Evercoder/culori)
+npm:data-urls@5.0.0,https://www.npmjs.com/package/data-urls/v/5.0.0,MIT,Domenic Denicola (https://domenic.me/)
+npm:date-fns@1.30.1,https://www.npmjs.com/package/date-fns/v/1.30.1,MIT,Sasha Koss (https://github.com/date-fns/date-fns)
+npm:debug@4.3.4,https://www.npmjs.com/package/debug/v/4.3.4,MIT,Josh Junon (https://github.com/debug-js/debug)
+npm:decimal.js@10.4.3,https://www.npmjs.com/package/decimal.js/v/10.4.3,MIT,Michael Mclaughlin (https://github.com/MikeMcl/decimal.js)
+npm:decode-named-character-reference@1.0.1,https://www.npmjs.com/package/decode-named-character-reference/v/1.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:defaults@1.0.3,https://www.npmjs.com/package/defaults/v/1.0.3,MIT,Elijah Insua (https://github.com/tmpvar/defaults)
+npm:delayed-stream@1.0.0,https://www.npmjs.com/package/delayed-stream/v/1.0.0,MIT,Felix Geisendörfer (http://debuggable.com/)
+npm:dequal@2.0.2,https://www.npmjs.com/package/dequal/v/2.0.2,MIT,Luke Edwards (https://lukeed.com)
+npm:dequal@2.0.3,https://www.npmjs.com/package/dequal/v/2.0.3,MIT,Luke Edwards (https://lukeed.com)
+npm:detect-browser@4.8.0,https://www.npmjs.com/package/detect-browser/v/4.8.0,MIT,Damon Oehlman (https://github.com/DamonOehlman/detect-browser)
+npm:devlop@1.1.0,https://www.npmjs.com/package/devlop/v/1.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:dom-accessibility-api@0.5.9,https://registry.npmjs.org/dom-accessibility-api/-/dom-accessibility-api-0.5.9.tgz,MIT,Copyright (c) 2020 Sebastian Silbermann
+npm:dompurify@3.1.6,https://www.npmjs.com/package/dompurify/v/3.1.6,(MPL-2.0 OR Apache-2.0),Dr.-Ing. Mario Heiderich  Cure53 (https://cure53.de/)
+npm:dotenv@16.4.5,https://registry.npmjs.org/dotenv/-/dotenv-16.4.5.tgz,BSD-2-Clause,"Copyright (c) 2015, Scott Motte"
+npm:eastasianwidth@0.2.0,https://www.npmjs.com/package/eastasianwidth/v/0.2.0,MIT,Masaki Komagata (https://github.com/komagata/eastasianwidth)
+npm:emoji-regex@8.0.0,https://www.npmjs.com/package/emoji-regex/v/8.0.0,MIT,Mathias Bynens (https://mathiasbynens.be/)
+npm:emoji-regex@9.2.2,https://www.npmjs.com/package/emoji-regex/v/9.2.2,MIT,Mathias Bynens (https://mathiasbynens.be/)
+npm:entities@4.3.1,https://www.npmjs.com/package/entities/v/4.3.1,BSD-2-Clause,Felix Boehm (https://github.com/fb55/entities)
+npm:entities@4.5.0,https://www.npmjs.com/package/entities/v/4.5.0,BSD-2-Clause,Felix Boehm (https://github.com/fb55/entities)
+npm:esbuild@0.25.12,https://registry.npmjs.org/esbuild/-/esbuild-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:escalade@3.1.1,https://www.npmjs.com/package/escalade/v/3.1.1,MIT,Luke Edwards (https://lukeed.com)
+npm:escape-string-regexp@1.0.5,https://www.npmjs.com/package/escape-string-regexp/v/1.0.5,MIT,Sindre Sorhus (sindresorhus.com)
+npm:escape-string-regexp@5.0.0,https://www.npmjs.com/package/escape-string-regexp/v/5.0.0,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:estree-util-is-identifier-name@3.0.0,https://www.npmjs.com/package/estree-util-is-identifier-name/v/3.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:events@3.3.0,https://www.npmjs.com/package/events/v/3.3.0,MIT,Irakli Gozalishvili (http://jeditoolkit.com)
+npm:exenv@1.2.2,https://www.npmjs.com/package/exenv/v/1.2.2,BSD-3-Clause,Jed Watson (https://github.com/JedWatson/exenv)
+npm:extend@3.0.2,https://www.npmjs.com/package/extend/v/3.0.2,MIT,Stefan Thomas (http://www.justmoon.net)
+npm:external-editor@3.0.3,https://www.npmjs.com/package/external-editor/v/3.0.3,MIT,Kevin Gravier (https://mrkmg.com)
+npm:fake-indexeddb@6.0.1,https://www.npmjs.com/package/fake-indexeddb/v/6.0.1,Apache-2.0,Jeremy Scheff (https://dumbmatter.com/)
+npm:fast-fuzzy@1.12.0,https://www.npmjs.com/package/fast-fuzzy/v/1.12.0,ISC,Ethan Rutherford (https://github.com/EthanRutherford/fast-fuzzy#readme)
+npm:fast-glob@3.3.2,https://www.npmjs.com/package/fast-glob/v/3.3.2,MIT,Denis Malinochkin (https://mrmlnc.com)
+npm:fast-myers-diff@3.0.1,https://www.npmjs.com/package/fast-myers-diff/v/3.0.1,MIT,Logan R. Kearsley (https://github.com/gliese1337/fast-myers-diff#readme)
+npm:fastq@1.13.0,https://www.npmjs.com/package/fastq/v/1.13.0,ISC,Matteo Collina (https://github.com/mcollina/fastq#readme)
+npm:figures@3.2.0,https://www.npmjs.com/package/figures/v/3.2.0,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:file-saver@2.0.5,https://www.npmjs.com/package/file-saver/v/2.0.5,MIT,Eli Grey (https://github.com/eligrey/FileSaver.js#readme)
+npm:filesize@7.0.0,https://www.npmjs.com/package/filesize/v/7.0.0,BSD-3-Clause,Jason Mulligan (https://filesizejs.com)
+npm:fill-range@7.1.1,https://www.npmjs.com/package/fill-range/v/7.1.1,MIT,Jon Schlinkert (https://github.com/jonschlinkert)
+npm:find-up@5.0.0,https://www.npmjs.com/package/find-up/v/5.0.0,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:focus-trap-react@11.0.4,https://www.npmjs.com/package/focus-trap-react/v/11.0.4,MIT,David Clark (http://davidtheclark.com/)
+npm:focus-trap@7.8.0,https://www.npmjs.com/package/focus-trap/v/7.8.0,MIT,David Clark (http://davidtheclark.com/)
+npm:foreground-child@3.1.1,https://www.npmjs.com/package/foreground-child/v/3.1.1,ISC,Isaac Z. Schlueter (http://blog.izs.me/)
+npm:form-data@4.0.0,https://www.npmjs.com/package/form-data/v/4.0.0,MIT,Felix Geisendörfer (http://debuggable.com/)
+npm:get-caller-file@2.0.5,https://www.npmjs.com/package/get-caller-file/v/2.0.5,ISC,Stefan Penner (https://github.com/stefanpenner/get-caller-file#readme)
+npm:get-user-locale@2.3.2,https://www.npmjs.com/package/get-user-locale/v/2.3.2,MIT,Wojciech Maj (https://github.com/wojtekmaj/get-user-locale)
+npm:glob-parent@5.1.2,https://www.npmjs.com/package/glob-parent/v/5.1.2,ISC,Gulp Team (https://gulpjs.com/)
+npm:glob@10.3.10,https://www.npmjs.com/package/glob/v/10.3.10,ISC,Isaac Z. Schlueter (https://blog.izs.me/)
+npm:graphemesplit@2.4.4,https://www.npmjs.com/package/graphemesplit/v/2.4.4,MIT,Nao Yonashiro (github:orisano/graphemesplit)
+npm:graphql@16.11.0,https://registry.npmjs.org/graphql/-/graphql-16.11.0.tgz,MIT,Copyright (c) GraphQL Contributors
+npm:has-flag@4.0.0,https://www.npmjs.com/package/has-flag/v/4.0.0,MIT,Sindre Sorhus (sindresorhus.com)
+npm:hast-util-embedded@1.0.6,https://www.npmjs.com/package/hast-util-embedded/v/1.0.6,MIT,Titus Wormer (https://wooorm.com)
+npm:hast-util-from-html@2.0.3,https://www.npmjs.com/package/hast-util-from-html/v/2.0.3,MIT,Titus Wormer (https://wooorm.com)
+npm:hast-util-from-parse5@8.0.3,https://www.npmjs.com/package/hast-util-from-parse5/v/8.0.3,MIT,Titus Wormer (https://wooorm.com)
+npm:hast-util-has-property@2.0.0,https://www.npmjs.com/package/hast-util-has-property/v/2.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:hast-util-is-element@1.1.0,https://www.npmjs.com/package/hast-util-is-element/v/1.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:hast-util-is-element@2.1.1,https://www.npmjs.com/package/hast-util-is-element/v/2.1.1,MIT,Titus Wormer (https://wooorm.com)
+npm:hast-util-parse-selector@3.1.1,https://www.npmjs.com/package/hast-util-parse-selector/v/3.1.1,MIT,Titus Wormer (https://wooorm.com)
+npm:hast-util-parse-selector@4.0.0,https://www.npmjs.com/package/hast-util-parse-selector/v/4.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:hast-util-to-html@9.0.5,https://www.npmjs.com/package/hast-util-to-html/v/9.0.5,MIT,Titus Wormer (https://wooorm.com)
+npm:hast-util-to-jsx-runtime@2.3.6,https://www.npmjs.com/package/hast-util-to-jsx-runtime/v/2.3.6,MIT,Titus Wormer (https://wooorm.com)
+npm:hast-util-to-mdast@8.1.0,https://www.npmjs.com/package/hast-util-to-mdast/v/8.1.0,MIT,Seth Vincent (https://sethvincent.com)
+npm:hast-util-to-text@3.1.1,https://www.npmjs.com/package/hast-util-to-text/v/3.1.1,MIT,Titus Wormer (https://wooorm.com)
+npm:hast-util-whitespace@1.0.4,https://www.npmjs.com/package/hast-util-whitespace/v/1.0.4,MIT,Titus Wormer (https://wooorm.com)
+npm:hast-util-whitespace@3.0.0,https://www.npmjs.com/package/hast-util-whitespace/v/3.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:hastscript@7.2.0,https://www.npmjs.com/package/hastscript/v/7.2.0,MIT,Titus Wormer (https://wooorm.com)
+npm:hastscript@8.0.0,https://www.npmjs.com/package/hastscript/v/8.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:hastscript@9.0.1,https://www.npmjs.com/package/hastscript/v/9.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:headers-polyfill@3.0.10,https://www.npmjs.com/package/headers-polyfill/v/3.0.10,MIT,Artem Zakharchenko (https://github.com/mswjs/headers-polyfill)
+npm:highlight-words-core@1.2.0,https://www.npmjs.com/package/highlight-words-core/v/1.2.0,MIT,Brian Vaughn (github.com/bvaughn/highlight-words-core)
+npm:html-encoding-sniffer@4.0.0,https://www.npmjs.com/package/html-encoding-sniffer/v/4.0.0,MIT,Domenic Denicola (https://domenic.me/)
+npm:html-url-attributes@3.0.1,https://www.npmjs.com/package/html-url-attributes/v/3.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:html-void-elements@3.0.0,https://www.npmjs.com/package/html-void-elements/v/3.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:http-proxy-agent@7.0.2,https://www.npmjs.com/package/http-proxy-agent/v/7.0.2,MIT,Nathan Rajlich (http://n8.io/)
+npm:https-proxy-agent@7.0.5,https://www.npmjs.com/package/https-proxy-agent/v/7.0.5,MIT,Nathan Rajlich (http://n8.io/)
+npm:iconv-lite@0.4.24,https://www.npmjs.com/package/iconv-lite/v/0.4.24,MIT,Alexander Shtuchkin (https://github.com/ashtuchkin/iconv-lite)
+npm:iconv-lite@0.6.3,https://www.npmjs.com/package/iconv-lite/v/0.6.3,MIT,Alexander Shtuchkin (https://github.com/ashtuchkin/iconv-lite)
+npm:ieee754@1.2.1,https://www.npmjs.com/package/ieee754/v/1.2.1,BSD-3-Clause,Feross Aboukhadijeh (https://feross.org)
+npm:inherits@2.0.4,https://registry.npmjs.org/inherits/-/inherits-2.0.4.tgz,ISC,Copyright (c) Isaac Z. Schlueter
+npm:inline-style-parser@0.2.7,https://registry.npmjs.org/inline-style-parser/-/inline-style-parser-0.2.7.tgz,MIT,Copyright (c) 2012 TJ Holowaychuk <tj@vision-media.ca>
+npm:inquirer@8.2.5,https://www.npmjs.com/package/inquirer/v/8.2.5,MIT,Simon Boudrias (SBoudrias/Inquirer.js)
+npm:intersection-observer@0.12.0,https://www.npmjs.com/package/intersection-observer/v/0.12.0,W3C-20150513,Philip Walton (http://philipwalton.com)
+npm:is-alphabetical@2.0.0,https://www.npmjs.com/package/is-alphabetical/v/2.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:is-alphanumerical@2.0.0,https://www.npmjs.com/package/is-alphanumerical/v/2.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:is-binary-path@2.1.0,https://www.npmjs.com/package/is-binary-path/v/2.1.0,MIT,Sindre Sorhus (sindresorhus.com)
+npm:is-decimal@2.0.0,https://www.npmjs.com/package/is-decimal/v/2.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:is-extglob@2.1.1,https://www.npmjs.com/package/is-extglob/v/2.1.1,MIT,Jon Schlinkert (https://github.com/jonschlinkert)
+npm:is-fullwidth-code-point@3.0.0,https://www.npmjs.com/package/is-fullwidth-code-point/v/3.0.0,MIT,Sindre Sorhus (sindresorhus.com)
+npm:is-glob@4.0.3,https://www.npmjs.com/package/is-glob/v/4.0.3,MIT,Jon Schlinkert (https://github.com/jonschlinkert)
+npm:is-hexadecimal@2.0.0,https://www.npmjs.com/package/is-hexadecimal/v/2.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:is-interactive@1.0.0,https://www.npmjs.com/package/is-interactive/v/1.0.0,MIT,Sindre Sorhus (sindresorhus.com)
+npm:is-node-process@1.0.1,https://registry.npmjs.org/is-node-process/-/is-node-process-1.0.1.tgz,MIT,NOASSERTION — upstream inventory supplies only a project URL
+npm:is-number@7.0.0,https://www.npmjs.com/package/is-number/v/7.0.0,MIT,Jon Schlinkert (https://github.com/jonschlinkert)
+npm:is-plain-obj@4.0.0,https://www.npmjs.com/package/is-plain-obj/v/4.0.0,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:is-potential-custom-element-name@1.0.1,https://www.npmjs.com/package/is-potential-custom-element-name/v/1.0.1,MIT,Mathias Bynens (https://mathiasbynens.be/)
+npm:is-unicode-supported@0.1.0,https://www.npmjs.com/package/is-unicode-supported/v/0.1.0,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:isexe@2.0.0,https://www.npmjs.com/package/isexe/v/2.0.0,ISC,Isaac Z. Schlueter (http://blog.izs.me/)
+npm:jackspeak@2.3.6,https://www.npmjs.com/package/jackspeak/v/2.3.6,BlueOak-1.0.0,Isaac Z. Schlueter (https://github.com/isaacs/jackspeak)
+npm:js-base64@3.7.7,https://www.npmjs.com/package/js-base64/v/3.7.7,BSD-3-Clause,Dan Kogai (https://github.com/dankogai/js-base64)
+npm:js-cookie@3.0.5,https://www.npmjs.com/package/js-cookie/v/3.0.5,MIT,Klaus Hartl (https://github.com/js-cookie/js-cookie)
+npm:js-levenshtein@1.1.6,https://www.npmjs.com/package/js-levenshtein/v/1.1.6,MIT,Gustaf Andersson (gustf/js-levenshtein)
+npm:js-tokens@4.0.0,https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz,MIT,"Copyright (c) 2014, 2015, 2016, 2017, 2018 Simon Lydell"
+npm:jsdom@24.1.3,https://www.npmjs.com/package/jsdom/v/24.1.3,MIT,Elijah Insua (http://tmpvar.com)
+npm:jsonc-parser@3.0.0,https://www.npmjs.com/package/jsonc-parser/v/3.0.0,MIT,Microsoft Corporation (https://github.com/microsoft/node-jsonc-parser)
+npm:kleur@3.0.3,https://www.npmjs.com/package/kleur/v/3.0.3,MIT,Luke Edwards (lukeed.com)
+npm:locate-path@6.0.0,https://www.npmjs.com/package/locate-path/v/6.0.0,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:lodash@4.17.21,https://www.npmjs.com/package/lodash/v/4.17.21,MIT,John-David Dalton (https://lodash.com/)
+npm:lodash@4.18.1,https://www.npmjs.com/package/lodash/v/4.18.1,MIT,John-David Dalton (https://lodash.com/)
+npm:log-symbols@4.1.0,https://www.npmjs.com/package/log-symbols/v/4.1.0,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:longest-streak@3.0.0,https://www.npmjs.com/package/longest-streak/v/3.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:loose-envify@1.4.0,https://registry.npmjs.org/loose-envify/-/loose-envify-1.4.0.tgz,MIT,Copyright (c) 2015 Andres Suarez <zertosh@gmail.com>
+npm:lru-cache@10.0.1,https://www.npmjs.com/package/lru-cache/v/10.0.1,ISC,Isaac Z. Schlueter (https://github.com/isaacs/node-lru-cache)
+npm:lz-string@1.5.0,https://www.npmjs.com/package/lz-string/v/1.5.0,MIT,pieroxy (http://pieroxy.net/blog/pages/lz-string/index.html)
+npm:map-age-cleaner@0.1.3,https://www.npmjs.com/package/map-age-cleaner/v/0.1.3,MIT,Sam Verschueren (github.com/SamVerschueren)
+npm:markdown-table@3.0.4,https://www.npmjs.com/package/markdown-table/v/3.0.4,MIT,Titus Wormer (https://wooorm.com)
+npm:matchmedia-polyfill@0.3.2,https://www.npmjs.com/package/matchmedia-polyfill/v/0.3.2,MIT,Scott Jehl (http://github.com/paulirish/matchMedia.js)
+npm:mdast-util-find-and-replace@3.0.2,https://www.npmjs.com/package/mdast-util-find-and-replace/v/3.0.2,MIT,Titus Wormer (https://wooorm.com)
+npm:mdast-util-from-markdown@2.0.3,https://www.npmjs.com/package/mdast-util-from-markdown/v/2.0.3,MIT,Titus Wormer (https://wooorm.com)
+npm:mdast-util-gfm-autolink-literal@2.0.1,https://www.npmjs.com/package/mdast-util-gfm-autolink-literal/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:mdast-util-gfm-footnote@2.1.0,https://www.npmjs.com/package/mdast-util-gfm-footnote/v/2.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:mdast-util-gfm-strikethrough@2.0.0,https://www.npmjs.com/package/mdast-util-gfm-strikethrough/v/2.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:mdast-util-gfm-table@2.0.0,https://www.npmjs.com/package/mdast-util-gfm-table/v/2.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:mdast-util-gfm-task-list-item@2.0.0,https://www.npmjs.com/package/mdast-util-gfm-task-list-item/v/2.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:mdast-util-gfm@3.1.0,https://www.npmjs.com/package/mdast-util-gfm/v/3.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:mdast-util-mdx-expression@2.0.1,https://www.npmjs.com/package/mdast-util-mdx-expression/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:mdast-util-mdx-jsx@3.2.0,https://www.npmjs.com/package/mdast-util-mdx-jsx/v/3.2.0,MIT,Titus Wormer (https://wooorm.com)
+npm:mdast-util-mdxjs-esm@2.0.1,https://www.npmjs.com/package/mdast-util-mdxjs-esm/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:mdast-util-phrasing@3.0.0,https://www.npmjs.com/package/mdast-util-phrasing/v/3.0.0,MIT,Victor Felder (https://draft.li)
+npm:mdast-util-phrasing@4.1.0,https://www.npmjs.com/package/mdast-util-phrasing/v/4.1.0,MIT,Victor Felder (https://draft.li)
+npm:mdast-util-to-hast@13.2.1,https://www.npmjs.com/package/mdast-util-to-hast/v/13.2.1,MIT,Titus Wormer (https://wooorm.com)
+npm:mdast-util-to-markdown@2.1.2,https://www.npmjs.com/package/mdast-util-to-markdown/v/2.1.2,MIT,Titus Wormer (https://wooorm.com)
+npm:mdast-util-to-string@3.1.0,https://www.npmjs.com/package/mdast-util-to-string/v/3.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:mdast-util-to-string@4.0.0,https://www.npmjs.com/package/mdast-util-to-string/v/4.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:mem@8.1.1,https://www.npmjs.com/package/mem/v/8.1.1,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:memoize-one@4.0.3,https://www.npmjs.com/package/memoize-one/v/4.0.3,MIT,Alex Reardon (https://github.com/alexreardon/memoize-one)
+npm:memoize-one@5.0.5,https://www.npmjs.com/package/memoize-one/v/5.0.5,MIT,Alex Reardon (https://github.com/alexreardon/memoize-one)
+npm:merge2@1.4.1,https://registry.npmjs.org/merge2/-/merge2-1.4.1.tgz,MIT,Copyright (c) 2014-2020 Teambition
+npm:micromark-core-commonmark@2.0.3,https://www.npmjs.com/package/micromark-core-commonmark/v/2.0.3,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-extension-gfm-autolink-literal@2.1.0,https://www.npmjs.com/package/micromark-extension-gfm-autolink-literal/v/2.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-extension-gfm-footnote@2.1.0,https://www.npmjs.com/package/micromark-extension-gfm-footnote/v/2.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-extension-gfm-strikethrough@2.1.0,https://www.npmjs.com/package/micromark-extension-gfm-strikethrough/v/2.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-extension-gfm-table@2.1.1,https://www.npmjs.com/package/micromark-extension-gfm-table/v/2.1.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-extension-gfm-tagfilter@2.0.0,https://www.npmjs.com/package/micromark-extension-gfm-tagfilter/v/2.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-extension-gfm-task-list-item@2.1.0,https://www.npmjs.com/package/micromark-extension-gfm-task-list-item/v/2.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-extension-gfm@3.0.0,https://www.npmjs.com/package/micromark-extension-gfm/v/3.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-factory-destination@2.0.1,https://www.npmjs.com/package/micromark-factory-destination/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-factory-label@2.0.1,https://www.npmjs.com/package/micromark-factory-label/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-factory-space@2.0.1,https://www.npmjs.com/package/micromark-factory-space/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-factory-title@2.0.1,https://www.npmjs.com/package/micromark-factory-title/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-factory-whitespace@2.0.1,https://www.npmjs.com/package/micromark-factory-whitespace/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-util-character@2.1.1,https://www.npmjs.com/package/micromark-util-character/v/2.1.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-util-chunked@2.0.1,https://www.npmjs.com/package/micromark-util-chunked/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-util-classify-character@2.0.1,https://www.npmjs.com/package/micromark-util-classify-character/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-util-combine-extensions@2.0.1,https://www.npmjs.com/package/micromark-util-combine-extensions/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-util-decode-numeric-character-reference@2.0.2,https://www.npmjs.com/package/micromark-util-decode-numeric-character-reference/v/2.0.2,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-util-decode-string@2.0.1,https://www.npmjs.com/package/micromark-util-decode-string/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-util-encode@2.0.1,https://www.npmjs.com/package/micromark-util-encode/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-util-html-tag-name@2.0.1,https://www.npmjs.com/package/micromark-util-html-tag-name/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-util-normalize-identifier@2.0.1,https://www.npmjs.com/package/micromark-util-normalize-identifier/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-util-resolve-all@2.0.1,https://www.npmjs.com/package/micromark-util-resolve-all/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-util-sanitize-uri@2.0.1,https://www.npmjs.com/package/micromark-util-sanitize-uri/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-util-subtokenize@2.1.0,https://www.npmjs.com/package/micromark-util-subtokenize/v/2.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-util-symbol@2.0.1,https://www.npmjs.com/package/micromark-util-symbol/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark-util-types@2.0.2,https://www.npmjs.com/package/micromark-util-types/v/2.0.2,MIT,Titus Wormer (https://wooorm.com)
+npm:micromark@4.0.2,https://www.npmjs.com/package/micromark/v/4.0.2,MIT,Titus Wormer (https://wooorm.com)
+npm:micromatch@4.0.8,https://www.npmjs.com/package/micromatch/v/4.0.8,MIT,Jon Schlinkert (https://github.com/jonschlinkert)
+npm:mime-db@1.52.0,https://registry.npmjs.org/mime-db/-/mime-db-1.52.0.tgz,MIT,Copyright (c) 2014 Jonathan Ong <me@jongleberry.com> | Copyright (c) 2015-2022 Douglas Christopher Wilson <doug@somethingdoug.com>
+npm:mime-types@2.1.35,https://registry.npmjs.org/mime-types/-/mime-types-2.1.35.tgz,MIT,Copyright (c) 2014 Jonathan Ong <me@jongleberry.com> | Copyright (c) 2015 Douglas Christopher Wilson <doug@somethingdoug.com>
+npm:mimic-fn@2.1.0,https://www.npmjs.com/package/mimic-fn/v/2.1.0,MIT,Sindre Sorhus (sindresorhus.com)
+npm:mimic-fn@3.1.0,https://www.npmjs.com/package/mimic-fn/v/3.1.0,MIT,Sindre Sorhus (sindresorhus.com)
+npm:minimatch@9.0.4,https://www.npmjs.com/package/minimatch/v/9.0.4,ISC,Isaac Z. Schlueter (http://blog.izs.me)
+npm:minipass@7.0.4,https://www.npmjs.com/package/minipass/v/7.0.4,ISC,Isaac Z. Schlueter (http://blog.izs.me/)
+npm:mkdirp@3.0.1,https://registry.npmjs.org/mkdirp/-/mkdirp-3.0.1.tgz,MIT,Copyright (c) 2011-2023 James Halliday (mail@substack.net) and Isaac Z. Schlueter (i@izs.me)
+npm:monaco-editor@0.45.0,https://www.npmjs.com/package/monaco-editor/v/0.45.0,MIT,Microsoft Corporation (https://github.com/microsoft/monaco-editor)
+npm:monaco-languageserver-types@0.4.0,https://www.npmjs.com/package/monaco-languageserver-types/v/0.4.0,MIT,Remco Haszing (https://github.com/remcohaszing/monaco-languageserver-types)
+npm:monaco-marker-data-provider@1.2.3,https://www.npmjs.com/package/monaco-marker-data-provider/v/1.2.3,MIT,Remco Haszing (https://github.com/remcohaszing/monaco-marker-data-provider#readme)
+npm:monaco-types@0.1.0,https://www.npmjs.com/package/monaco-types/v/0.1.0,MIT,Remco Haszing (https://github.com/remcohaszing/monaco-types#readme)
+npm:monaco-worker-manager@2.0.1,https://www.npmjs.com/package/monaco-worker-manager/v/2.0.1,MIT,Remco Haszing (https://github.com/remcohaszing/monaco-worker-manager#readme)
+npm:monaco-yaml@5.2.2,https://www.npmjs.com/package/monaco-yaml/v/5.2.2,MIT,Kevin Decker (http://incaseofstairs.com)
+npm:mousetrap@1.6.1,https://www.npmjs.com/package/mousetrap/v/1.6.1,Apache-2.0,Craig Campbell (https://github.com/ccampbell/mousetrap)
+npm:ms@2.1.2,https://registry.npmjs.org/ms/-/ms-2.1.2.tgz,MIT,"Copyright (c) 2016 Zeit, Inc."
+npm:msw@0.43.1,https://www.npmjs.com/package/msw/v/0.43.1,MIT,Artem Zakharchenko (https://github.com/kettanaito)
+npm:mute-stream@0.0.8,https://www.npmjs.com/package/mute-stream/v/0.0.8,ISC,Isaac Z. Schlueter (http://blog.izs.me/)
+npm:native-promise-only@0.8.1,https://www.npmjs.com/package/native-promise-only/v/0.8.1,MIT,Kyle Simpson (http://github.com/getify/native-promise-only)
+npm:node-fetch@2.7.0,https://www.npmjs.com/package/node-fetch/v/2.7.0,MIT,David Frank (https://github.com/bitinn/node-fetch)
+npm:normalize-path@3.0.0,https://www.npmjs.com/package/normalize-path/v/3.0.0,MIT,Jon Schlinkert (https://github.com/jonschlinkert)
+npm:nwsapi@2.2.12,https://www.npmjs.com/package/nwsapi/v/2.2.12,MIT,Diego Perini (http://javascript.nwbox.com/nwsapi/)
+npm:object-assign@4.1.1,https://www.npmjs.com/package/object-assign/v/4.1.1,MIT,Sindre Sorhus (sindresorhus.com)
+npm:odiff@1.4.2,https://registry.npmjs.org/odiff/-/odiff-1.4.2.tgz,MIT,NOASSERTION — upstream inventory supplies only a project URL
+npm:onetime@5.1.2,https://www.npmjs.com/package/onetime/v/5.1.2,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:ora@5.4.1,https://www.npmjs.com/package/ora/v/5.4.1,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:os-tmpdir@1.0.2,https://www.npmjs.com/package/os-tmpdir/v/1.0.2,MIT,Sindre Sorhus (sindresorhus.com)
+npm:outvariant@1.3.0,https://www.npmjs.com/package/outvariant/v/1.3.0,MIT,Artem Zakharchenko (https://github.com/open-draft/outvariant)
+npm:p-defer@1.0.0,https://www.npmjs.com/package/p-defer/v/1.0.0,MIT,Sindre Sorhus (sindresorhus.com)
+npm:p-limit@3.1.0,https://www.npmjs.com/package/p-limit/v/3.1.0,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:p-locate@5.0.0,https://www.npmjs.com/package/p-locate/v/5.0.0,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:pako@0.2.9,https://registry.npmjs.org/pako/-/pako-0.2.9.tgz,MIT,Copyright (C) 2014-2016 by Vitaly Puzrin
+npm:parse-entities@4.0.0,https://www.npmjs.com/package/parse-entities/v/4.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:parse5@7.0.0,https://www.npmjs.com/package/parse5/v/7.0.0,MIT,Ivan Nikulin (https://github.com/inikulin)
+npm:parse5@7.1.2,https://www.npmjs.com/package/parse5/v/7.1.2,MIT,Ivan Nikulin (https://github.com/inikulin)
+npm:path-browserify@1.0.1,https://www.npmjs.com/package/path-browserify/v/1.0.1,MIT,James Halliday (http://substack.net)
+npm:path-exists@4.0.0,https://www.npmjs.com/package/path-exists/v/4.0.0,MIT,Sindre Sorhus (sindresorhus.com)
+npm:path-key@3.1.1,https://www.npmjs.com/package/path-key/v/3.1.1,MIT,Sindre Sorhus (sindresorhus.com)
+npm:path-scurry@1.10.1,https://www.npmjs.com/package/path-scurry/v/1.10.1,BlueOak-1.0.0,Isaac Z. Schlueter (https://blog.izs.me)
+npm:path-to-regexp@6.3.0,https://registry.npmjs.org/path-to-regexp/-/path-to-regexp-6.3.0.tgz,MIT,Copyright (c) 2014 Blake Embrey (hello@blakeembrey.com)
+npm:picocolors@1.1.1,https://www.npmjs.com/package/picocolors/v/1.1.1,ISC,Alexey Raspopov (alexeyraspopov/picocolors)
+npm:picomatch@2.3.2,https://www.npmjs.com/package/picomatch/v/2.3.2,MIT,Jon Schlinkert (https://github.com/jonschlinkert)
+npm:pluralize@8.0.0,https://www.npmjs.com/package/pluralize/v/8.0.0,MIT,Blake Embrey (http://blakeembrey.me)
+npm:prettier@2.8.8,https://www.npmjs.com/package/prettier/v/2.8.8,MIT,James Long (https://prettier.io)
+npm:pretty-format@27.5.1,https://www.npmjs.com/package/pretty-format/v/27.5.1,MIT,James Kyle (https://github.com/facebook/jest)
+npm:process@0.11.10,https://www.npmjs.com/package/process/v/0.11.10,MIT,Roman Shtylman (https://github.com/shtylman/node-process)
+npm:prompts@2.4.2,https://www.npmjs.com/package/prompts/v/2.4.2,MIT,Terkel Gjervig (https://terkel.com)
+npm:prop-types@15.8.1,https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz,MIT,"Copyright (c) 2013-present, Facebook, Inc."
+npm:property-information@6.1.1,https://www.npmjs.com/package/property-information/v/6.1.1,MIT,Titus Wormer (https://wooorm.com)
+npm:property-information@7.1.0,https://www.npmjs.com/package/property-information/v/7.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:psl@1.9.0,https://www.npmjs.com/package/psl/v/1.9.0,MIT,Lupo Montero (https://lupomontero.com/)
+npm:punycode@2.1.1,https://www.npmjs.com/package/punycode/v/2.1.1,MIT,Mathias Bynens (https://mathiasbynens.be/)
+npm:punycode@2.3.1,https://www.npmjs.com/package/punycode/v/2.3.1,MIT,Mathias Bynens (https://mathiasbynens.be/)
+npm:qr.js@0.0.0,https://www.npmjs.com/package/qr.js/v/0.0.0,MIT,Roman Shtylman (https://github.com/shtylman/qr.js)
+npm:querystringify@2.2.0,https://www.npmjs.com/package/querystringify/v/2.2.0,MIT,Arnout Kazemier (https://github.com/unshiftio/querystringify)
+npm:rc-slider@11.1.9,https://registry.npmjs.org/rc-slider/-/rc-slider-11.1.9.tgz,MIT,"Copyright (c) 2015-present Alipay.com, https://www.alipay.com"
+npm:rc-util@5.44.4,https://registry.npmjs.org/rc-util/-/rc-util-5.44.4.tgz,MIT,"Copyright (c) 2014-present yiminghe | Copyright (c) 2015-present Alipay.com, https://www.alipay.com"
+npm:react-calendar@5.0.0,https://www.npmjs.com/package/react-calendar/v/5.0.0,MIT,Wojciech Maj (https://github.com/wojtekmaj/react-calendar)
+npm:react-dom@18.3.1,https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz,MIT,"Copyright (c) Facebook, Inc. and its affiliates."
+npm:react-fast-compare@3.2.0,https://www.npmjs.com/package/react-fast-compare/v/3.2.0,MIT,Chris Bolin (https://github.com/FormidableLabs/react-fast-compare)
+npm:react-fast-compare@3.2.2,https://registry.npmjs.org/react-fast-compare/-/react-fast-compare-3.2.2.tgz,MIT,Copyright (c) 2018 Formidable Labs | Copyright (c) 2017 Evgeny Poberezkin
+npm:react-highlight-words@0.17.0,https://www.npmjs.com/package/react-highlight-words/v/0.17.0,MIT,Brian Vaughn (https://github.com/bvaughn/react-highlight-words#readme)
+npm:react-is@16.13.1,https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz,MIT,"Copyright (c) Facebook, Inc. and its affiliates."
+npm:react-is@17.0.2,https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz,MIT,"Copyright (c) Facebook, Inc. and its affiliates."
+npm:react-is@18.2.0,https://registry.npmjs.org/react-is/-/react-is-18.2.0.tgz,MIT,"Copyright (c) Facebook, Inc. and its affiliates."
+npm:react-is@18.3.1,https://registry.npmjs.org/react-is/-/react-is-18.3.1.tgz,MIT,"Copyright (c) Facebook, Inc. and its affiliates."
+npm:react-lifecycles-compat@3.0.4,https://registry.npmjs.org/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz,MIT,"Copyright (c) 2013-present, Facebook, Inc."
+npm:react-markdown@10.1.0,https://www.npmjs.com/package/react-markdown/v/10.1.0,MIT,Espen Hovlandsdal (remarkjs/react-markdown)
+npm:react-modal@3.8.1,https://registry.npmjs.org/react-modal/-/react-modal-3.8.1.tgz,MIT,Copyright (c) 2017 Ryan Florence
+npm:react-popper@2.3.0,https://registry.npmjs.org/react-popper/-/react-popper-2.3.0.tgz,MIT,Copyright (c) 2018 React Popper authors
+npm:react-qr-code@2.0.18,https://www.npmjs.com/package/react-qr-code/v/2.0.18,MIT,Ross Khanas (https://github.com/rosskhanas/react-qr-code)
+npm:react-simple-code-editor@0.10.0,https://www.npmjs.com/package/react-simple-code-editor/v/0.10.0,MIT,Satyajit Sahoo (https://github.com/satya164/)
+npm:react-split-pane@0.1.92,https://www.npmjs.com/package/react-split-pane/v/0.1.92,MIT,tomkp (https://github.com/tomkp/react-split-pane)
+npm:react-style-proptype@3.2.2,https://www.npmjs.com/package/react-style-proptype/v/3.2.2,MIT,Frankie Bagnardi (https://github.com/brigand/react-style-proptype#readme)
+npm:react-table@7.8.0,https://registry.npmjs.org/react-table/-/react-table-7.8.0.tgz,MIT,Copyright (c) 2016 Tanner Linsley
+npm:react-tether@2.0.8,https://www.npmjs.com/package/react-tether/v/2.0.8,MIT,Travis Arnold (http://souporserious.com)
+npm:react-window@1.8.11,https://www.npmjs.com/package/react-window/v/1.8.11,MIT,Brian Vaughn (https://github.com/bvaughn/)
+npm:react@18.3.1,https://registry.npmjs.org/react/-/react-18.3.1.tgz,MIT,"Copyright (c) Facebook, Inc. and its affiliates."
+npm:readable-stream@3.6.2,https://registry.npmjs.org/readable-stream/-/readable-stream-3.6.2.tgz,MIT,"Copyright Node.js contributors. All rights reserved. | Copyright Joyent, Inc. and other Node contributors. All rights reserved."
+npm:readdirp@3.6.0,https://www.npmjs.com/package/readdirp/v/3.6.0,MIT,Thorsten Lorenz (thlorenz.com)
+npm:refractor@4.9.0,https://www.npmjs.com/package/refractor/v/4.9.0,MIT,Titus Wormer (https://wooorm.com)
+npm:regenerator-runtime@0.14.0,https://www.npmjs.com/package/regenerator-runtime/v/0.14.0,MIT,Ben Newman (https://github.com/facebook/regenerator/tree/main/packages/runtime)
+npm:rehype-document@7.0.3,https://www.npmjs.com/package/rehype-document/v/7.0.3,MIT,Titus Wormer (https://wooorm.com)
+npm:rehype-minify-whitespace@4.0.5,https://www.npmjs.com/package/rehype-minify-whitespace/v/4.0.5,MIT,Titus Wormer (https://wooorm.com)
+npm:rehype-parse@9.0.1,https://www.npmjs.com/package/rehype-parse/v/9.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:rehype-stringify@10.0.1,https://www.npmjs.com/package/rehype-stringify/v/10.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:remark-gfm@4.0.1,https://www.npmjs.com/package/remark-gfm/v/4.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:remark-parse@11.0.0,https://www.npmjs.com/package/remark-parse/v/11.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:remark-rehype@11.1.2,https://www.npmjs.com/package/remark-rehype/v/11.1.2,MIT,Titus Wormer (https://wooorm.com)
+npm:remark-stringify@11.0.0,https://www.npmjs.com/package/remark-stringify/v/11.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:repeat-string@1.6.1,https://www.npmjs.com/package/repeat-string/v/1.6.1,MIT,Jon Schlinkert (http://github.com/jonschlinkert)
+npm:requestidlecallback-polyfill@1.0.2,https://www.npmjs.com/package/requestidlecallback-polyfill/v/1.0.2,MIT AND Apache-2.0,Pedro Ladaria (https://github.com/pladaria/requestidlecallback-polyfill#readme)
+npm:require-directory@2.1.1,https://www.npmjs.com/package/require-directory/v/2.1.1,MIT,Troy Goode (http://github.com/troygoode/)
+npm:requires-port@1.0.0,https://www.npmjs.com/package/requires-port/v/1.0.0,MIT,Arnout Kazemier (https://github.com/unshiftio/requires-port)
+npm:resize-observer-polyfill@1.5.1,https://www.npmjs.com/package/resize-observer-polyfill/v/1.5.1,MIT,Denis Rul (https://github.com/que-etc/resize-observer-polyfill)
+npm:restore-cursor@3.1.0,https://www.npmjs.com/package/restore-cursor/v/3.1.0,MIT,Sindre Sorhus (sindresorhus.com)
+npm:reusify@1.0.4,https://www.npmjs.com/package/reusify/v/1.0.4,MIT,Matteo Collina (https://github.com/mcollina/reusify#readme)
+npm:rrweb-cssom@0.6.0,https://www.npmjs.com/package/rrweb-cssom/v/0.6.0,MIT,Nikita Vasilyev (rrweb-io/CSSOM)
+npm:rrweb-cssom@0.7.1,https://www.npmjs.com/package/rrweb-cssom/v/0.7.1,MIT,Nikita Vasilyev (rrweb-io/CSSOM)
+npm:run-async@2.4.1,https://www.npmjs.com/package/run-async/v/2.4.1,MIT,Simon Boudrias (SBoudrias/run-async)
+npm:run-parallel@1.1.9,https://www.npmjs.com/package/run-parallel/v/1.1.9,MIT,Feross Aboukhadijeh (http://feross.org/)
+npm:rxjs@7.5.5,https://www.npmjs.com/package/rxjs/v/7.5.5,Apache-2.0,Ben Lesh (https://rxjs.dev)
+npm:safe-buffer@5.2.1,https://www.npmjs.com/package/safe-buffer/v/5.2.1,MIT,Feross Aboukhadijeh (https://feross.org)
+npm:safer-buffer@2.1.2,https://www.npmjs.com/package/safer-buffer/v/2.1.2,MIT,Nikita Skovoroda (https://github.com/ChALkeR)
+npm:saxes@6.0.0,https://www.npmjs.com/package/saxes/v/6.0.0,ISC,Louis-Dominique Dubeau (https://github.com/lddubeau/saxes)
+npm:scheduler-polyfill@1.3.0,https://www.npmjs.com/package/scheduler-polyfill/v/1.3.0,Apache-2.0,The Chromium Authors (https://github.com/GoogleChromeLabs/scheduler-polyfill)
+npm:scheduler@0.23.2,https://registry.npmjs.org/scheduler/-/scheduler-0.23.2.tgz,MIT,"Copyright (c) Facebook, Inc. and its affiliates."
+npm:set-cookie-parser@2.4.8,https://www.npmjs.com/package/set-cookie-parser/v/2.4.8,MIT,Nathan Friedly (http://nfriedly.com/)
+npm:shebang-command@2.0.0,https://www.npmjs.com/package/shebang-command/v/2.0.0,MIT,Kevin Mårtensson (github.com/kevva)
+npm:shebang-regex@3.0.0,https://www.npmjs.com/package/shebang-regex/v/3.0.0,MIT,Sindre Sorhus (sindresorhus.com)
+npm:signal-exit@3.0.7,https://www.npmjs.com/package/signal-exit/v/3.0.7,ISC,Ben Coe (https://github.com/tapjs/signal-exit)
+npm:signal-exit@4.0.2,https://www.npmjs.com/package/signal-exit/v/4.0.2,ISC,Ben Coe (https://github.com/tapjs/signal-exit)
+npm:sisteransi@1.0.5,https://www.npmjs.com/package/sisteransi/v/1.0.5,MIT,Terkel Gjervig (https://terkel.com)
+npm:space-separated-tokens@2.0.1,https://www.npmjs.com/package/space-separated-tokens/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:state-local@1.0.7,https://www.npmjs.com/package/state-local/v/1.0.7,MIT,Suren Atoyan (https://github.com/suren-atoyan/state-local#readme)
+npm:statuses@2.0.1,https://registry.npmjs.org/statuses/-/statuses-2.0.1.tgz,MIT,Copyright (c) 2014 Jonathan Ong <me@jongleberry.com> | Copyright (c) 2016 Douglas Christopher Wilson <doug@somethingdoug.com>
+npm:store2@2.14.4,https://www.npmjs.com/package/store2/v/2.14.4,MIT,Nathan Bubna (http://www.esha.com/)
+npm:strict-event-emitter@0.2.4,https://www.npmjs.com/package/strict-event-emitter/v/0.2.4,MIT,Artem Zakharchenko (https://github.com/open-draft/strict-event-emitter)
+npm:string-width-cjs@string-width@4.2.3,https://www.npmjs.com/package/string-width-cjs/v/string-width@4.2.3,MIT,Sindre Sorhus (sindresorhus.com)
+npm:string-width@4.2.3,https://www.npmjs.com/package/string-width/v/4.2.3,MIT,Sindre Sorhus (sindresorhus.com)
+npm:string-width@5.1.2,https://www.npmjs.com/package/string-width/v/5.1.2,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:string_decoder@1.3.0,https://registry.npmjs.org/string_decoder/-/string_decoder-1.3.0.tgz,MIT,"Copyright Node.js contributors. All rights reserved. | Copyright Joyent, Inc. and other Node contributors. All rights reserved."
+npm:stringify-entities@4.0.3,https://www.npmjs.com/package/stringify-entities/v/4.0.3,MIT,Titus Wormer (https://wooorm.com)
+npm:strip-ansi-cjs@strip-ansi@6.0.1,https://www.npmjs.com/package/strip-ansi-cjs/v/strip-ansi@6.0.1,MIT,Sindre Sorhus (sindresorhus.com)
+npm:strip-ansi@6.0.1,https://www.npmjs.com/package/strip-ansi/v/6.0.1,MIT,Sindre Sorhus (sindresorhus.com)
+npm:strip-ansi@7.0.1,https://www.npmjs.com/package/strip-ansi/v/7.0.1,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:style-to-js@1.1.21,https://www.npmjs.com/package/style-to-js/v/1.1.21,MIT,Mark (https://github.com/remarkablemark/style-to-js)
+npm:style-to-object@1.0.14,https://www.npmjs.com/package/style-to-object/v/1.0.14,MIT,Mark (https://github.com/remarkablemark/style-to-object)
+npm:supports-color@7.1.0,https://www.npmjs.com/package/supports-color/v/7.1.0,MIT,Sindre Sorhus (sindresorhus.com)
+npm:symbol-tree@3.2.4,https://www.npmjs.com/package/symbol-tree/v/3.2.4,MIT,Joris van der Wel (https://github.com/jsdom/js-symbol-tree#symbol-tree)
+npm:tabbable@6.4.0,https://www.npmjs.com/package/tabbable/v/6.4.0,MIT,David Clark (http://davidtheclark.com/)
+npm:temporal-polyfill@1.0.4,https://registry.npmjs.org/temporal-polyfill/-/temporal-polyfill-1.0.4.tgz,MIT,Copyright (c) 2026 Adam Shaw
+npm:temporal-spec@1.0.1,https://registry.npmjs.org/temporal-spec/-/temporal-spec-1.0.1.tgz,Apache-2.0,"Copyright 2026 Adam Shaw | (https://github.com/microsoft/TypeScript), Copyright (c) Microsoft Corporation, licensed under the Apache License, Version 2.0."
+npm:temporal-utils@1.0.2,https://registry.npmjs.org/temporal-utils/-/temporal-utils-1.0.2.tgz,MIT,Copyright (c) 2026 Adam Shaw
+npm:tether@1.4.7,https://www.npmjs.com/package/tether/v/1.4.7,MIT,Nicholas Hwang (https://github.com/HubSpot/tether)
+npm:text-encoding-utf-8@1.0.2,https://registry.npmjs.org/text-encoding-utf-8/-/text-encoding-utf-8-1.0.2.tgz,LicenseRef-TextEncoding-Bundle,NOASSERTION — upstream inventory supplies only a project URL
+npm:textarea-caret@3.1.0,https://registry.npmjs.org/textarea-caret/-/textarea-caret-3.1.0.tgz,MIT,Copyright (c) 2015 Jonathan Ong me@jongleberry.com
+npm:through@2.3.8,https://www.npmjs.com/package/through/v/2.3.8,MIT,Dominic Tarr (dominictarr.com)
+npm:tiny-inflate@1.0.3,https://www.npmjs.com/package/tiny-inflate/v/1.0.3,MIT,Devon Govett (https://github.com/devongovett/tiny-inflate)
+npm:tippy.js@6.3.7,https://registry.npmjs.org/tippy.js/-/tippy.js-6.3.7.tgz,MIT,Copyright (c) 2017-present atomiks
+npm:tmp@0.0.33,https://www.npmjs.com/package/tmp/v/0.0.33,MIT,KARASZI István (http://raszi.hu/)
+npm:to-regex-range@5.0.1,https://www.npmjs.com/package/to-regex-range/v/5.0.1,MIT,Jon Schlinkert (https://github.com/jonschlinkert)
+npm:toggle-selection@1.0.6,https://www.npmjs.com/package/toggle-selection/v/1.0.6,MIT,sudodoki (sudodoki.name)
+npm:tough-cookie@4.1.4,https://www.npmjs.com/package/tough-cookie/v/4.1.4,BSD-3-Clause,Jeremy Stashewsky (https://github.com/salesforce/tough-cookie)
+npm:tr46@0.0.3,https://www.npmjs.com/package/tr46/v/0.0.3,MIT,Sebastian Mayr (https://github.com/Sebmaster/tr46.js#readme)
+npm:tr46@5.0.0,https://www.npmjs.com/package/tr46/v/5.0.0,MIT,Sebastian Mayr (https://github.com/jsdom/tr46)
+npm:trim-lines@3.0.1,https://www.npmjs.com/package/trim-lines/v/3.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:trim-trailing-lines@2.0.0,https://www.npmjs.com/package/trim-trailing-lines/v/2.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:trough@2.0.2,https://www.npmjs.com/package/trough/v/2.0.2,MIT,Titus Wormer (https://wooorm.com)
+npm:ts-morph@23.0.0,https://www.npmjs.com/package/ts-morph/v/23.0.0,MIT,David Sherret (https://github.com/dsherret/ts-morph#readme)
+npm:ts-pattern@5.8.0,https://www.npmjs.com/package/ts-pattern/v/5.8.0,MIT,Gabriel Vergnaud (https://github.com/gvergnaud/ts-pattern#readme)
+npm:tslib@2.5.0,https://www.npmjs.com/package/tslib/v/2.5.0,0BSD,Microsoft Corp. (https://www.typescriptlang.org/)
+npm:tslib@2.8.1,https://www.npmjs.com/package/tslib/v/2.8.1,0BSD,Microsoft Corp. (https://www.typescriptlang.org/)
+npm:type-fest@0.20.2,https://www.npmjs.com/package/type-fest/v/0.20.2,(MIT OR CC0-1.0),Sindre Sorhus (https://sindresorhus.com)
+npm:type-fest@0.21.3,https://www.npmjs.com/package/type-fest/v/0.21.3,(MIT OR CC0-1.0),Sindre Sorhus (https://sindresorhus.com)
+npm:type-fest@2.19.0,https://www.npmjs.com/package/type-fest/v/2.19.0,(MIT OR CC0-1.0),Sindre Sorhus (https://sindresorhus.com)
+npm:typescript@5.5.4,https://www.npmjs.com/package/typescript/v/5.5.4,Apache-2.0,Microsoft Corp. (https://www.typescriptlang.org/)
+npm:undici-types@7.16.0,https://registry.npmjs.org/undici-types/-/undici-types-7.16.0.tgz,MIT,Copyright (c) Matteo Collina and Undici contributors
+npm:undici@5.29.0,https://registry.npmjs.org/undici/-/undici-5.29.0.tgz,MIT,Copyright (c) 2020 Ethan Arrowood | Copyright (c) Matteo Collina and Undici contributors
+npm:unicode-trie@2.0.0,https://www.npmjs.com/package/unicode-trie/v/2.0.0,MIT,Devon Govett (https://github.com/devongovett/unicode-trie)
+npm:unified@11.0.5,https://www.npmjs.com/package/unified/v/11.0.5,MIT,Titus Wormer (https://wooorm.com)
+npm:unist-util-find-after@4.0.0,https://www.npmjs.com/package/unist-util-find-after/v/4.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:unist-util-is@4.0.2,https://www.npmjs.com/package/unist-util-is/v/4.0.2,MIT,Titus Wormer (https://wooorm.com)
+npm:unist-util-is@5.1.1,https://www.npmjs.com/package/unist-util-is/v/5.1.1,MIT,Titus Wormer (https://wooorm.com)
+npm:unist-util-is@6.0.0,https://www.npmjs.com/package/unist-util-is/v/6.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:unist-util-position@5.0.0,https://www.npmjs.com/package/unist-util-position/v/5.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:unist-util-stringify-position@4.0.0,https://www.npmjs.com/package/unist-util-stringify-position/v/4.0.0,MIT,Titus Wormer (https://wooorm.com)
+npm:unist-util-visit-parents@4.1.1,https://www.npmjs.com/package/unist-util-visit-parents/v/4.1.1,MIT,Titus Wormer (https://wooorm.com)
+npm:unist-util-visit-parents@5.1.0,https://www.npmjs.com/package/unist-util-visit-parents/v/5.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:unist-util-visit-parents@6.0.1,https://www.npmjs.com/package/unist-util-visit-parents/v/6.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:unist-util-visit@3.1.0,https://www.npmjs.com/package/unist-util-visit/v/3.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:unist-util-visit@4.1.0,https://www.npmjs.com/package/unist-util-visit/v/4.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:unist-util-visit@5.1.0,https://www.npmjs.com/package/unist-util-visit/v/5.1.0,MIT,Titus Wormer (https://wooorm.com)
+npm:universalify@0.2.0,https://www.npmjs.com/package/universalify/v/0.2.0,MIT,Ryan Zimmerman (https://github.com/RyanZim/universalify#readme)
+npm:url-parse@1.5.10,https://www.npmjs.com/package/url-parse/v/1.5.10,MIT,Arnout Kazemier (https://github.com/unshiftio/url-parse)
+npm:use-effect-event@2.0.3,https://www.npmjs.com/package/use-effect-event/v/2.0.3,MIT,Sanity.io (https://github.com/sanity-io/use-effect-event)
+npm:util-deprecate@1.0.2,https://www.npmjs.com/package/util-deprecate/v/1.0.2,MIT,Nathan Rajlich (http://n8.io/)
+npm:uuid@9.0.1,https://registry.npmjs.org/uuid/-/uuid-9.0.1.tgz,MIT,Copyright (c) 2010-2020 Robert Kieffer and other contributors
+npm:vfile-location@5.0.3,https://www.npmjs.com/package/vfile-location/v/5.0.3,MIT,Titus Wormer (https://wooorm.com)
+npm:vfile-message@4.0.2,https://www.npmjs.com/package/vfile-message/v/4.0.2,MIT,Titus Wormer (https://wooorm.com)
+npm:vfile@6.0.3,https://www.npmjs.com/package/vfile/v/6.0.3,MIT,Titus Wormer (https://wooorm.com)
+npm:vscode-jsonrpc@8.2.0,https://www.npmjs.com/package/vscode-jsonrpc/v/8.2.0,MIT,Microsoft Corporation (https://github.com/Microsoft/vscode-languageserver-node)
+npm:vscode-languageserver-protocol@3.17.5,https://www.npmjs.com/package/vscode-languageserver-protocol/v/3.17.5,MIT,Microsoft Corporation (https://github.com/Microsoft/vscode-languageserver-node)
+npm:vscode-languageserver-textdocument@1.0.12,https://www.npmjs.com/package/vscode-languageserver-textdocument/v/1.0.12,MIT,Microsoft Corporation (https://github.com/Microsoft/vscode-languageserver-node)
+npm:vscode-languageserver-types@3.17.5,https://www.npmjs.com/package/vscode-languageserver-types/v/3.17.5,MIT,Microsoft Corporation (https://github.com/Microsoft/vscode-languageserver-node)
+npm:vscode-uri@3.0.8,https://www.npmjs.com/package/vscode-uri/v/3.0.8,MIT,Microsoft (https://github.com/microsoft/vscode-uri#readme)
+npm:w3c-xmlserializer@5.0.0,https://registry.npmjs.org/w3c-xmlserializer/-/w3c-xmlserializer-5.0.0.tgz,MIT,NOASSERTION — upstream inventory supplies only a project URL
+npm:warning@3.0.0,https://www.npmjs.com/package/warning/v/3.0.0,BSD-3-Clause,Berkeley Martinez (http://www.freecodecamp.com)
+npm:warning@4.0.3,https://registry.npmjs.org/warning/-/warning-4.0.3.tgz,MIT,"Copyright (c) 2013-present, Facebook, Inc."
+npm:wcwidth@1.0.1,https://www.npmjs.com/package/wcwidth/v/1.0.1,MIT,Tim Oxley (https://github.com/timoxley/wcwidth#readme)
+npm:weakmap-polyfill@2.0.4,https://www.npmjs.com/package/weakmap-polyfill/v/2.0.4,MIT,polygonplanet (https://github.com/polygonplanet/weakmap-polyfill)
+npm:web-namespaces@2.0.1,https://www.npmjs.com/package/web-namespaces/v/2.0.1,MIT,Titus Wormer (https://wooorm.com)
+npm:webidl-conversions@3.0.1,https://www.npmjs.com/package/webidl-conversions/v/3.0.1,BSD-2-Clause,Domenic Denicola (https://domenic.me/)
+npm:webidl-conversions@7.0.0,https://www.npmjs.com/package/webidl-conversions/v/7.0.0,BSD-2-Clause,Domenic Denicola (https://domenic.me/)
+npm:whatwg-encoding@3.1.1,https://www.npmjs.com/package/whatwg-encoding/v/3.1.1,MIT,Domenic Denicola (https://domenic.me/)
+npm:whatwg-fetch@3.6.2,https://registry.npmjs.org/whatwg-fetch/-/whatwg-fetch-3.6.2.tgz,MIT,"Copyright (c) 2014-2016 GitHub, Inc."
+npm:whatwg-mimetype@4.0.0,https://www.npmjs.com/package/whatwg-mimetype/v/4.0.0,MIT,Domenic Denicola (https://domenic.me/)
+npm:whatwg-url@14.0.0,https://www.npmjs.com/package/whatwg-url/v/14.0.0,MIT,Sebastian Mayr (jsdom/whatwg-url)
+npm:whatwg-url@5.0.0,https://www.npmjs.com/package/whatwg-url/v/5.0.0,MIT,Sebastian Mayr (jsdom/whatwg-url)
+npm:which@2.0.2,https://www.npmjs.com/package/which/v/2.0.2,ISC,Isaac Z. Schlueter (http://blog.izs.me)
+npm:widest-line@3.1.0,https://www.npmjs.com/package/widest-line/v/3.1.0,MIT,Sindre Sorhus (sindresorhus.com)
+npm:wrap-ansi-cjs@wrap-ansi@7.0.0,https://www.npmjs.com/package/wrap-ansi-cjs/v/wrap-ansi@7.0.0,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:wrap-ansi@7.0.0,https://www.npmjs.com/package/wrap-ansi/v/7.0.0,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:wrap-ansi@8.1.0,https://www.npmjs.com/package/wrap-ansi/v/8.1.0,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:ws@8.18.0,https://www.npmjs.com/package/ws/v/8.18.0,MIT,Einar Otto Stangvik (http://2x.io)
+npm:xml-name-validator@5.0.0,https://www.npmjs.com/package/xml-name-validator/v/5.0.0,Apache-2.0,Domenic Denicola (https://domenic.me/)
+npm:xmlchars@2.2.0,https://www.npmjs.com/package/xmlchars/v/2.2.0,MIT,Louis-Dominique Dubeau (https://github.com/lddubeau/xmlchars)
+npm:y18n@5.0.8,https://www.npmjs.com/package/y18n/v/5.0.8,ISC,Ben Coe (https://github.com/yargs/y18n)
+npm:yaml@2.2.2,https://www.npmjs.com/package/yaml/v/2.2.2,ISC,Eemeli Aro (https://eemeli.org/yaml/)
+npm:yargs-parser@21.1.1,https://www.npmjs.com/package/yargs-parser/v/21.1.1,ISC,Ben Coe (https://github.com/yargs/yargs-parser)
+npm:yargs@17.7.2,https://registry.npmjs.org/yargs/-/yargs-17.7.2.tgz,MIT,Copyright 2010 James Halliday (mail@substack.net); Modified work Copyright 2014 Contributors (ben@npmjs.com)
+npm:yocto-queue@0.1.0,https://www.npmjs.com/package/yocto-queue/v/0.1.0,MIT,Sindre Sorhus (https://sindresorhus.com)
+npm:zod-validation-error@3.4.0,https://www.npmjs.com/package/zod-validation-error/v/3.4.0,MIT,Dimitrios C. Michalakos (https://github.com/jmike)
+npm:zod@3.23.8,https://www.npmjs.com/package/zod/v/3.23.8,MIT,Colin McDonnell (https://zod.dev)
+npm:zwitch@2.0.2,https://www.npmjs.com/package/zwitch/v/2.0.2,MIT,Titus Wormer (https://wooorm.com)
+npm:zwitch@2.0.4,https://www.npmjs.com/package/zwitch/v/2.0.4,MIT,Titus Wormer (https://wooorm.com)
+pypi:Markdown@3.8.2,https://pypi.org/project/Markdown/3.8.2/,BSD-3-Clause,"Copyright 2007, 2008 The Python Markdown Project (v. 1.7 and later) | Copyright 2004, 2005, 2006 Yuri Takhteyev (v. 0.2-1.6b) | Copyright 2004 Manfred Stienstra (the original version)"
+pypi:contourpy@1.4.0,https://pypi.org/project/contourpy/1.4.0/,BSD-3-Clause,"Copyright (c) 2021-2026, ContourPy Developers."
+pypi:cycler@0.12.1,https://pypi.org/project/cycler/0.12.1/,BSD-3-Clause,"Copyright (c) 2015, matplotlib project"
+pypi:fonttools@4.65.0,https://pypi.org/project/fonttools/4.65.0/,MIT,"Copyright (c) 2017 Just van Rossum | Copyright (c) 2010, Pablo Impallari (www.impallari.com|impallari@gmail.com), with Reserved Font Name Lobster. | Copyright (c) 2001-2010 by the STI Pub Companies, consisting of the American | Portions copyright (c) 1998-2003 by MicroPress, Inc. | Portions copyright (c) 1990 by Elsevier, Inc. | Copyright (c) 2015-2020 Belleve Invis (belleve@typeof.net). | FontTools includes cu2qu, which is Copyright 2016 Google Inc. All Rights Reserved. | Copyright (c) 2017-2021 The PyFilesystem2 contributors | Copyright (c) 2016-2019 Will McGugan"
+pypi:kiwisolver@1.5.1,https://pypi.org/project/kiwisolver/1.5.1/,BSD-3-Clause,"Copyright (c) 2013-2026, Nucleic Development Team | Copyright (c) 2013-2026, Nucleic Development Team."
+pypi:matplotlib@3.11.2,https://pypi.org/project/matplotlib/3.11.2/,LicenseRef-Matplotlib,"License Agreement and MDT's notice of copyright, i.e., ""Copyright (c) 2012- Matplotlib Development Team; All Rights Reserved"" are retained in | License Agreement and JDH's notice of copyright, i.e., ""Copyright (c) 2002-2011 John D. Hunter; All Rights Reserved"" are retained in | Copyright (c) 1997, 2009, American Mathematical Society (http://www.ams.org). | Copyright (C) 1994, 1995, Basil K. Malyshev. All Rights Reserved. | Copyright (c) 2002 Cynthia Brewer, Mark Harrower, and The Pennsylvania State University. | (c) Copyright 1989-1992, Bitstream Inc., Cambridge, MA. | Copyright © 2010-2022  Google, Inc. | Copyright © 2015-2020  Ebrahim Byagowi | Copyright © 2019,2020  Facebook, Inc. | Copyright © 2012,2015  Mozilla Foundation | Copyright © 2011  Codethink Limited | Copyright © 2008,2010  Nokia Corporation and/or its subsidiary(-ies) | Copyright © 2009  Keith Stribley | Copyright © 2011  Martin Hosken and SIL International | Copyright © 2007  Chris Wilson | Copyright © 2005,2006,2020,2021,2022,2023  Behdad Esfahbod | Copyright © 2004,2007,2008,2009,2010,2013,2021,2022,2023  Red Hat, Inc. | Copyright © 1998-2005  David Turner and Werner Lemberg | Copyright © 2016  Igalia S.L. | Copyright © 2022  Matthias Clasen | Copyright © 2018,2021  Khaled Hosny | Copyright © 2018,2019,2020  Adobe, Inc | Copyright © 2013-2015  Alexei Podtelezhnikov | Copyright © 2015 Information Technology Authority (ITA) <foss@ita.gov.om> | Copyright © 2016-2023 Khaled Hosny <khaled@aliftype.com> | Qhull, Copyright (c) 1993-2020  | Copyright (c) 2009 Pierre Raybaut | Copyright (c) 2011 Ethan Schoonover | Copyright (c) 2001-2010 by the STI Pub Companies, consisting of the American | Portions copyright (c) 1998-2003 by MicroPress, Inc. (www.micropress-inc.com), with Reserved Font Name TM Math. To obtain additional mathematical fonts, please | Portions copyright (c) 1990 by Elsevier, Inc. | Copyright (c) 1996.  The Regents of the University of California. | Copyright (c) 2003 by Bitstream, Inc. All Rights Reserved. Bitstream Vera is | Copyright (c) 2006 by Tavmjong Bah. All Rights Reserved."
+pypi:numpy@2.5.3,https://pypi.org/project/numpy/2.5.3/,BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0,"Copyright (c) 2005-2025, NumPy Developers. | Copyright (c) 2011-2014, The OpenBLAS Project | Copyright (c) 1992-2013 The University of Tennessee and The University | Copyright (c) 2000-2013 The University of California Berkeley. All | Copyright (c) 2006-2013 The University of Colorado Denver.  All rights | Copyright (C) 2002-2017 Free Software Foundation, Inc. | Copyright (C) 2009 Free Software Foundation, Inc. <https://fsf.org/> | Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/> | Copyright (C) 2010-2019 Free Software Foundation, Inc. | Copyright (C) 2010 - 2019 ridiculous_fish, <libdivide@ridiculousfish.com> | Copyright (C) 2016 - 2019 Kim Walisch, <kim.walisch@gmail.com> | Copyright Contributors to the pythoncapi_compat project. | Copyright (c) The Highway Project Authors. All rights reserved. | Copyright (c) 2022, Intel. All rights reserved. | Copyright (c) 2005-2021, NumPy Developers. | Copyright (C) 2010-2018 Max-Planck-Society | Copyright (c) 2006, University of Georgia and Pierre G.F. Gerard-Marchant | Copyright (c) 2019 Kevin Sheppard. All rights reserved. | Copyright (c) 2005-2017, NumPy Developers. | Copyright (c) 2009-2019: Jeff Bezanson, Stefan Karpinski, Viral B. Shah, and other contributors: | Copyright (c) 2003-2005, Jean-Sebastien Roy (js@jeannot.org) | Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura, All rights reserved. | Copyright 2014 Melissa O'Neill <oneill@pcg-random.org> | Copyright 2010-2012, D. E. Shaw Research. | Copyright (c) 2018 Melissa E. O'Neill"
+pypi:packaging@26.3,https://pypi.org/project/packaging/26.3/,Apache-2.0 OR BSD-2-Clause,Copyright (c) Donald Stufft and individual contributors.
+pypi:pillow@12.3.0,https://pypi.org/project/pillow/12.3.0/,MIT-CMU,"Copyright © 1997-2011 by Secret Labs AB | Copyright © 1995-2011 by Fredrik Lundh and contributors | Copyright © 2010 by Jeffrey 'Alex' Clark and contributors | Copyright (c) 2016, Alliance for Open Media. All rights reserved. | Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors. | documentation, are copyright (C) 1996-2019 Julian R Seward.  All | Copyright © 2018-2019, VideoLAN and dav1d authors | Copyright 1996-2002, 2006 by David Turner, Robert Wilhelm, and Werner Lemberg | The FreeType  Project is copyright (C) 1996-2000  by David Turner, Robert Wilhelm, and Werner Lemberg.  All rights reserved except as | Copyright (C) 2001-2002 by Francesco Zappa Nardelli | Copyright 2000 Computing Research Labs, New Mexico State University | Copyright 2001-2002, 2011 Francesco Zappa Nardelli | Copyright (C) 2000 by Francesco Zappa Nardelli | Copyright © 2010-2022  Google, Inc. | Copyright © 2015-2020  Ebrahim Byagowi | Copyright © 2019,2020  Facebook, Inc. | Copyright © 2012,2015  Mozilla Foundation | Copyright © 2011  Codethink Limited | Copyright © 2008,2010  Nokia Corporation and/or its subsidiary(-ies) | Copyright © 2009  Keith Stribley | Copyright © 2011  Martin Hosken and SIL International | Copyright © 2007  Chris Wilson | Copyright © 2005,2006,2020,2021,2022,2023  Behdad Esfahbod | Copyright © 2004,2007,2008,2009,2010,2013,2021,2022,2023  Red Hat, Inc. | Copyright © 1998-2005  David Turner and Werner Lemberg | Copyright © 2016  Igalia S.L. | Copyright © 2022  Matthias Clasen | Copyright © 2018,2021  Khaled Hosny | Copyright © 2018,2019,2020  Adobe, Inc | Copyright © 2013-2015  Alexei Podtelezhnikov | Copyright (c) 1998-2020 Marti Maria Saguer | Copyright 2019 Joe Drago. All rights reserved. | This software is copyright (C) 1991-2013, Thomas G. Lane, Guido Vollbeding. | Copyright 2020 Emmanuel Gil Peyrot. All rights reserved. | Copyright 2011 The LibYuv Project Authors. All rights reserved. | This software is copyright (C) 1991-2020, Thomas G. Lane, Guido Vollbeding. | Copyright (c) 1995-2022 The PNG Reference Library Authors. | Copyright (c) 2018-2022 Cosmin Truta. | Copyright (c) 2000-2002, 2004, 2006-2018 Glenn Randers-Pehrson. | Copyright (c) 1996-1997 Andreas Dilger. | Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc. | Copyright (c) 2000-2002, 2004, 2006-2018 Glenn Randers-Pehrson, are | Copyright (c) 1998-2000 Glenn Randers-Pehrson, are derived from | Copyright (c) 1996-1997 Andreas Dilger, are derived from libpng-0.88, and are distributed according to the same disclaimer and license as | Copyright (c) 1988-1997 Sam Leffler | Copyright (c) 1991-1997 Silicon Graphics, Inc. | Copyright (c) 2010, Google Inc. All rights reserved. | Copyright (c) 2002-2014, Universite catholique de Louvain (UCL), Belgium | Copyright (c) 2002-2014, Professor Benoit Macq | Copyright (c) 2003-2014, Antonin Descampe | Copyright (c) 2003-2009, Francois-Olivier Devaux | Copyright (c) 2005, Herve Drolon, FreeImage Team | Copyright (c) 2002-2003, Yannick Verschueren | Copyright (c) 2001-2003, David Janssens | Copyright (c) 2011-2012, Centre National d'Etudes Spatiales (CNES), France | Copyright (c) 2012, CS Systemes d'Information, France | Copyright © 2015 Information Technology Authority (ITA) <foss@ita.gov.om> | Copyright © 2016 Khaled Hosny <khaledhosny@eglug.org> | Copyright 1988, 1993, 1994, 1998  The Open Group | Copyright (C) 2001-2006 Bart Massey, Jamey Sharp, and Josh Triplett. | Copyright 1989, 1998  The Open Group | (C) 1995-2017 Jean-loup Gailly and Mark Adler | Copyright (c) Meta Platforms, Inc. and affiliates. All rights reserved."
+pypi:pyparsing@3.3.3,https://pypi.org/project/pyparsing/3.3.3/,MIT,Copyright (c) 2003-2025  Paul McGuire
+pypi:python-dateutil@2.9.0.post0,https://pypi.org/project/python-dateutil/2.9.0.post0/,Apache-2.0 OR BSD-3-Clause,Copyright 2017- Paul Ganssle <paul@ganssle.io> | Copyright 2017- dateutil contributors (see AUTHORS file) | Copyright (c) 2003-2011 - Gustavo Niemeyer <gustavo@niemeyer.net> | Copyright (c) 2012-2014 - Tomi Pieviläinen <tomi.pievilainen@iki.fi> | Copyright (c) 2014-2016 - Yaron de Leeuw <me@jarondl.net> | Copyright (c) 2015-     - Paul Ganssle <paul@ganssle.io> | Copyright (c) 2015-     - dateutil contributors (see AUTHORS file)
+pypi:six@1.17.0,https://pypi.org/project/six/1.17.0/,MIT,Copyright (c) 2010-2024 Benjamin Peterson

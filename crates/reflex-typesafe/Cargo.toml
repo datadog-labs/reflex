@@ -3,6 +3,7 @@ name = "reflex-typesafe"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
+license.workspace = true
 publish = false
 description = "TypeSafe AI judge adapter for Reflex"
 

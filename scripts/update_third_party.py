@@ -2,7 +2,7 @@
 """Build the third-party inventory from locked dependencies and upstream notices.
 
 Run with the Python interpreter containing report-requirements.txt.
-Network downloads are cached under ignored output/third-party-cache.
+Network downloads and review evidence stay under ignored output/.
 """
 import argparse
 import base64
@@ -22,6 +22,7 @@ import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / 'output/third-party-cache'
+REVIEW = ROOT / 'output/third-party-review'
 ROWS = {}
 EVIDENCE = {}
 
@@ -65,7 +66,7 @@ def retain_notices(component, notices):
     result = []
     for name, text in notices:
         digest = hashlib.sha256(text.encode()).hexdigest()
-        relative = 'third_party/notices/' + digest + '.txt'
+        relative = 'output/third-party-review/notices/' + digest + '.txt'
         destination = ROOT / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(text)
@@ -303,7 +304,7 @@ def collect_python():
                     ('(Apache-2.0 OR BSD-3-Clause) AND CC0-1.0' if '/highway/' in path else ('LicenseRef-DejaVu-Bundle' if path.endswith('LICENSE_DEJAVU') else infer_license(text))), credits(text), {'package_license_file': path}, 'Research bundled source/font notices')
     # Retain complete notices for research wheels: multiple subcomponents can share a notice.
     # This evidence is needed to review entries that have no SPDX expression upstream.
-    out = ROOT / 'third_party/research-notices'
+    out = REVIEW / 'research-notices'
     out.mkdir(parents=True, exist_ok=True)
     for line in requirements.read_text().splitlines():
         if '==' not in line:
@@ -323,38 +324,25 @@ def collect_additional():
 
 
 def check():
+    """Check CSV structure and locked package coverage without local review evidence."""
     import tomllib
     rows = list(csv.DictReader((ROOT / 'LICENSE-3rdparty.csv').open()))
     assert rows and list(rows[0]) == ['Component', 'Origin', 'License', 'Copyright']
     names = {r['Component'] for r in rows}
     assert len(names) == len(rows), 'Duplicate components'
-    for r in rows:
-        assert all(r.values()), r
-    expected = {f"cargo:{p['name']}@{p['version']}" for p in tomllib.loads((ROOT/'Cargo.lock').read_text())['package'] if 'source' in p}
+    for row in rows:
+        assert all(value and value.strip() for value in row.values()), row
+    cargo = {f"cargo:{p['name']}@{p['version']}" for p in tomllib.loads((ROOT/'Cargo.lock').read_text())['package'] if 'source' in p}
+    assert {n for n in names if n.startswith('cargo:')} == cargo, 'Cargo inventory differs from Cargo.lock'
     lock = json.loads((ROOT/'crates/reflex-sim/ui/package-lock.json').read_text())
-    expected |= {f"npm:{path.split('node_modules/')[-1]}@{p['version']}" for path,p in lock['packages'].items() if path}
-    expected |= {f"pypi:{n}@{v}" for line in (ROOT/'studies/capacity/report-requirements.txt').read_text().splitlines() if '==' in line for n,v in [line.split('==')]}
-    evidence = json.loads((ROOT/'third_party/evidence.json').read_text())
-    for item in evidence['components'].values():
-        for source in item['sources']:
-            if 'upstream_row' in source:
-                row = source['upstream_row']
-                expected.add(f"npm:{row['Component']}@{row['Reference'].removeprefix('npm:')}")
+    npm = {f"npm:{path.split('node_modules/')[-1]}@{p['version']}" for path,p in lock['packages'].items() if path}
+    python = {f"pypi:{n}@{v}" for line in (ROOT/'studies/capacity/report-requirements.txt').read_text().splitlines() if '==' in line for n,v in [line.split('==')]}
+    assert {n for n in names if n.startswith('pypi:')} == python, 'Python inventory differs from pinned requirements'
+    additional = {row['Component'] for row in json.loads((ROOT/'third_party/additional-components.json').read_text())}
+    expected = cargo | npm | python | additional
     assert expected <= names, f'Missing components: {sorted(expected-names)}'
-    evidence = json.loads((ROOT/'third_party/evidence.json').read_text())
-    for path, digest in evidence['inputs'].items():
-        assert hashlib.sha256((ROOT/path).read_bytes()).hexdigest() == digest, f'Inventory stale: {path}'
-    assert names == set(evidence['components'])
-    for component, item in evidence['components'].items():
-        for notice in item.get('notices', []):
-            path = ROOT / notice['file']
-            assert path.is_file(), f'Missing notice: {component}: {path}'
-            assert hashlib.sha256(path.read_bytes()).hexdigest() == notice['sha256'], f'Changed notice: {path}'
-    expected_review = {r['Component'] for r in rows if r['License'] == 'NOASSERTION' or r['Copyright'].startswith('NOASSERTION') or 'LicenseRef-' in r['License'] or 'GPL' in r['License']}
-    actual_review = {r['Component'] for r in csv.DictReader((ROOT/'third_party/review-required.csv').open())}
-    assert actual_review == expected_review, 'Review queue is stale'
-
-    print(f'Validated {len(rows)} unique rows; all {len(expected)} locked and vendor-listed package/version entries covered.')
+    print(f'Validated {len(rows)} unique rows and coverage of locked packages and recorded assets.')
+    print('Bundled/vendor components and license compatibility require review when dependencies change.')
 
 
 def main():
@@ -364,6 +352,7 @@ def main():
     if args.check:
         check()
         return
+    REVIEW.mkdir(parents=True, exist_ok=True)
     for label, fn in [('Rust',collect_rust),('npm and DRUIDS',collect_npm),('Python',collect_python),('additional assets',collect_additional)]:
         print('Collecting '+label, flush=True)
         fn()
@@ -373,12 +362,12 @@ def main():
         writer.writerows(ROWS[k] for k in sorted(ROWS))
     inputs = ['Cargo.lock', 'crates/reflex-sim/ui/package-lock.json', 'studies/capacity/report-requirements.txt', 'third_party/additional-components.json']
     report = {'python_environment': {'platform': sys.platform, 'python': sys.version.split()[0]}, 'inputs': {p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in inputs}, 'components': {k:EVIDENCE[k] for k in sorted(EVIDENCE)}}
-    (ROOT/'third_party/evidence.json').write_text(json.dumps(report,indent=2)+'\n')
+    (REVIEW/'evidence.json').write_text(json.dumps(report,indent=2)+'\n')
     unresolved = [r for r in ROWS.values() if r['License']=='NOASSERTION' or r['Copyright'].startswith('NOASSERTION') or 'LicenseRef-' in r['License'] or 'GPL' in r['License']]
-    with (ROOT/'third_party/review-required.csv').open('w',newline='') as f:
+    with (REVIEW/'review-required.csv').open('w',newline='') as f:
         writer=csv.DictWriter(f,fieldnames=['Component','Origin','License','Copyright'],lineterminator='\n');writer.writeheader();writer.writerows(sorted(unresolved,key=lambda r:r['Component']))
     check()
-    print(f'{len(unresolved)} rows require license or attribution review; see third_party/review-required.csv.')
+    print(f'{len(unresolved)} rows require license or attribution review; see output/third-party-review/review-required.csv.')
 
 if __name__=='__main__':
     main()

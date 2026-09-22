@@ -1,6 +1,8 @@
 Component,Origin,License,Copyright
 asset:NotoSans (embedded in @datadog/druids@0.1.0),https://registry.npmjs.org/@datadog/druids/-/druids-0.1.0.tgz,OFL-1.1,Copyright 2015-2021 Google LLC. All Rights Reserved.
 asset:Roboto Mono (embedded in @datadog/druids@0.1.0),https://registry.npmjs.org/@datadog/druids/-/druids-0.1.0.tgz,Apache-2.0,Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)
+bundled:cargo:aws-lc-sys@0.45.0/aws-lc/LICENSE,https://crates.io/crates/aws-lc-sys/0.45.0,MIT,"Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. | Copyright (c) 2014-2024 Google Inc. | - Brian Smith (Copyright 2016) | - Robert Nagy (Copyright 2022) | - Arm Ltd (Copyright 2020) | Copyright (c) 2025-2026 Google Inc. | Copyright (c) 1998-2011 The OpenSSL Project. All rights reserved. | Copyright (c) 1995-1998 Eric Young (eay@cryptsoft.com). All rights reserved. | - Sun Microsystems, Inc. (Copyright 2002) | - Nokia (Copyright 2005) | - Intel Corporation (Copyright 2012-2021) | Copyright (c) The mlkem-native project authors. | Copyright (c) The mldsa-native project authors. | Copyright (c) 2015-2020 the fiat-crypto authors. | Copyright (C) 2017 - 2025, Stephan Mueller <smueller@chronox.de>. | Copyright 2008 Google Inc. | Copyright (c) The Go Authors. All rights reserved."
+bundled:cargo:aws-lc-sys@0.45.0/aws-lc/third_party/fiat/LICENSE,https://crates.io/crates/aws-lc-sys/0.45.0,MIT,Copyright (c) 2015-2020 the fiat-crypto authors (see
 bundled:cargo:ring@0.17.14/LICENSE-BoringSSL,https://crates.io/crates/ring/0.17.14,BSD-3-Clause,Copyright (c) 2009 The Go Authors. All rights reserved. | Copyright 2015 The Chromium Authors. All rights reserved.
 bundled:cargo:ring@0.17.14/third_party/fiat/LICENSE,https://crates.io/crates/ring/0.17.14,Apache-2.0,Copyright 2015-2020 the fiat-crypto authors (see the AUTHORS file)
 bundled:cargo:tracing-core@0.1.36/src/spin/LICENSE,https://crates.io/crates/tracing-core/0.1.36,MIT,Copyright (c) 2014 Mathijs van de Nes
@@ -78,9 +80,12 @@ cargo:anstyle@1.0.14,https://crates.io/crates/anstyle/1.0.14,MIT OR Apache-2.0,C
 cargo:anyhow@1.0.104,https://crates.io/crates/anyhow/1.0.104,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:async-trait@0.1.92,https://crates.io/crates/async-trait/0.1.92,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:atomic-waker@1.1.2,https://crates.io/crates/atomic-waker/1.1.2,Apache-2.0 OR MIT,Copyright (c) 2016 Alex Crichton | Copyright (c) 2017 The Tokio Authors
+cargo:aws-lc-rs@1.18.1,https://crates.io/crates/aws-lc-rs/1.18.1,ISC AND (Apache-2.0 OR ISC),"Copyright Amazon.com, Inc. or its affiliates."
+cargo:aws-lc-sys@0.45.0,https://crates.io/crates/aws-lc-sys/0.45.0,ISC AND (Apache-2.0 OR ISC) AND Apache-2.0 AND MIT AND BSD-3-Clause AND (Apache-2.0 OR ISC OR MIT) AND (Apache-2.0 OR ISC OR MIT-0),"Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. | Copyright (c) 2014-2024 Google Inc. | - Brian Smith (Copyright 2016) | - Robert Nagy (Copyright 2022) | - Arm Ltd (Copyright 2020) | Copyright (c) 2025-2026 Google Inc. | Copyright (c) 1998-2011 The OpenSSL Project. All rights reserved. | Copyright (c) 1995-1998 Eric Young (eay@cryptsoft.com). All rights reserved. | - Sun Microsystems, Inc. (Copyright 2002) | - Nokia (Copyright 2005) | - Intel Corporation (Copyright 2012-2021) | Copyright (c) The mlkem-native project authors. | Copyright (c) The mldsa-native project authors. | Copyright (c) 2015-2020 the fiat-crypto authors. | Copyright (C) 2017 - 2025, Stephan Mueller <smueller@chronox.de>. | Copyright 2008 Google Inc. | Copyright (c) The Go Authors. All rights reserved. | Copyright (c) 2015-2020 the fiat-crypto authors (see"
 cargo:axum-core@0.5.6,https://crates.io/crates/axum-core/0.5.6,MIT,Copyright (c) 2019–2025 axum Contributors
 cargo:axum@0.8.9,https://crates.io/crates/axum/0.8.9,MIT,Copyright (c) 2019 axum Contributors
 cargo:base64@0.22.1,https://crates.io/crates/base64/0.22.1,MIT OR Apache-2.0,Copyright (c) 2015 Alice Maz
+cargo:base64@0.23.1,https://crates.io/crates/base64/0.23.1,MIT OR Apache-2.0,"Copyright (c) 2025 Alice Maz, Marshall Pierce"
 cargo:bitflags@2.13.2,https://crates.io/crates/bitflags/2.13.2,MIT OR Apache-2.0,Copyright (c) 2014 The Rust Project Developers
 cargo:bumpalo@3.20.3,https://crates.io/crates/bumpalo/3.20.3,MIT OR Apache-2.0,Copyright (c) 2019 Nick Fitzgerald
 cargo:bytes@1.12.1,https://crates.io/crates/bytes/1.12.1,MIT,Copyright (c) 2018 Carl Lerche
@@ -92,15 +97,19 @@ cargo:clap@4.6.7,https://crates.io/crates/clap/4.6.7,MIT OR Apache-2.0,Copyright
 cargo:clap_builder@4.6.7,https://crates.io/crates/clap_builder/4.6.7,MIT OR Apache-2.0,Copyright Individual contributors | Copyright (c) Individual contributors
 cargo:clap_derive@4.6.7,https://crates.io/crates/clap_derive/4.6.7,MIT OR Apache-2.0,Copyright Individual contributors | Copyright (c) Individual contributors
 cargo:clap_lex@1.1.1,https://crates.io/crates/clap_lex/1.1.1,MIT OR Apache-2.0,Copyright Individual contributors | Copyright (c) Individual contributors
+cargo:cmake@0.1.58,https://crates.io/crates/cmake/0.1.58,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
 cargo:colorchoice@1.0.5,https://crates.io/crates/colorchoice/1.0.5,MIT OR Apache-2.0,Copyright (c) Individual contributors
+cargo:combine@4.6.8,https://crates.io/crates/combine/4.6.8,MIT,Copyright (c) 2015 Markus Westerlind
 cargo:core-foundation-sys@0.8.7,https://crates.io/crates/core-foundation-sys/0.8.7,MIT OR Apache-2.0,Copyright (c) 2012-2013 Mozilla Foundation
 cargo:core-foundation@0.10.1,https://crates.io/crates/core-foundation/0.10.1,MIT OR Apache-2.0,Copyright (c) 2012-2013 Mozilla Foundation
 cargo:cpufeatures@0.3.1,https://crates.io/crates/cpufeatures/0.3.1,MIT OR Apache-2.0,Copyright (c) 2020-2026 The RustCrypto Project Developers
 cargo:displaydoc@0.2.7,https://crates.io/crates/displaydoc/0.2.7,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:dunce@1.0.5,https://crates.io/crates/dunce/1.0.5,CC0-1.0 OR MIT-0 OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:either@1.18.0,https://crates.io/crates/either/1.18.0,MIT OR Apache-2.0,Copyright (c) 2015 
 cargo:equivalent@1.0.2,https://crates.io/crates/equivalent/1.0.2,Apache-2.0 OR MIT,Copyright (c) 2016--2023 
 cargo:find-msvc-tools@0.1.13,https://crates.io/crates/find-msvc-tools/0.1.13,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
 cargo:form_urlencoded@1.2.2,https://crates.io/crates/form_urlencoded/1.2.2,MIT OR Apache-2.0,Copyright (c) 2013-2016 The rust-url developers
+cargo:fs_extra@1.3.0,https://crates.io/crates/fs_extra/1.3.0,MIT,Copyright (c) 2017 Denis Kurilenko
 cargo:futures-channel@0.3.34,https://crates.io/crates/futures-channel/0.3.34,MIT OR Apache-2.0,Copyright (c) 2016 Alex Crichton | Copyright (c) 2017 The Tokio Authors
 cargo:futures-core@0.3.34,https://crates.io/crates/futures-core/0.3.34,MIT OR Apache-2.0,Copyright (c) 2016 Alex Crichton | Copyright (c) 2017 The Tokio Authors
 cargo:futures-executor@0.3.34,https://crates.io/crates/futures-executor/0.3.34,MIT OR Apache-2.0,Copyright (c) 2016 Alex Crichton | Copyright (c) 2017 The Tokio Authors
@@ -137,6 +146,11 @@ cargo:ipnet@2.12.2,https://crates.io/crates/ipnet/2.12.2,MIT OR Apache-2.0,"Copy
 cargo:is_terminal_polyfill@1.70.2,https://crates.io/crates/is_terminal_polyfill/1.70.2,MIT OR Apache-2.0,Copyright (c) Individual contributors
 cargo:itertools@0.14.0,https://crates.io/crates/itertools/0.14.0,MIT OR Apache-2.0,Copyright (c) 2015 
 cargo:itoa@1.0.18,https://crates.io/crates/itoa/1.0.18,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:jni-macros@0.22.4,https://crates.io/crates/jni-macros/0.22.4,MIT OR Apache-2.0,"Copyright (c) 2016 Prevoty, Inc. and jni-rs contributors"
+cargo:jni-sys-macros@0.4.1,https://crates.io/crates/jni-sys-macros/0.4.1,MIT OR Apache-2.0,Copyright (c) 2015 The rust-jni-sys Developers
+cargo:jni-sys@0.4.1,https://crates.io/crates/jni-sys/0.4.1,MIT OR Apache-2.0,Copyright (c) 2015 The rust-jni-sys Developers
+cargo:jni@0.22.4,https://crates.io/crates/jni/0.22.4,MIT OR Apache-2.0,"Copyright (c) 2016 Prevoty, Inc. and jni-rs contributors"
+cargo:jobserver@0.1.35,https://crates.io/crates/jobserver/0.1.35,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
 cargo:js-sys@0.3.105,https://crates.io/crates/js-sys/0.3.105,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
 cargo:lazy_static@1.5.0,https://crates.io/crates/lazy_static/1.5.0,MIT OR Apache-2.0,Copyright (c) 2010 The Rust Project Developers
 cargo:libc@0.2.189,https://crates.io/crates/libc/0.2.189,MIT OR Apache-2.0,Copyright (c) The Rust Project Developers
@@ -151,16 +165,16 @@ cargo:nu-ansi-term@0.50.3,https://crates.io/crates/nu-ansi-term/0.50.3,MIT,Copyr
 cargo:once_cell@1.21.4,https://crates.io/crates/once_cell/1.21.4,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:once_cell_polyfill@1.70.2,https://crates.io/crates/once_cell_polyfill/1.70.2,MIT OR Apache-2.0,Copyright (c) Individual contributors
 cargo:openssl-probe@0.2.1,https://crates.io/crates/openssl-probe/0.2.1,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
-cargo:opentelemetry-appender-tracing@0.31.1,https://crates.io/crates/opentelemetry-appender-tracing/0.31.1,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
-cargo:opentelemetry-http@0.31.0,https://crates.io/crates/opentelemetry-http/0.31.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
-cargo:opentelemetry-otlp@0.31.1,https://crates.io/crates/opentelemetry-otlp/0.31.1,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
-cargo:opentelemetry-proto@0.31.0,https://crates.io/crates/opentelemetry-proto/0.31.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
-cargo:opentelemetry@0.31.0,https://crates.io/crates/opentelemetry/0.31.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
-cargo:opentelemetry_sdk@0.31.0,https://crates.io/crates/opentelemetry_sdk/0.31.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry-appender-tracing@0.32.0,https://crates.io/crates/opentelemetry-appender-tracing/0.32.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry-http@0.32.0,https://crates.io/crates/opentelemetry-http/0.32.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry-otlp@0.32.0,https://crates.io/crates/opentelemetry-otlp/0.32.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry-proto@0.32.0,https://crates.io/crates/opentelemetry-proto/0.32.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry@0.32.0,https://crates.io/crates/opentelemetry/0.32.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry_sdk@0.32.1,https://crates.io/crates/opentelemetry_sdk/0.32.1,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:percent-encoding@2.3.2,https://crates.io/crates/percent-encoding/2.3.2,MIT OR Apache-2.0,Copyright (c) 2013-2025 The rust-url developers
-cargo:pin-project-internal@1.1.13,https://crates.io/crates/pin-project-internal/1.1.13,Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
 cargo:pin-project-lite@0.2.17,https://crates.io/crates/pin-project-lite/0.2.17,Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
-cargo:pin-project@1.1.13,https://crates.io/crates/pin-project/1.1.13,Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
+cargo:pkg-config@0.3.34,https://crates.io/crates/pkg-config/0.3.34,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
+cargo:portable-atomic@1.15.0,https://crates.io/crates/portable-atomic/1.15.0,Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
 cargo:potential_utf@0.1.6,https://crates.io/crates/potential_utf/0.1.6,Unicode-3.0,"Copyright © 2020-2024 Unicode, Inc. | ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others."
 cargo:ppv-lite86@0.2.21,https://crates.io/crates/ppv-lite86/0.2.21,MIT OR Apache-2.0,Copyright 2019 The CryptoCorrosion Contributors | Copyright (c) 2019 The CryptoCorrosion Contributors
 cargo:proc-macro2@1.0.107,https://crates.io/crates/proc-macro2/1.0.107,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
@@ -179,17 +193,23 @@ cargo:rand_core@0.10.1,https://crates.io/crates/rand_core/0.10.1,MIT OR Apache-2
 cargo:rand_core@0.9.5,https://crates.io/crates/rand_core/0.9.5,MIT OR Apache-2.0,Copyright 2018 Developers of the Rand project | Copyright (c) 2014 The Rust Project Developers
 cargo:rand_pcg@0.10.2,https://crates.io/crates/rand_pcg/0.10.2,MIT OR Apache-2.0,Copyright (c) 2014-2017 Melissa O'Neill and PCG Project contributors | Copyright 2018 Developers of the Rand project
 cargo:reqwest@0.12.28,https://crates.io/crates/reqwest/0.12.28,MIT OR Apache-2.0,Copyright 2016 Sean McArthur | Copyright (c) 2016-2025 Sean McArthur
+cargo:reqwest@0.13.5,https://crates.io/crates/reqwest/0.13.5,MIT OR Apache-2.0,Copyright 2016 Sean McArthur | Copyright (c) 2016-2026 Sean McArthur
 cargo:ring@0.17.14,https://crates.io/crates/ring/0.17.14,Apache-2.0 AND ISC,Copyright (c) 2009 The Go Authors. All rights reserved. | Copyright 2015 The Chromium Authors. All rights reserved. | Copyright 2015-2025 Brian Smith. | Copyright 2015-2020 the fiat-crypto authors (see the AUTHORS file)
 cargo:rustc-hash@2.1.3,https://crates.io/crates/rustc-hash/2.1.3,Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
+cargo:rustc_version@0.4.1,https://crates.io/crates/rustc_version/0.4.1,MIT OR Apache-2.0,Copyright (c) 2016 The Rust Project Developers
 cargo:rustls-native-certs@0.8.4,https://crates.io/crates/rustls-native-certs/0.8.4,Apache-2.0 OR ISC OR MIT,"Copyright (c) 2016, Joseph Birr-Pixton <jpixton@gmail.com> | Copyright (c) 2016 Joseph Birr-Pixton <jpixton@gmail.com>"
 cargo:rustls-pki-types@1.15.1,https://crates.io/crates/rustls-pki-types/1.15.1,MIT OR Apache-2.0,Copyright 2023 Dirkjan Ochtman | Copyright (c) 2023 Dirkjan Ochtman <dirkjan@ochtman.nl>
+cargo:rustls-platform-verifier-android@0.1.1,https://crates.io/crates/rustls-platform-verifier-android/0.1.1,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:rustls-platform-verifier@0.7.0,https://crates.io/crates/rustls-platform-verifier/0.7.0,MIT OR Apache-2.0,Copyright (c) 2022 1Password
 cargo:rustls-webpki@0.103.15,https://crates.io/crates/rustls-webpki/0.103.15,ISC,Copyright 2015 Brian Smith.
 cargo:rustls@0.23.45,https://crates.io/crates/rustls/0.23.45,Apache-2.0 OR ISC OR MIT,"Copyright (c) 2016, Joseph Birr-Pixton <jpixton@gmail.com> | Copyright (c) 2016 Joseph Birr-Pixton <jpixton@gmail.com>"
 cargo:rustversion@1.0.23,https://crates.io/crates/rustversion/1.0.23,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:ryu@1.0.23,https://crates.io/crates/ryu/1.0.23,Apache-2.0 OR BSL-1.0,Copyright 2018 Ulf Adams
+cargo:same-file@1.0.6,https://crates.io/crates/same-file/1.0.6,Unlicense/MIT,Copyright (c) 2017 Andrew Gallant
 cargo:schannel@0.1.29,https://crates.io/crates/schannel/0.1.29,MIT,Copyright (c) 2015 steffengy
 cargo:security-framework-sys@2.17.0,https://crates.io/crates/security-framework-sys/2.17.0,MIT OR Apache-2.0,Copyright (c) 2015 Steven Fackler
 cargo:security-framework@3.7.0,https://crates.io/crates/security-framework/3.7.0,MIT OR Apache-2.0,Copyright (c) 2015 Steven Fackler
+cargo:semver@1.0.28,https://crates.io/crates/semver/1.0.28,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:serde@1.0.229,https://crates.io/crates/serde/1.0.229,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:serde_core@1.0.229,https://crates.io/crates/serde_core/1.0.229,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:serde_derive@1.0.229,https://crates.io/crates/serde_derive/1.0.229,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
@@ -199,6 +219,8 @@ cargo:serde_spanned@1.1.1,https://crates.io/crates/serde_spanned/1.1.1,MIT OR Ap
 cargo:serde_urlencoded@0.7.1,https://crates.io/crates/serde_urlencoded/0.7.1,MIT OR Apache-2.0,Copyright (c) 2016 Anthony Ramine
 cargo:sharded-slab@0.1.7,https://crates.io/crates/sharded-slab/0.1.7,MIT,Copyright (c) 2019 Eliza Weisman
 cargo:shlex@2.0.1,https://crates.io/crates/shlex/2.0.1,MIT OR Apache-2.0,Copyright 2015 Nicholas Allegra (comex). | Copyright (c) 2015 Nicholas Allegra (comex).
+cargo:simd_cesu8@1.2.0,https://crates.io/crates/simd_cesu8/1.2.0,Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
+cargo:simdutf8@0.1.5,https://crates.io/crates/simdutf8/0.1.5,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:slab@0.4.12,https://crates.io/crates/slab/0.4.12,MIT,Copyright (c) 2019 Carl Lerche
 cargo:smallvec@1.16.1,https://crates.io/crates/smallvec/1.16.1,MIT OR Apache-2.0,Copyright (c) 2018 The Servo Project Developers
 cargo:socket2@0.6.5,https://crates.io/crates/socket2/0.6.5,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
@@ -218,14 +240,11 @@ cargo:tinystr@0.8.4,https://crates.io/crates/tinystr/0.8.4,Unicode-3.0,"Copyrigh
 cargo:tinyvec@1.13.3,https://crates.io/crates/tinyvec/1.13.3,Zlib OR Apache-2.0 OR MIT,"Copyright (c) 2019 Daniel ""Lokathor"" Gee."
 cargo:tokio-macros@2.7.2,https://crates.io/crates/tokio-macros/2.7.2,MIT,Copyright (c) 2019 Yoshua Wuyts | Copyright (c) Tokio Contributors
 cargo:tokio-rustls@0.26.5,https://crates.io/crates/tokio-rustls/0.26.5,MIT OR Apache-2.0,Copyright 2017 quininer kel | Copyright (c) 2017 quininer kel
-cargo:tokio-stream@0.1.19,https://crates.io/crates/tokio-stream/0.1.19,MIT,Copyright (c) Tokio Contributors
 cargo:tokio@1.53.1,https://crates.io/crates/tokio/1.53.1,MIT,Copyright (c) Tokio Contributors
 cargo:toml@1.1.6+spec-1.1.0,https://crates.io/crates/toml/1.1.6+spec-1.1.0,MIT OR Apache-2.0,Copyright (c) Individual contributors
 cargo:toml_datetime@1.1.1+spec-1.1.0,https://crates.io/crates/toml_datetime/1.1.1+spec-1.1.0,MIT OR Apache-2.0,Copyright (c) Individual contributors
 cargo:toml_parser@1.1.3+spec-1.1.0,https://crates.io/crates/toml_parser/1.1.3+spec-1.1.0,MIT OR Apache-2.0,Copyright (c) Individual contributors
 cargo:toml_writer@1.1.2+spec-1.1.0,https://crates.io/crates/toml_writer/1.1.2+spec-1.1.0,MIT OR Apache-2.0,Copyright (c) Individual contributors
-cargo:tonic-prost@0.14.6,https://crates.io/crates/tonic-prost/0.14.6,MIT,Copyright (c) 2025 Lucio Franco
-cargo:tonic@0.14.6,https://crates.io/crates/tonic/0.14.6,MIT,Copyright (c) 2025 Lucio Franco
 cargo:tower-http@0.6.11,https://crates.io/crates/tower-http/0.6.11,MIT,Copyright (c) 2019-2021 Tower Contributors
 cargo:tower-layer@0.3.3,https://crates.io/crates/tower-layer/0.3.3,MIT,Copyright (c) 2019 Tower Contributors
 cargo:tower-service@0.3.3,https://crates.io/crates/tower-service/0.3.3,MIT,Copyright (c) 2019 Tower Contributors
@@ -233,7 +252,7 @@ cargo:tower@0.5.3,https://crates.io/crates/tower/0.5.3,MIT,Copyright (c) 2019 To
 cargo:tracing-attributes@0.1.31,https://crates.io/crates/tracing-attributes/0.1.31,MIT,Copyright (c) 2019 Tokio Contributors
 cargo:tracing-core@0.1.36,https://crates.io/crates/tracing-core/0.1.36,MIT,Copyright (c) 2019 Tokio Contributors | Copyright (c) 2014 Mathijs van de Nes
 cargo:tracing-log@0.2.0,https://crates.io/crates/tracing-log/0.2.0,MIT,Copyright (c) 2019 Tokio Contributors
-cargo:tracing-opentelemetry@0.32.1,https://crates.io/crates/tracing-opentelemetry/0.32.1,MIT,Copyright (c) 2019 Tokio Contributors
+cargo:tracing-opentelemetry@0.33.0,https://crates.io/crates/tracing-opentelemetry/0.33.0,MIT,Copyright (c) 2019 Tokio Contributors
 cargo:tracing-subscriber@0.3.23,https://crates.io/crates/tracing-subscriber/0.3.23,MIT,Copyright (c) 2019 Tokio Contributors
 cargo:tracing@0.1.44,https://crates.io/crates/tracing/0.1.44,MIT,Copyright (c) 2019 Tokio Contributors
 cargo:try-lock@0.2.5,https://crates.io/crates/try-lock/0.2.5,MIT,Copyright (c) 2018-2023 Sean McArthur | Copyright (c) 2016 Alex Crichton
@@ -244,6 +263,7 @@ cargo:url@2.5.8,https://crates.io/crates/url/2.5.8,MIT OR Apache-2.0,Copyright (
 cargo:utf8_iter@1.0.4,https://crates.io/crates/utf8_iter/1.0.4,Apache-2.0 OR MIT,Copyright Mozilla Foundation
 cargo:utf8parse@0.2.2,https://crates.io/crates/utf8parse/0.2.2,Apache-2.0 OR MIT,Copyright (c) 2016 Joe Wilm
 cargo:valuable@0.1.1,https://crates.io/crates/valuable/0.1.1,MIT,Copyright (c) 2021 Valuable Contributors
+cargo:walkdir@2.5.0,https://crates.io/crates/walkdir/2.5.0,Unlicense/MIT,Copyright (c) 2015 Andrew Gallant
 cargo:want@0.3.1,https://crates.io/crates/want/0.3.1,MIT,Copyright (c) 2018-2019 Sean McArthur
 cargo:wasi@0.11.1+wasi-snapshot-preview1,https://crates.io/crates/wasi/0.11.1+wasi-snapshot-preview1,Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
 cargo:wasip2@1.0.4+wasi-0.2.12,https://crates.io/crates/wasip2/1.0.4+wasi-0.2.12,Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
@@ -254,6 +274,7 @@ cargo:wasm-bindgen-shared@0.2.128,https://crates.io/crates/wasm-bindgen-shared/0
 cargo:wasm-bindgen@0.2.128,https://crates.io/crates/wasm-bindgen/0.2.128,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
 cargo:web-sys@0.3.105,https://crates.io/crates/web-sys/0.3.105,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
 cargo:web-time@1.1.0,https://crates.io/crates/web-time/1.1.0,MIT OR Apache-2.0,Copyright 2023 dAxpeDDa | Copyright (c) 2023 dAxpeDDa
+cargo:webpki-root-certs@1.0.9,https://crates.io/crates/webpki-root-certs/1.0.9,CDLA-Permissive-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:webpki-roots@1.0.9,https://crates.io/crates/webpki-roots/1.0.9,CDLA-Permissive-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:winapi-util@0.1.11,https://crates.io/crates/winapi-util/0.1.11,Unlicense OR MIT,Copyright (c) 2017 Andrew Gallant
 cargo:windows-link@0.2.1,https://crates.io/crates/windows-link/0.2.1,MIT OR Apache-2.0,Copyright (c) Microsoft Corporation.

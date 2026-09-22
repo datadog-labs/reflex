@@ -4,7 +4,7 @@
     "python": "3.14.3"
   },
   "inputs": {
-    "Cargo.lock": "2a5985ebcce1550cd403da5b070bc2b01799feec2bf5cfaafe4911c0482de78c",
+    "Cargo.lock": "ff3d5be8626ee2766f1c505f091cfcea4a723f3f898b8d3cb73105055ea2593d",
     "crates/reflex-sim/ui/package-lock.json": "2e90aad702e161f83fe2645c8cc94bee133de22eaeddd6283b9515d06ff9c4aa",
     "studies/capacity/report-requirements.txt": "41e6d7f766b8a19d701813d2458caa2a58e7b660dcaa08eddbf0f63a9159f8b5",
     "third_party/additional-components.json": "d8ec50ccb051f0c81a8cec06ff0ae393e28a8ff8fa67183c81dc5aaaca575bbb"
@@ -392,6 +392,26 @@
       ],
       "scopes": [
         "UI embedded fonts"
+      ]
+    },
+    "bundled:cargo:aws-lc-sys@0.45.0/aws-lc/LICENSE": {
+      "sources": [
+        {
+          "package_license_file": "aws-lc/LICENSE"
+        }
+      ],
+      "scopes": [
+        "Rust bundled source notices"
+      ]
+    },
+    "bundled:cargo:aws-lc-sys@0.45.0/aws-lc/third_party/fiat/LICENSE": {
+      "sources": [
+        {
+          "package_license_file": "aws-lc/third_party/fiat/LICENSE"
+        }
+      ],
+      "scopes": [
+        "Rust bundled source notices"
       ]
     },
     "bundled:cargo:ring@0.17.14/LICENSE-BoringSSL": {
@@ -1370,6 +1390,64 @@
         }
       ]
     },
+    "cargo:aws-lc-rs@1.18.1": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "aws-lc-rs",
+          "version": "1.18.1",
+          "license_files": [
+            "LICENSE"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE",
+          "file": "third_party/notices/b50b376e7d24a0598488b730c3034ffcd0b58dd36c0913a24b9903a3cfd04bf7.txt",
+          "sha256": "b50b376e7d24a0598488b730c3034ffcd0b58dd36c0913a24b9903a3cfd04bf7"
+        }
+      ]
+    },
+    "cargo:aws-lc-sys@0.45.0": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "aws-lc-sys",
+          "version": "0.45.0",
+          "license_files": [
+            "LICENSE",
+            "aws-lc/LICENSE",
+            "aws-lc/third_party/fiat/LICENSE"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE",
+          "file": "third_party/notices/728536b4160e051f86d7c9c388f704866b3d512cd7df97ac3516c65279523c4e.txt",
+          "sha256": "728536b4160e051f86d7c9c388f704866b3d512cd7df97ac3516c65279523c4e"
+        },
+        {
+          "upstream_path": "aws-lc/LICENSE",
+          "file": "third_party/notices/977c541bd25ffe36975dde25c028c0cd15ddf3d08243983b58e8a6a3d9447523.txt",
+          "sha256": "977c541bd25ffe36975dde25c028c0cd15ddf3d08243983b58e8a6a3d9447523"
+        },
+        {
+          "upstream_path": "aws-lc/third_party/fiat/LICENSE",
+          "file": "third_party/notices/43e358d7b6eb109d0f51f7b3a090fd82607965767c25fadee39e922475de2061.txt",
+          "sha256": "43e358d7b6eb109d0f51f7b3a090fd82607965767c25fadee39e922475de2061"
+        }
+      ]
+    },
     "cargo:axum-core@0.5.6": {
       "sources": [
         {
@@ -1442,6 +1520,35 @@
           "upstream_path": "LICENSE-MIT",
           "file": "third_party/notices/0dd882e53de11566d50f8e8e2d5a651bcf3fabee4987d70f306233cf39094ba7.txt",
           "sha256": "0dd882e53de11566d50f8e8e2d5a651bcf3fabee4987d70f306233cf39094ba7"
+        }
+      ]
+    },
+    "cargo:base64@0.23.1": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "base64",
+          "version": "0.23.1",
+          "license_files": [
+            "LICENSE-APACHE",
+            "LICENSE-MIT"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE-APACHE",
+          "file": "third_party/notices/a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2.txt",
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        },
+        {
+          "upstream_path": "LICENSE-MIT",
+          "file": "third_party/notices/ab499c75a0f0da8e0fe83bf9ba3a27e5c39705310f07107c6c66b69958d2401c.txt",
+          "sha256": "ab499c75a0f0da8e0fe83bf9ba3a27e5c39705310f07107c6c66b69958d2401c"
         }
       ]
     },
@@ -1752,6 +1859,35 @@
         }
       ]
     },
+    "cargo:cmake@0.1.58": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "cmake",
+          "version": "0.1.58",
+          "license_files": [
+            "LICENSE-APACHE",
+            "LICENSE-MIT"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE-APACHE",
+          "file": "third_party/notices/a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2.txt",
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        },
+        {
+          "upstream_path": "LICENSE-MIT",
+          "file": "third_party/notices/378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397.txt",
+          "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+        }
+      ]
+    },
     "cargo:colorchoice@1.0.5": {
       "sources": [
         {
@@ -1778,6 +1914,29 @@
           "upstream_path": "LICENSE-MIT",
           "file": "third_party/notices/6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6.txt",
           "sha256": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6"
+        }
+      ]
+    },
+    "cargo:combine@4.6.8": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "combine",
+          "version": "4.6.8",
+          "license_files": [
+            "LICENSE"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE",
+          "file": "third_party/notices/9bbc1b3dc4674a9ebb12c2a62f54fe3c08672539717f8d05828f684b6cc419a3.txt",
+          "sha256": "9bbc1b3dc4674a9ebb12c2a62f54fe3c08672539717f8d05828f684b6cc419a3"
         }
       ]
     },
@@ -1897,6 +2056,29 @@
         }
       ]
     },
+    "cargo:dunce@1.0.5": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "dunce",
+          "version": "1.0.5",
+          "license_files": [
+            "LICENSE"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE",
+          "file": "third_party/notices/a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499.txt",
+          "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+        }
+      ]
+    },
     "cargo:either@1.18.0": {
       "sources": [
         {
@@ -2010,6 +2192,29 @@
           "upstream_path": "LICENSE-MIT",
           "file": "third_party/notices/20c7855c364d57ea4c97889a5e8d98470a9952dade37bd9248b9a54431670e5e.txt",
           "sha256": "20c7855c364d57ea4c97889a5e8d98470a9952dade37bd9248b9a54431670e5e"
+        }
+      ]
+    },
+    "cargo:fs_extra@1.3.0": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "fs_extra",
+          "version": "1.3.0",
+          "license_files": [
+            "LICENSE"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE",
+          "file": "third_party/notices/251ea8ccb1205ce5fa847d6e264d6b6753af62de2cecf2fd9abc0eb02c7c83fc.txt",
+          "sha256": "251ea8ccb1205ce5fa847d6e264d6b6753af62de2cecf2fd9abc0eb02c7c83fc"
         }
       ]
     },
@@ -2997,6 +3202,202 @@
         }
       ]
     },
+    "cargo:jni-macros@0.22.4": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "jni-macros",
+          "version": "0.22.4",
+          "license_files": [
+            "https://raw.githubusercontent.com/jni-rs/jni-rs/33045a124105c939d1e2cbdcb5a39e5d868ffa03/LICENSE-MIT",
+            "https://raw.githubusercontent.com/jni-rs/jni-rs/33045a124105c939d1e2cbdcb5a39e5d868ffa03/LICENSE-APACHE"
+          ],
+          "upstream_checks": [
+            {
+              "url": "https://raw.githubusercontent.com/jni-rs/jni-rs/33045a124105c939d1e2cbdcb5a39e5d868ffa03/LICENSE",
+              "error": "HTTP Error 404: Not Found"
+            },
+            {
+              "url": "https://raw.githubusercontent.com/jni-rs/jni-rs/33045a124105c939d1e2cbdcb5a39e5d868ffa03/LICENSE-MIT",
+              "found": true
+            },
+            {
+              "url": "https://raw.githubusercontent.com/jni-rs/jni-rs/33045a124105c939d1e2cbdcb5a39e5d868ffa03/LICENSE-APACHE",
+              "found": true
+            },
+            {
+              "url": "https://raw.githubusercontent.com/jni-rs/jni-rs/33045a124105c939d1e2cbdcb5a39e5d868ffa03/COPYRIGHT",
+              "error": "HTTP Error 404: Not Found"
+            }
+          ]
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "https://raw.githubusercontent.com/jni-rs/jni-rs/33045a124105c939d1e2cbdcb5a39e5d868ffa03/LICENSE-MIT",
+          "file": "third_party/notices/fea1d5bf3dd71605ce5d7d2ff695c1837e914c77195e523a86b5391716477960.txt",
+          "sha256": "fea1d5bf3dd71605ce5d7d2ff695c1837e914c77195e523a86b5391716477960"
+        },
+        {
+          "upstream_path": "https://raw.githubusercontent.com/jni-rs/jni-rs/33045a124105c939d1e2cbdcb5a39e5d868ffa03/LICENSE-APACHE",
+          "file": "third_party/notices/a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2.txt",
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        }
+      ]
+    },
+    "cargo:jni-sys-macros@0.4.1": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "jni-sys-macros",
+          "version": "0.4.1",
+          "license_files": [
+            "https://raw.githubusercontent.com/jni-rs/jni-sys/64d77b7a5f119d7b55b4e2c169a4668067ff59e6/LICENSE-MIT",
+            "https://raw.githubusercontent.com/jni-rs/jni-sys/64d77b7a5f119d7b55b4e2c169a4668067ff59e6/LICENSE-APACHE"
+          ],
+          "upstream_checks": [
+            {
+              "url": "https://raw.githubusercontent.com/jni-rs/jni-sys/64d77b7a5f119d7b55b4e2c169a4668067ff59e6/LICENSE",
+              "error": "HTTP Error 404: Not Found"
+            },
+            {
+              "url": "https://raw.githubusercontent.com/jni-rs/jni-sys/64d77b7a5f119d7b55b4e2c169a4668067ff59e6/LICENSE-MIT",
+              "found": true
+            },
+            {
+              "url": "https://raw.githubusercontent.com/jni-rs/jni-sys/64d77b7a5f119d7b55b4e2c169a4668067ff59e6/LICENSE-APACHE",
+              "found": true
+            },
+            {
+              "url": "https://raw.githubusercontent.com/jni-rs/jni-sys/64d77b7a5f119d7b55b4e2c169a4668067ff59e6/COPYRIGHT",
+              "error": "HTTP Error 404: Not Found"
+            }
+          ]
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "https://raw.githubusercontent.com/jni-rs/jni-sys/64d77b7a5f119d7b55b4e2c169a4668067ff59e6/LICENSE-MIT",
+          "file": "third_party/notices/1d85bd754b04ceec93e98e890edd1fa3c6a22e81bcb32135806beeccefa51cd1.txt",
+          "sha256": "1d85bd754b04ceec93e98e890edd1fa3c6a22e81bcb32135806beeccefa51cd1"
+        },
+        {
+          "upstream_path": "https://raw.githubusercontent.com/jni-rs/jni-sys/64d77b7a5f119d7b55b4e2c169a4668067ff59e6/LICENSE-APACHE",
+          "file": "third_party/notices/c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08.txt",
+          "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+        }
+      ]
+    },
+    "cargo:jni-sys@0.4.1": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "jni-sys",
+          "version": "0.4.1",
+          "license_files": [
+            "LICENSE-APACHE",
+            "LICENSE-MIT"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE-APACHE",
+          "file": "third_party/notices/c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08.txt",
+          "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+        },
+        {
+          "upstream_path": "LICENSE-MIT",
+          "file": "third_party/notices/1d85bd754b04ceec93e98e890edd1fa3c6a22e81bcb32135806beeccefa51cd1.txt",
+          "sha256": "1d85bd754b04ceec93e98e890edd1fa3c6a22e81bcb32135806beeccefa51cd1"
+        }
+      ]
+    },
+    "cargo:jni@0.22.4": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "jni",
+          "version": "0.22.4",
+          "license_files": [
+            "https://raw.githubusercontent.com/jni-rs/jni-rs/5ae9458a4ec44c5318f37ddc7569c1d4ae8a69e7/LICENSE-MIT",
+            "https://raw.githubusercontent.com/jni-rs/jni-rs/5ae9458a4ec44c5318f37ddc7569c1d4ae8a69e7/LICENSE-APACHE"
+          ],
+          "upstream_checks": [
+            {
+              "url": "https://raw.githubusercontent.com/jni-rs/jni-rs/5ae9458a4ec44c5318f37ddc7569c1d4ae8a69e7/LICENSE",
+              "error": "HTTP Error 404: Not Found"
+            },
+            {
+              "url": "https://raw.githubusercontent.com/jni-rs/jni-rs/5ae9458a4ec44c5318f37ddc7569c1d4ae8a69e7/LICENSE-MIT",
+              "found": true
+            },
+            {
+              "url": "https://raw.githubusercontent.com/jni-rs/jni-rs/5ae9458a4ec44c5318f37ddc7569c1d4ae8a69e7/LICENSE-APACHE",
+              "found": true
+            },
+            {
+              "url": "https://raw.githubusercontent.com/jni-rs/jni-rs/5ae9458a4ec44c5318f37ddc7569c1d4ae8a69e7/COPYRIGHT",
+              "error": "HTTP Error 404: Not Found"
+            }
+          ]
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "https://raw.githubusercontent.com/jni-rs/jni-rs/5ae9458a4ec44c5318f37ddc7569c1d4ae8a69e7/LICENSE-MIT",
+          "file": "third_party/notices/fea1d5bf3dd71605ce5d7d2ff695c1837e914c77195e523a86b5391716477960.txt",
+          "sha256": "fea1d5bf3dd71605ce5d7d2ff695c1837e914c77195e523a86b5391716477960"
+        },
+        {
+          "upstream_path": "https://raw.githubusercontent.com/jni-rs/jni-rs/5ae9458a4ec44c5318f37ddc7569c1d4ae8a69e7/LICENSE-APACHE",
+          "file": "third_party/notices/a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2.txt",
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        }
+      ]
+    },
+    "cargo:jobserver@0.1.35": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "jobserver",
+          "version": "0.1.35",
+          "license_files": [
+            "LICENSE-APACHE",
+            "LICENSE-MIT"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE-APACHE",
+          "file": "third_party/notices/a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2.txt",
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        },
+        {
+          "upstream_path": "LICENSE-MIT",
+          "file": "third_party/notices/378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397.txt",
+          "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+        }
+      ]
+    },
     "cargo:js-sys@0.3.105": {
       "sources": [
         {
@@ -3391,30 +3792,30 @@
         }
       ]
     },
-    "cargo:opentelemetry-appender-tracing@0.31.1": {
+    "cargo:opentelemetry-appender-tracing@0.32.0": {
       "sources": [
         {
           "manifest": "Cargo.lock",
           "package": "opentelemetry-appender-tracing",
-          "version": "0.31.1",
+          "version": "0.32.0",
           "license_files": [
-            "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/00f97c948e95beb7b2c966fcdb5f946c2a89baeb/LICENSE"
+            "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE"
           ],
           "upstream_checks": [
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/00f97c948e95beb7b2c966fcdb5f946c2a89baeb/LICENSE",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE",
               "found": true
             },
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/00f97c948e95beb7b2c966fcdb5f946c2a89baeb/LICENSE-MIT",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE-MIT",
               "error": "HTTP Error 404: Not Found"
             },
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/00f97c948e95beb7b2c966fcdb5f946c2a89baeb/LICENSE-APACHE",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE-APACHE",
               "error": "HTTP Error 404: Not Found"
             },
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/00f97c948e95beb7b2c966fcdb5f946c2a89baeb/COPYRIGHT",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/COPYRIGHT",
               "error": "HTTP Error 404: Not Found"
             }
           ]
@@ -3425,36 +3826,36 @@
       ],
       "notices": [
         {
-          "upstream_path": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/00f97c948e95beb7b2c966fcdb5f946c2a89baeb/LICENSE",
+          "upstream_path": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE",
           "file": "third_party/notices/c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4.txt",
           "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
         }
       ]
     },
-    "cargo:opentelemetry-http@0.31.0": {
+    "cargo:opentelemetry-http@0.32.0": {
       "sources": [
         {
           "manifest": "Cargo.lock",
           "package": "opentelemetry-http",
-          "version": "0.31.0",
+          "version": "0.32.0",
           "license_files": [
-            "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE"
+            "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE"
           ],
           "upstream_checks": [
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE",
               "found": true
             },
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE-MIT",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE-MIT",
               "error": "HTTP Error 404: Not Found"
             },
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE-APACHE",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE-APACHE",
               "error": "HTTP Error 404: Not Found"
             },
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/COPYRIGHT",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/COPYRIGHT",
               "error": "HTTP Error 404: Not Found"
             }
           ]
@@ -3465,36 +3866,36 @@
       ],
       "notices": [
         {
-          "upstream_path": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE",
+          "upstream_path": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE",
           "file": "third_party/notices/c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4.txt",
           "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
         }
       ]
     },
-    "cargo:opentelemetry-otlp@0.31.1": {
+    "cargo:opentelemetry-otlp@0.32.0": {
       "sources": [
         {
           "manifest": "Cargo.lock",
           "package": "opentelemetry-otlp",
-          "version": "0.31.1",
+          "version": "0.32.0",
           "license_files": [
-            "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/febe718fa9ad80c281a82f754e399d3ba6c40c26/LICENSE"
+            "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE"
           ],
           "upstream_checks": [
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/febe718fa9ad80c281a82f754e399d3ba6c40c26/LICENSE",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE",
               "found": true
             },
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/febe718fa9ad80c281a82f754e399d3ba6c40c26/LICENSE-MIT",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE-MIT",
               "error": "HTTP Error 404: Not Found"
             },
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/febe718fa9ad80c281a82f754e399d3ba6c40c26/LICENSE-APACHE",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE-APACHE",
               "error": "HTTP Error 404: Not Found"
             },
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/febe718fa9ad80c281a82f754e399d3ba6c40c26/COPYRIGHT",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/COPYRIGHT",
               "error": "HTTP Error 404: Not Found"
             }
           ]
@@ -3505,39 +3906,22 @@
       ],
       "notices": [
         {
-          "upstream_path": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/febe718fa9ad80c281a82f754e399d3ba6c40c26/LICENSE",
+          "upstream_path": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE",
           "file": "third_party/notices/c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4.txt",
           "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
         }
       ]
     },
-    "cargo:opentelemetry-proto@0.31.0": {
+    "cargo:opentelemetry-proto@0.32.0": {
       "sources": [
         {
           "manifest": "Cargo.lock",
           "package": "opentelemetry-proto",
-          "version": "0.31.0",
+          "version": "0.32.0",
           "license_files": [
-            "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE"
+            "src/proto/opentelemetry-proto/LICENSE"
           ],
-          "upstream_checks": [
-            {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE",
-              "found": true
-            },
-            {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE-MIT",
-              "error": "HTTP Error 404: Not Found"
-            },
-            {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE-APACHE",
-              "error": "HTTP Error 404: Not Found"
-            },
-            {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/COPYRIGHT",
-              "error": "HTTP Error 404: Not Found"
-            }
-          ]
+          "upstream_checks": []
         }
       ],
       "scopes": [
@@ -3545,36 +3929,36 @@
       ],
       "notices": [
         {
-          "upstream_path": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE",
+          "upstream_path": "src/proto/opentelemetry-proto/LICENSE",
           "file": "third_party/notices/c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4.txt",
           "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
         }
       ]
     },
-    "cargo:opentelemetry@0.31.0": {
+    "cargo:opentelemetry@0.32.0": {
       "sources": [
         {
           "manifest": "Cargo.lock",
           "package": "opentelemetry",
-          "version": "0.31.0",
+          "version": "0.32.0",
           "license_files": [
-            "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE"
+            "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE"
           ],
           "upstream_checks": [
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE",
               "found": true
             },
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE-MIT",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE-MIT",
               "error": "HTTP Error 404: Not Found"
             },
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE-APACHE",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE-APACHE",
               "error": "HTTP Error 404: Not Found"
             },
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/COPYRIGHT",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/COPYRIGHT",
               "error": "HTTP Error 404: Not Found"
             }
           ]
@@ -3585,36 +3969,36 @@
       ],
       "notices": [
         {
-          "upstream_path": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE",
+          "upstream_path": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/ec289cb3c6f8260951699c51df968560943c1451/LICENSE",
           "file": "third_party/notices/c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4.txt",
           "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
         }
       ]
     },
-    "cargo:opentelemetry_sdk@0.31.0": {
+    "cargo:opentelemetry_sdk@0.32.1": {
       "sources": [
         {
           "manifest": "Cargo.lock",
           "package": "opentelemetry_sdk",
-          "version": "0.31.0",
+          "version": "0.32.1",
           "license_files": [
-            "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE"
+            "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/284a37d93b3856e1975c2807ba3af1421ebd9b52/LICENSE"
           ],
           "upstream_checks": [
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/284a37d93b3856e1975c2807ba3af1421ebd9b52/LICENSE",
               "found": true
             },
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE-MIT",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/284a37d93b3856e1975c2807ba3af1421ebd9b52/LICENSE-MIT",
               "error": "HTTP Error 404: Not Found"
             },
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE-APACHE",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/284a37d93b3856e1975c2807ba3af1421ebd9b52/LICENSE-APACHE",
               "error": "HTTP Error 404: Not Found"
             },
             {
-              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/COPYRIGHT",
+              "url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/284a37d93b3856e1975c2807ba3af1421ebd9b52/COPYRIGHT",
               "error": "HTTP Error 404: Not Found"
             }
           ]
@@ -3625,7 +4009,7 @@
       ],
       "notices": [
         {
-          "upstream_path": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/285dc925f98403ff426acc70968f104dc820d4f2/LICENSE",
+          "upstream_path": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-rust/284a37d93b3856e1975c2807ba3af1421ebd9b52/LICENSE",
           "file": "third_party/notices/c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4.txt",
           "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
         }
@@ -3660,35 +4044,6 @@
         }
       ]
     },
-    "cargo:pin-project-internal@1.1.13": {
-      "sources": [
-        {
-          "manifest": "Cargo.lock",
-          "package": "pin-project-internal",
-          "version": "1.1.13",
-          "license_files": [
-            "LICENSE-APACHE",
-            "LICENSE-MIT"
-          ],
-          "upstream_checks": []
-        }
-      ],
-      "scopes": [
-        "Rust: all locked targets and development dependencies"
-      ],
-      "notices": [
-        {
-          "upstream_path": "LICENSE-APACHE",
-          "file": "third_party/notices/0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594.txt",
-          "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
-        },
-        {
-          "upstream_path": "LICENSE-MIT",
-          "file": "third_party/notices/23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3.txt",
-          "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
-        }
-      ]
-    },
     "cargo:pin-project-lite@0.2.17": {
       "sources": [
         {
@@ -3718,12 +4073,41 @@
         }
       ]
     },
-    "cargo:pin-project@1.1.13": {
+    "cargo:pkg-config@0.3.34": {
       "sources": [
         {
           "manifest": "Cargo.lock",
-          "package": "pin-project",
-          "version": "1.1.13",
+          "package": "pkg-config",
+          "version": "0.3.34",
+          "license_files": [
+            "LICENSE-APACHE",
+            "LICENSE-MIT"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE-APACHE",
+          "file": "third_party/notices/a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2.txt",
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        },
+        {
+          "upstream_path": "LICENSE-MIT",
+          "file": "third_party/notices/378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397.txt",
+          "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+        }
+      ]
+    },
+    "cargo:portable-atomic@1.15.0": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "portable-atomic",
+          "version": "1.15.0",
           "license_files": [
             "LICENSE-APACHE",
             "LICENSE-MIT"
@@ -4293,6 +4677,35 @@
         }
       ]
     },
+    "cargo:reqwest@0.13.5": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "reqwest",
+          "version": "0.13.5",
+          "license_files": [
+            "LICENSE-APACHE",
+            "LICENSE-MIT"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE-APACHE",
+          "file": "third_party/notices/751963a8b88c0e3a9f27e98933079fbcf09b9998b2c13ac49c2e4d58444520d6.txt",
+          "sha256": "751963a8b88c0e3a9f27e98933079fbcf09b9998b2c13ac49c2e4d58444520d6"
+        },
+        {
+          "upstream_path": "LICENSE-MIT",
+          "file": "third_party/notices/dd87e27dfbaa888cb77ea34592648a7743636b8dce07e49543bddda0fcfc73bc.txt",
+          "sha256": "dd87e27dfbaa888cb77ea34592648a7743636b8dce07e49543bddda0fcfc73bc"
+        }
+      ]
+    },
     "cargo:ring@0.17.14": {
       "sources": [
         {
@@ -4375,6 +4788,35 @@
         }
       ]
     },
+    "cargo:rustc_version@0.4.1": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "rustc_version",
+          "version": "0.4.1",
+          "license_files": [
+            "LICENSE-APACHE",
+            "LICENSE-MIT"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE-APACHE",
+          "file": "third_party/notices/a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2.txt",
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        },
+        {
+          "upstream_path": "LICENSE-MIT",
+          "file": "third_party/notices/c9a75f18b9ab2927829a208fc6aa2cf4e63b8420887ba29cdb265d6619ae82d5.txt",
+          "sha256": "c9a75f18b9ab2927829a208fc6aa2cf4e63b8420887ba29cdb265d6619ae82d5"
+        }
+      ]
+    },
     "cargo:rustls-native-certs@0.8.4": {
       "sources": [
         {
@@ -4442,6 +4884,50 @@
           "upstream_path": "LICENSE-MIT",
           "file": "third_party/notices/9117d922e667125508dde62b02c1f57ed22f5ad21eb536aa2e2d99e1c796e639.txt",
           "sha256": "9117d922e667125508dde62b02c1f57ed22f5ad21eb536aa2e2d99e1c796e639"
+        }
+      ]
+    },
+    "cargo:rustls-platform-verifier-android@0.1.1": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "rustls-platform-verifier-android",
+          "version": "0.1.1",
+          "license_files": [],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": []
+    },
+    "cargo:rustls-platform-verifier@0.7.0": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "rustls-platform-verifier",
+          "version": "0.7.0",
+          "license_files": [
+            "LICENSE-APACHE",
+            "LICENSE-MIT"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE-APACHE",
+          "file": "third_party/notices/c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4.txt",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        },
+        {
+          "upstream_path": "LICENSE-MIT",
+          "file": "third_party/notices/1c7cf76689c837a68ed8d704994e52a0f2940c087958f860d17f3186afbdcc0c.txt",
+          "sha256": "1c7cf76689c837a68ed8d704994e52a0f2940c087958f860d17f3186afbdcc0c"
         }
       ]
     },
@@ -4561,6 +5047,35 @@
         }
       ]
     },
+    "cargo:same-file@1.0.6": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "same-file",
+          "version": "1.0.6",
+          "license_files": [
+            "COPYING",
+            "LICENSE-MIT"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "COPYING",
+          "file": "third_party/notices/01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f.txt",
+          "sha256": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f"
+        },
+        {
+          "upstream_path": "LICENSE-MIT",
+          "file": "third_party/notices/cb3c929a05e6cbc9de9ab06a4c57eeb60ca8c724bef6c138c87d3a577e27aa14.txt",
+          "sha256": "cb3c929a05e6cbc9de9ab06a4c57eeb60ca8c724bef6c138c87d3a577e27aa14"
+        }
+      ]
+    },
     "cargo:schannel@0.1.29": {
       "sources": [
         {
@@ -4639,6 +5154,35 @@
           "upstream_path": "LICENSE-MIT",
           "file": "third_party/notices/91e934255ba3b2f21103d68c5581c23ef34aa95c4628e4405b8c901935e11c69.txt",
           "sha256": "91e934255ba3b2f21103d68c5581c23ef34aa95c4628e4405b8c901935e11c69"
+        }
+      ]
+    },
+    "cargo:semver@1.0.28": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "semver",
+          "version": "1.0.28",
+          "license_files": [
+            "LICENSE-APACHE",
+            "LICENSE-MIT"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE-APACHE",
+          "file": "third_party/notices/62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a.txt",
+          "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+        },
+        {
+          "upstream_path": "LICENSE-MIT",
+          "file": "third_party/notices/23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3.txt",
+          "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
         }
       ]
     },
@@ -4894,6 +5438,64 @@
           "upstream_path": "LICENSE-MIT",
           "file": "third_party/notices/4455bf75a91154108304cb283e0fea9948c14f13e20d60887cf2552449dea3b1.txt",
           "sha256": "4455bf75a91154108304cb283e0fea9948c14f13e20d60887cf2552449dea3b1"
+        }
+      ]
+    },
+    "cargo:simd_cesu8@1.2.0": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "simd_cesu8",
+          "version": "1.2.0",
+          "license_files": [
+            "LICENSE-APACHE",
+            "LICENSE-MIT"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE-APACHE",
+          "file": "third_party/notices/a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2.txt",
+          "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+        },
+        {
+          "upstream_path": "LICENSE-MIT",
+          "file": "third_party/notices/23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3.txt",
+          "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+        }
+      ]
+    },
+    "cargo:simdutf8@0.1.5": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "simdutf8",
+          "version": "0.1.5",
+          "license_files": [
+            "LICENSE-Apache",
+            "LICENSE-MIT"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE-Apache",
+          "file": "third_party/notices/0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9.txt",
+          "sha256": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9"
+        },
+        {
+          "upstream_path": "LICENSE-MIT",
+          "file": "third_party/notices/1847e0e0698142ed4347c1441a9fa81c8fbddd44b1d8bbcd5e3647f991759d7f.txt",
+          "sha256": "1847e0e0698142ed4347c1441a9fa81c8fbddd44b1d8bbcd5e3647f991759d7f"
         }
       ]
     },
@@ -5412,29 +6014,6 @@
         }
       ]
     },
-    "cargo:tokio-stream@0.1.19": {
-      "sources": [
-        {
-          "manifest": "Cargo.lock",
-          "package": "tokio-stream",
-          "version": "0.1.19",
-          "license_files": [
-            "LICENSE"
-          ],
-          "upstream_checks": []
-        }
-      ],
-      "scopes": [
-        "Rust: all locked targets and development dependencies"
-      ],
-      "notices": [
-        {
-          "upstream_path": "LICENSE",
-          "file": "third_party/notices/253cd04c6714889df2d32f3f64d669179a1c95c76ac43c40882c52eb06bc3552.txt",
-          "sha256": "253cd04c6714889df2d32f3f64d669179a1c95c76ac43c40882c52eb06bc3552"
-        }
-      ]
-    },
     "cargo:tokio@1.53.1": {
       "sources": [
         {
@@ -5571,69 +6150,6 @@
           "upstream_path": "LICENSE-MIT",
           "file": "third_party/notices/6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6.txt",
           "sha256": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6"
-        }
-      ]
-    },
-    "cargo:tonic-prost@0.14.6": {
-      "sources": [
-        {
-          "manifest": "Cargo.lock",
-          "package": "tonic-prost",
-          "version": "0.14.6",
-          "license_files": [
-            "https://raw.githubusercontent.com/hyperium/tonic/6cb6056b5a748bc5a29bd48f4602dbc4e552bb7d/LICENSE"
-          ],
-          "upstream_checks": [
-            {
-              "url": "https://raw.githubusercontent.com/hyperium/tonic/6cb6056b5a748bc5a29bd48f4602dbc4e552bb7d/LICENSE",
-              "found": true
-            },
-            {
-              "url": "https://raw.githubusercontent.com/hyperium/tonic/6cb6056b5a748bc5a29bd48f4602dbc4e552bb7d/LICENSE-MIT",
-              "error": "HTTP Error 404: Not Found"
-            },
-            {
-              "url": "https://raw.githubusercontent.com/hyperium/tonic/6cb6056b5a748bc5a29bd48f4602dbc4e552bb7d/LICENSE-APACHE",
-              "error": "HTTP Error 404: Not Found"
-            },
-            {
-              "url": "https://raw.githubusercontent.com/hyperium/tonic/6cb6056b5a748bc5a29bd48f4602dbc4e552bb7d/COPYRIGHT",
-              "error": "HTTP Error 404: Not Found"
-            }
-          ]
-        }
-      ],
-      "scopes": [
-        "Rust: all locked targets and development dependencies"
-      ],
-      "notices": [
-        {
-          "upstream_path": "https://raw.githubusercontent.com/hyperium/tonic/6cb6056b5a748bc5a29bd48f4602dbc4e552bb7d/LICENSE",
-          "file": "third_party/notices/e24a56698aa6feaf3a02272b3624f9dc255d982970c5ed97ac4525a95056a5b3.txt",
-          "sha256": "e24a56698aa6feaf3a02272b3624f9dc255d982970c5ed97ac4525a95056a5b3"
-        }
-      ]
-    },
-    "cargo:tonic@0.14.6": {
-      "sources": [
-        {
-          "manifest": "Cargo.lock",
-          "package": "tonic",
-          "version": "0.14.6",
-          "license_files": [
-            "LICENSE"
-          ],
-          "upstream_checks": []
-        }
-      ],
-      "scopes": [
-        "Rust: all locked targets and development dependencies"
-      ],
-      "notices": [
-        {
-          "upstream_path": "LICENSE",
-          "file": "third_party/notices/e24a56698aa6feaf3a02272b3624f9dc255d982970c5ed97ac4525a95056a5b3.txt",
-          "sha256": "e24a56698aa6feaf3a02272b3624f9dc255d982970c5ed97ac4525a95056a5b3"
         }
       ]
     },
@@ -5804,12 +6320,12 @@
         }
       ]
     },
-    "cargo:tracing-opentelemetry@0.32.1": {
+    "cargo:tracing-opentelemetry@0.33.0": {
       "sources": [
         {
           "manifest": "Cargo.lock",
           "package": "tracing-opentelemetry",
-          "version": "0.32.1",
+          "version": "0.33.0",
           "license_files": [
             "LICENSE"
           ],
@@ -6116,6 +6632,35 @@
         }
       ]
     },
+    "cargo:walkdir@2.5.0": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "walkdir",
+          "version": "2.5.0",
+          "license_files": [
+            "COPYING",
+            "LICENSE-MIT"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "COPYING",
+          "file": "third_party/notices/01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f.txt",
+          "sha256": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f"
+        },
+        {
+          "upstream_path": "LICENSE-MIT",
+          "file": "third_party/notices/0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f.txt",
+          "sha256": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f"
+        }
+      ]
+    },
     "cargo:want@0.3.1": {
       "sources": [
         {
@@ -6409,6 +6954,29 @@
           "upstream_path": "LICENSE-MIT",
           "file": "third_party/notices/f428305bbf2e70fbd807af0f3c7ac1b7acfb95311640f451e9d2e48db6d7e96b.txt",
           "sha256": "f428305bbf2e70fbd807af0f3c7ac1b7acfb95311640f451e9d2e48db6d7e96b"
+        }
+      ]
+    },
+    "cargo:webpki-root-certs@1.0.9": {
+      "sources": [
+        {
+          "manifest": "Cargo.lock",
+          "package": "webpki-root-certs",
+          "version": "1.0.9",
+          "license_files": [
+            "LICENSE"
+          ],
+          "upstream_checks": []
+        }
+      ],
+      "scopes": [
+        "Rust: all locked targets and development dependencies"
+      ],
+      "notices": [
+        {
+          "upstream_path": "LICENSE",
+          "file": "third_party/notices/e271993808fec50ab29350b39539cdec611a9103f827e0aa26d61da70e2d33f8.txt",
+          "sha256": "e271993808fec50ab29350b39539cdec611a9103f827e0aa26d61da70e2d33f8"
         }
       ]
     },

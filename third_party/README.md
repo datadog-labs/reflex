@@ -9,7 +9,7 @@ source path, or font metadata to identify the copy being used.
 
 The inventory covers:
 
-- All 212 third-party versions in `Cargo.lock`, including development and
+- All 231 third-party versions in `Cargo.lock`, including development and
   platform-specific dependencies, plus separately noticed bundled Rust sources.
 - All 43 package versions in the UI's `package-lock.json`, including optional
   esbuild binaries for other platforms.

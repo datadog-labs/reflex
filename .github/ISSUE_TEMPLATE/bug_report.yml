@@ -1,0 +1,56 @@
+name: Bug report
+description: Report a reproducible problem with Reflex.
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing issues before submitting. Include a minimal reproduction where possible.
+        Remove credentials and private data from logs, examples, and screenshots.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the problem and its impact.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Include commands, a minimal code example, or configuration needed to reproduce the problem.
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Version and environment
+      description: Include the Reflex commit or version, OS, and relevant tool versions. For UI issues, include the browser and Node.js/npm versions.
+      placeholder: |
+        Reflex commit/version:
+        Operating system:
+        Rust version:
+        Browser (if applicable):
+        Node.js/npm (if applicable):
+    validations:
+      required: true
+  - type: textarea
+    id: simulation
+    attributes:
+      label: Simulation configuration
+      description: For simulation issues, include the scenario, policy, seed, changed controls, and whether live Jev, Datadog, or forecasting integrations were enabled. Otherwise leave blank.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs and additional context
+      description: Include relevant errors, logs, screenshots, or related issues. Remove credentials and private data.

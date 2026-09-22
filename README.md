@@ -149,6 +149,11 @@ The simulations can query **Datadog** for observed state. An application-supplie
 - [Datadog telemetry and dashboards](dashboards/README.md)
 - [Capacity research: workloads, algorithms, methods, and results](studies/capacity/README.md)
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, testing, signed
+commits, feature proposals, and pull requests.
+
 ## Further reading
 
 - [SDK quickstart and API behavior](SDK_README.md)

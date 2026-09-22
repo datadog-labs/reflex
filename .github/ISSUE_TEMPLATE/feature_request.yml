@@ -1,0 +1,49 @@
+name: Feature proposal (RFC)
+description: Discuss a feature or substantial change before implementing it.
+title: "[RFC] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing proposals first. Discuss the approach with maintainers and wait for approval before starting implementation.
+        See the [contribution guide](https://github.com/datadog-labs/reflex/blob/main/CONTRIBUTING.md) for the process.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and use case
+      description: Who encounters this problem, and what makes the current behavior insufficient?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the feature and include a usage example, proposed API, or UI behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: approach
+    attributes:
+      label: Implementation approach
+      description: Outline how this could work and any open questions. An initial idea is sufficient; implementation is not required yet.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe other approaches or existing workarounds and their tradeoffs.
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility and impact
+      description: Describe effects on existing users, APIs, execution guarantees, or dependencies. State any uncertainty, or write "None expected".
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Link related issues, examples, or supporting evidence.

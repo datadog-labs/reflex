@@ -17,3 +17,6 @@ artifacts/
 /crates/reflex-sim/src/playground/scenario-ui.js
 /crates/reflex-sim/src/playground/scenario-ui.css
 /crates/reflex-sim/src/typography.css
+
+# Local open-source readiness reports and assistant logs
+/.oss-readiness/

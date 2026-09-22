@@ -82,3 +82,31 @@
 .simulation-scenario-picker{width:270px;max-width:100%;min-width:0}
 .simulation-scenario-copy{display:flex;flex-direction:column;gap:4px;flex:1;min-width:220px}
 @media(max-width:700px){.simulation-scenario-bar{padding:8px}.simulation-scenario-copy{min-width:0;flex-basis:100%}.simulation-scenario-controls{width:100%}.simulation-scenario-picker{flex:1;min-width:160px}}
+
+/* Playback stays anchored to the canvas while graph contents pan and zoom. */
+.topology-canvas,.scenario-page .topology-panel{position:relative}
+.map-playback{position:absolute;top:16px;left:16px;width:max-content;max-width:calc(100% - 82px);z-index:10;padding:8px;background:#fff;border:1px solid #dce0ed;border-radius:4px;box-shadow:0 2px 8px #182b4914}
+.map-playback .transport-bar,.map-playback .scenario-transport{padding:0;border:0;background:transparent;justify-content:flex-start;width:auto}
+.map-playback .transport-group,.map-playback .scenario-transport-group{gap:8px}
+@media(max-width:700px){.map-playback{top:8px;left:8px;max-width:calc(100% - 66px)}.map-playback .transport-group,.map-playback .scenario-transport-group{gap:6px}}
+
+.reflex-map-tools{width:34px;box-sizing:border-box}
+.map-playback .playback-actions{margin-left:0;justify-content:flex-start}
+
+/* Compact scenario choices alongside the page introduction. */
+.simulation-intro{display:grid;grid-template-columns:minmax(260px,1fr) minmax(0,64%);align-items:center;gap:8px 24px;padding:16px 20px;flex:none;border-bottom:1px solid var(--ui-border,#dce0ed);background:#fff}
+.simulation-intro .simulation-title{grid-column:1;grid-row:1;margin:0;color:#1c2b34;font-family:var(--dd-font-sans);font-size:24px;line-height:32px;font-weight:600;letter-spacing:normal}
+.simulation-intro>.simulation-scenario-bar,.simulation-intro-controls{grid-column:2;grid-row:1;min-width:0;align-self:center}
+.simulation-intro .circuit-description,.simulation-intro .scenario-description{grid-column:1;grid-row:2;border:0;padding:0;margin:0;font-size:14px;line-height:22px}
+.simulation-intro .scenario-card-panel{display:block;padding:8px;background:#f8f9fb;border:0;border-radius:4px}
+.scenario-card-grid{display:grid;grid-template-columns:repeat(var(--scenario-count),minmax(190px,1fr));gap:6px;width:100%;overflow-x:auto}
+.scenario-choice-card{display:flex;align-items:center;gap:8px;min-width:0;padding:10px;text-align:left;background:#fff;border:1px solid #c3cadd;border-radius:3px;color:#1c2b34;font:inherit}
+.scenario-choice-card[data-selected=true]{border-color:#006bc2;background:#f0f7ff}
+.scenario-choice-copy{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1;padding:0;border:0;background:transparent;text-align:left;color:inherit;font:inherit;cursor:pointer}
+.scenario-choice-copy>span:last-child{font-size:12px;line-height:16px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.scenario-choice-copy:focus-visible{outline:2px solid #006bc2;outline-offset:3px}
+.scenario-choice-copy:disabled{opacity:.5;cursor:default}
+.scenario-choice-card>button:last-child{align-self:center;flex:none;margin-left:auto}
+@media(max-width:900px){.simulation-intro{grid-template-columns:minmax(0,1fr);padding:16px}.simulation-intro>.simulation-scenario-bar,.simulation-intro-controls{grid-column:1;grid-row:2}.simulation-intro .simulation-title{font-size:22px;line-height:28px}}
+
+.simulation-intro-copy{display:flex;flex-direction:column;gap:8px;min-width:0}

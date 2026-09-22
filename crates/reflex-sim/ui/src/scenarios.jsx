@@ -37,10 +37,16 @@ const recoveryBudget=scenario==='recovery'?$('bandwidth').closest('label'):null;
 if(legacyScenarioControls)legacyScenarioControls.hidden=true;
 const toolbar=document.querySelector('.toolbar');toolbar.hidden=true;
 const toolbarHost=document.createElement('div');toolbar.before(toolbarHost);const toolbarRoot=mount('scenario-toolbar',toolbarHost);
+const intro=document.createElement('section');intro.className='simulation-intro';toolbarHost.before(intro);
+const introTitle=document.createElement('h1');introTitle.className='simulation-title';introTitle.textContent=scenario==='scheduler'?'Resource Scheduler':'Recovery';
+const introCopy=document.createElement('div');introCopy.className='simulation-intro-copy';introCopy.append(introTitle,main.querySelector('.scenario-description'));
+toolbarHost.className='simulation-intro-controls';intro.append(introCopy,toolbarHost);
+
 const legacyComparison=$('comparison');
 let comparisonRoot;
 if(legacyComparison){legacyComparison.hidden=true;const host=document.createElement('div');legacyComparison.before(host);host.id='policy-comparison';comparisonRoot=createRoot(host);}
 const layout=document.querySelector('.topology-layout'),mapPanel=document.querySelector('.topology-panel');
+const playbackHost=document.createElement('div');playbackHost.className='map-playback';playbackHost.setAttribute('role','region');playbackHost.setAttribute('aria-label','Simulation playback');mapPanel.prepend(playbackHost);const playbackRoot=mount('scenario-playback',playbackHost);
 const mapRoot=mount('scenario-map',mapPanel);mapPanel.querySelector('.topology-scroll').hidden=true;mapPanel.querySelector('.topology-heading').hidden=true;mapPanel.querySelector('.topology-legend').hidden=true;
 const heading=document.createElement('header');heading.className='scenario-inspector-heading';
 const eyebrow=inspector.querySelector('.eyebrow');if(eyebrow)eyebrow.remove();
@@ -114,13 +120,14 @@ function InspectorTabs({selection}){
 }
 function Toolbar({state,busy,connected,send,selected,onSelectPolicy}){
  const ended=state.at_ms>=(state.horizon_ms||state.duration_ms||180000),disabled=busy||!connected,datadog=state.evidence_source==='datadog';
- return <>{scenarioOptions.length>0&&<ScenarioControls state={state} disabled={disabled} send={send} options={scenarioOptions} description={$('scenario-description').textContent}/>}<div className="scenario-transport"><div className="scenario-transport-group">
+ return <><div className="scenario-transport"><div className="scenario-transport-group">
  <Button icon={state.paused?PlayIcon:PauseIcon} label={ended?'Complete':state.paused?(state.at_ms?'Resume':'Start traffic'):'Pause'} isPrimary isTitleCased={false} isDisabled={disabled||ended} onClick={()=>send({type:state.paused?'play':'pause'})}/>
  <Button label="+1s" ariaLabel="Step one second" isDisabled={datadog||disabled||ended} onClick={()=>send({type:'step'})}/>
  <Text isMonospace size="sm">{formatTime(state.at_ms)} / {formatTime(state.horizon_ms||state.duration_ms||180000)}</Text>
  <StatusPill isSoft level={!state.paused&&!ended?'success':'default'}>{ended?'Complete':state.replay?'Replay':state.paused?'Paused':'Running'}</StatusPill>
  {scenario==='capacity'&&<PolicySwitcher state={state} selected={selected} onSelectPolicy={onSelectPolicy}/>}
 
+ </div><div className="scenario-transport-group playback-actions">
  <ToggleButtons aria-label="Playback speed" options={(scenario==='capacity'?[1,2,4,10]:[1,2,4]).map(n=>({value:n,label:`${n}×`}))} value={state.speed} isDisabled={datadog||disabled} onChange={value=>send({type:'speed',value})}/>
  {scenario==='capacity'&&<Button label="Replay" isBorderless isDisabled={disabled||!state.at_ms} onClick={()=>send({type:'replay'},true)}/>}
  <Button label="Reset" isBorderless isDisabled={disabled} onClick={()=>send({type:'reset'},true)}/></div></div></>;
@@ -160,7 +167,8 @@ function ScenarioMap(props){
 }
 window.renderScenarioUI=props=>{
  renderHeader({disabled:props.busy||!props.connected,navigate:async path=>{if(await props.send({type:'pause'}))location.href=path;}});
- toolbarRoot.render(env(<Toolbar {...props}/>));
+ toolbarRoot.render(env(scenarioOptions.length>0?<ScenarioControls state={props.state} disabled={props.busy||!props.connected} send={props.send} options={scenarioOptions} description={$('scenario-description').textContent}/>:null));
+ playbackRoot.render(env(<Toolbar {...props}/>));
  headingRoot.render(env(<InspectorHeading {...props}/>));
  comparisonRoot?.render(env(<PolicyComparison {...props}/>));
  trendRoot.render(env(<ScenarioTrend scenario={scenario} {...props}/>));

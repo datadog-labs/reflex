@@ -5,12 +5,23 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      telemetry:
+        patterns:
+          - "opentelemetry*"
+          - "tracing-opentelemetry"
 
   - package-ecosystem: npm
     directory: /crates/reflex-sim/ui
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      react-stack:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@datadog/druids"
 
   - package-ecosystem: pip
     directory: /studies/capacity

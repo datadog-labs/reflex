@@ -47,7 +47,7 @@ let client = TypeSafeClient::builder()
 
 `meter_provider` is your configured OpenTelemetry provider. Without `.meter(...)`, the client gets a meter from the global provider **at client construction time**; initialize that provider first. Reuse clients to reuse connections and instruments. Tracing uses the application's current subscriber. Applications already using `tracing` should add layers to their existing subscriber rather than install a second global subscriber.
 
-The library uses OpenTelemetry API 0.31. The runnable example uses matching SDK/exporters 0.31, `tracing-opentelemetry` 0.32, and `opentelemetry-appender-tracing` 0.31 with `experimental_use_tracing_span_context` for log correlation. Exporters, the OpenTelemetry SDK, and these bridges are development dependencies, not runtime dependencies of the client library.
+The library uses OpenTelemetry API 0.33. The runnable example uses matching SDK/exporters and `opentelemetry-appender-tracing` 0.33 with `tracing-opentelemetry` 0.34. The tracing layer activates the current OpenTelemetry span context for correlated logs. Update these dependencies together so providers, exporters, and bridges share the same API version. Exporters, the OpenTelemetry SDK, and these bridges are development dependencies, not runtime dependencies of the client library.
 
 ## Export directly to Datadog
 

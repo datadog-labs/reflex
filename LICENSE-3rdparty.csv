@@ -165,14 +165,11 @@ cargo:nu-ansi-term@0.50.3,https://crates.io/crates/nu-ansi-term/0.50.3,MIT,Copyr
 cargo:once_cell@1.21.4,https://crates.io/crates/once_cell/1.21.4,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:once_cell_polyfill@1.70.2,https://crates.io/crates/once_cell_polyfill/1.70.2,MIT OR Apache-2.0,Copyright (c) Individual contributors
 cargo:openssl-probe@0.2.1,https://crates.io/crates/openssl-probe/0.2.1,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
-cargo:opentelemetry-appender-tracing@0.32.0,https://crates.io/crates/opentelemetry-appender-tracing/0.32.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
-cargo:opentelemetry-http@0.32.0,https://crates.io/crates/opentelemetry-http/0.32.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
-cargo:opentelemetry-otlp@0.32.0,https://crates.io/crates/opentelemetry-otlp/0.32.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
-cargo:opentelemetry-proto@0.32.0,https://crates.io/crates/opentelemetry-proto/0.32.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry-appender-tracing@0.33.0,https://crates.io/crates/opentelemetry-appender-tracing/0.33.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry-http@0.33.0,https://crates.io/crates/opentelemetry-http/0.33.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry-otlp@0.33.0,https://crates.io/crates/opentelemetry-otlp/0.33.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:opentelemetry-proto@0.33.0,https://crates.io/crates/opentelemetry-proto/0.33.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
-cargo:opentelemetry@0.32.0,https://crates.io/crates/opentelemetry/0.32.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:opentelemetry@0.33.0,https://crates.io/crates/opentelemetry/0.33.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
-cargo:opentelemetry_sdk@0.32.1,https://crates.io/crates/opentelemetry_sdk/0.32.1,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:opentelemetry_sdk@0.33.0,https://crates.io/crates/opentelemetry_sdk/0.33.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:percent-encoding@2.3.2,https://crates.io/crates/percent-encoding/2.3.2,MIT OR Apache-2.0,Copyright (c) 2013-2025 The rust-url developers
 cargo:pin-project-lite@0.2.17,https://crates.io/crates/pin-project-lite/0.2.17,Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
@@ -255,7 +252,7 @@ cargo:tower@0.5.3,https://crates.io/crates/tower/0.5.3,MIT,Copyright (c) 2019 To
 cargo:tracing-attributes@0.1.31,https://crates.io/crates/tracing-attributes/0.1.31,MIT,Copyright (c) 2019 Tokio Contributors
 cargo:tracing-core@0.1.36,https://crates.io/crates/tracing-core/0.1.36,MIT,Copyright (c) 2019 Tokio Contributors | Copyright (c) 2014 Mathijs van de Nes
 cargo:tracing-log@0.2.0,https://crates.io/crates/tracing-log/0.2.0,MIT,Copyright (c) 2019 Tokio Contributors
-cargo:tracing-opentelemetry@0.33.0,https://crates.io/crates/tracing-opentelemetry/0.33.0,MIT,Copyright (c) 2019 Tokio Contributors
+cargo:tracing-opentelemetry@0.34.0,https://crates.io/crates/tracing-opentelemetry/0.34.0,MIT,Copyright (c) 2019 Tokio Contributors
 cargo:tracing-subscriber@0.3.23,https://crates.io/crates/tracing-subscriber/0.3.23,MIT,Copyright (c) 2019 Tokio Contributors
 cargo:tracing@0.1.44,https://crates.io/crates/tracing/0.1.44,MIT,Copyright (c) 2019 Tokio Contributors
 cargo:try-lock@0.2.5,https://crates.io/crates/try-lock/0.2.5,MIT,Copyright (c) 2018-2023 Sean McArthur | Copyright (c) 2016 Alex Crichton

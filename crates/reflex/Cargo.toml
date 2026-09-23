@@ -20,6 +20,6 @@ opentelemetry = { version = "0.32", default-features = false, features = ["metri
 tokio = { workspace = true, features = ["test-util"] }
 trybuild = "1"
 
-opentelemetry_sdk = { version = "0.32.1", features = ["testing"] }
+opentelemetry_sdk = { version = "0.33.0", features = ["testing"] }
 tracing-opentelemetry = "0.33"
 tracing-subscriber = { version = "0.3", features = ["registry"] }

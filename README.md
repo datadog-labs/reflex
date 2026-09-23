@@ -1,8 +1,6 @@
 # Reflex
 
-Reflex is a Rust library for AI-guided state machines, with built-in support for TypeSafe AI’s **Jev**.
-
-You define the state, actions, guards, and invariants. The model recommends an action; Reflex checks it before committing the transition.
+Reflex is a Rust library for control loops that act on observability data. Metrics queried from [**Datadog**](https://www.datadoghq.com/) and forecasts from [**Toto**](https://github.com/DataDog/toto) become typed state. A model, such as TypeSafe AI's **Jev**, recommends an action, and Reflex commits it only if it passes the guards and invariants you declared.
 
 ```text
 Application supplies typed state
@@ -16,95 +14,157 @@ Verified state transition
 Optional effects perform external work
 ```
 
-Here, **verified** means that the transition preserves the constraints you declared.
+The repository includes a simulator that runs Reflex against simulated services. The sections below walk through its circuit breaker, starting with the state machine and then the running simulation.
 
-## When to use it
+## A circuit breaker
 
-Use Reflex in **control loops** that observe a system, choose an action, and use the resulting feedback to make the next decision.
+A gateway routes client traffic to three services, Catalog, Payments, and Search, each behind its own circuit. Jev decides when a circuit should open or probe. Reflex decides whether that decision may take effect.
 
-It fits loops where the choice depends on changing conditions, but execution must obey fixed constraints:
-
-- **Scheduling:** choose which request gets capacity next; enforce resource limits.
-- **Congestion control:** adjust the sending rate from latency and loss; enforce rate bounds.
-- **Circuit breaking:** open, probe, or close based on service health; enforce cooldowns and probe limits.
-- **Recovery:** retry, switch replicas, or rebuild; enforce readiness and recovery budgets.
-
-Your application owns the loop: when it runs, which observations it supplies, and how it measures outcomes. Reflex provides the decision and guarded execution steps.
-
-## How it works
-
-Your application defines the state, actions, and execution rules. Reflex provides the controller and executor that connect them.
-
-| Concept | What it does |
-| --- | --- |
-| **State** | A Rust value your application prepares for evaluation. It can contain local observations, queried metrics, forecasts, or other relevant evidence. |
-| **Judge** | Implements `Judge<S, A>` and returns a typed action with optional confidence. It can call a model or use an ordinary algorithm. |
-| **Controller** | Calls the judge with an inference deadline and returns a proposed decision or an evaluation error. It does not change system state. |
-| **State machine** | Declares phases and transitions. Guards check whether an action is allowed; invariants check properties that every committed state must satisfy. |
-| **Executor** | Checks current state, prepares a candidate, validates it, and commits it. Declared asynchronous effects run after commit and return events to the machine. |
-
-The basic application loop is:
+Each recommendation is a typed action. Besides Jev's choice, it carries the Datadog evidence the decision was based on, when that evidence was observed, and the circuit revision it applies to.
 
 ```rust
-// Your application gathers the evidence and constructs `state`.
-let evaluation = controller.evaluate(&state).await;
-let outcome = executor.execute(evaluation).await?;
+struct Action {
+    choice: Choice,                          // Open, Probe, or NoChange
+    telemetry: Option<TelemetryEvidence>,    // Datadog observations Jev received
+    observed_at: f64,
+    revision: u64,
+}
 ```
 
-Pass the entire evaluation result to the executor. The machine can define transitions for inference failures as well as successful recommendations. Inspect the returned outcome to see whether the transition was applied or rejected, and whether any effects completed successfully.
-
-State transitions commit in memory; external effects run afterward. See [execution semantics](SDK_README.md#guarantees-and-current-scope) for persistence and failure handling.
-
-## Quick example: a circuit breaker
-
-Requires **Rust 1.92 or newer**. From a checkout of this repository, run the included example:
-
-```sh
-cargo run -p reflex --example circuit_breaker
-```
-
-This example runs locally without credentials or network access. It uses a deterministic judge so you can see the execution behavior before connecting a model. The circuit moves through **Closed → Open → HalfOpen → Closed**: it stops normal traffic under distress, permits one recovery probe, and closes after that probe succeeds.
-
-The following excerpt shows its transition rules. The data types and hook implementations are in the [complete runnable example](crates/reflex/examples/circuit_breaker.rs).
+These are the machine's main rules, abridged from [`jev.rs`](crates/reflex-sim/src/jev.rs).
 
 ```rust
 let definition = state_machine! {
-    phase: Phase,
-    data: CircuitData,
-    action: CircuitAction,
-    event: ProbeEvent,
-    invariants: [valid_counts, valid_phase],
-    no_change: CircuitAction::NoChange,
+    phase: CircuitPhase,
+    data: Data,
+    action: Action,
+    event: Event,
+    invariants: [valid_phase],
     transitions: [
-        Phase::Closed + action(CircuitAction::Open) => Phase::Open {
-            min_confidence: 0.85,
-            guard: sustained_distress,
-            update: start_cooldown,
+        // Jev's recommendations
+        CircuitPhase::Closed + action(Action { choice: Choice::Open, .. }) => CircuitPhase::Open {
+            guard: can_open, update: open,
         },
-        Phase::Open + action(CircuitAction::PermitProbe) => Phase::HalfOpen {
-            guard: cooldown_elapsed,
-            update: reserve_probe,
-            effect: run_reserved_probe,
+        CircuitPhase::Open + action(Action { choice: Choice::Probe, .. }) => CircuitPhase::HalfOpen {
+            guard: can_probe, update: probe,
         },
-        Phase::HalfOpen + event(ProbeEvent::Succeeded { .. }) => Phase::Closed {
-            guard: active_probe,
-            update: clear_health,
+        CircuitPhase::Closed + action(Action { choice: Choice::NoChange, .. }) => CircuitPhase::Closed {
+            guard: fresh,
         },
-        Phase::HalfOpen + event(ProbeEvent::Failed { .. }) => Phase::Open {
-            guard: active_probe,
-            update: start_cooldown,
+        // Probe results
+        CircuitPhase::HalfOpen + event(Event::Response(Observation { outcome: ClientOutcome::Success, .. })) => CircuitPhase::HalfOpen {
+            guard: current_probe, update: probe_succeeded,
         },
+        CircuitPhase::HalfOpen + event(Event::FinalProbe(Observation { outcome: ClientOutcome::Success, .. })) => CircuitPhase::Closed {
+            guard: final_probe, update: close,
+        },
+        CircuitPhase::HalfOpen + event(Event::Response(Observation { outcome: ClientOutcome::Error | ClientOutcome::Timeout, .. })) => CircuitPhase::Open {
+            guard: current_probe, update: reopen,
+        },
+        // Evaluation failed (for example, an inference error): leave the circuit as it is
+        CircuitPhase::Closed + evaluation_error(_) => unchanged {},
+        // ... clock ticks, response recording, and the remaining no-change rules
     ],
 };
 ```
 
-The judge can recommend a probe, but the cooldown guard must pass before the executor reserves it. The probe runs as an effect **after** that reservation commits. Its completion event identifies the probe, allowing the next guard to reject a stale result. Invariants check that the phase and runtime data remain consistent.
+The guards are where observability data meets fixed rules.
 
-The complete example also defines behavior for evaluation errors and prints the execution receipts. See the [SDK guide](SDK_README.md) for constructing the executor, hook signatures, and handling outcomes.
+| Guard | Rejects a recommendation when |
+| --- | --- |
+| `fresh` | The circuit changed while Jev was deciding, the Datadog evidence is missing or stale, or the recommendation is past its 10-second execution deadline |
+| `can_open` | The evidence does not include ten responses from a complete Datadog window collected after the circuit's last transition |
+| `can_probe` | The circuit's 3-second cooldown has not elapsed |
+| `current_probe` | A response does not belong to the probe currently in flight |
+| `final_probe` | Fewer than five consecutive probes have succeeded |
+
+The `valid_phase` invariant checks that the phase, cooldown, and probe reservation always agree. Guards run at execution time against current state, so a recommendation based on delayed telemetry or an inaccurate forecast cannot open, probe, or close a circuit on its own.
+
+## Running the simulation
+
+![The circuit-breaker simulator during the Cyclical load · Toto scenario](docs/images/circuit-breaker-simulator.png)
+
+Seven minutes into the scenario, Jev has opened the Payments circuit during a traffic surge. The panel on the right compares a Toto forecast of Payments request rate with the Datadog observations that followed; observations stop where Datadog has not yet caught up.
+
+**Where the state comes from.** The simulated services publish metrics to Datadog. The simulator queries them back to build each service's state, such as its error rate, latency, and queue depth.
+
+**How it is forecast.** A local [Toto](https://github.com/DataDog/toto) service receives the observed history of request rate, queue depth, and utilization, and forecasts the next 120 seconds as p10/p50/p90 values in ten-second buckets. It needs 320 seconds of history before the first forecast. Select a service to compare the frozen forecast with what was later observed.
+
+**What happens to a decision.** Every 10 seconds, Jev evaluates each service and returns Open, Probe, or NoChange. Reflex applies the recommendation only if the matching transition's guard passes. Open **Activity** and inspect a decision to see the Datadog values and timestamps Jev received, any forecast, and whether the transition was applied or rejected, with the rejection reason.
+
+**The scenario shown.** In **Cyclical load · Toto**, Payments repeats a two-minute pattern for ten minutes. Traffic rises 4× at +30s, service time rises 6× at +60s, and both recover at +90s. Jev chooses when to open and probe. Reflex enforces the cooldown and the five-probe close.
+
+Reflex also emits its own OpenTelemetry counters and spans (`reflex.evaluations`, `reflex.transitions`). The simulator exports these to Datadog with the application metrics, and the supplied [dashboards](dashboards/README.md) show both. The simulator also includes a **resource scheduler** that follows the same pattern; see the [simulator guide](crates/reflex-sim/README.md).
+
+## Run the simulator
+
+| Requirement | Used for |
+| --- | --- |
+| Rust 1.92+ and Node.js | The simulator and its UI |
+| `DD_API_KEY`, `DD_APP_KEY`, `DD_SITE` | Publishing and querying metrics. The application key needs `timeseries_query` permission. |
+| `TYPESAFE_API_KEY` | Live Jev recommendations |
+| [uv](https://docs.astral.sh/uv/) | The local Toto service. Toto needs no API key. |
+
+Build the UI once.
+
+```sh
+npm ci --prefix crates/reflex-sim/ui
+npm run build --prefix crates/reflex-sim/ui
+```
+
+In one terminal, start the Toto service.
+
+```sh
+uv sync --project integrations/toto --python 3.12 --locked
+uv run --project integrations/toto --locked reflex-toto
+```
+
+Wait for `Ready: http://127.0.0.1:8765`. The first start downloads a pinned **Toto-2.0-22m** checkpoint, which runs on CPU by default.
+
+In a second terminal, copy [`.env.example`](.env.example) to `.env.local`, fill in your keys, and start the simulator.
+
+```sh
+set -a
+. ./.env.local
+set +a
+cargo run -p reflex-sim --features datadog --locked -- \
+  --playground --policy jev --datadog --datadog-evidence \
+  --toto-url http://127.0.0.1:8765
+```
+
+Select **Cyclical load · Toto → Run**, then select **Payments**. Use the decision's `simulation_run` to filter the [Datadog dashboards](dashboards/README.md). Press **Ctrl+C** to stop and flush telemetry.
+
+There are other ways to run it.
+
+- To run **without Datadog**, drop `--features datadog`, `--datadog`, and `--datadog-evidence`. State and forecasts then come from the simulator's local observations, and only `TYPESAFE_API_KEY` is required.
+- To **publish to Datadog but decide on local state**, use `--datadog` without `--datadog-evidence`. Publishing needs only `DD_API_KEY`.
+- To run **without credentials**, use `cargo run -p reflex --example circuit_breaker`, a smaller circuit breaker with a deterministic judge.
 
 ## Use Reflex in your application
 
-The crates are under development and are **not yet published to crates.io**. Add a path dependency on your checkout, adjusting the path for your project:
+Your application gathers the evidence, whether that is a Datadog query, a forecast, or local measurements, and builds the typed state passed to the judge.
+
+| Concept | What it does |
+| --- | --- |
+| **State** | A Rust value your application prepares for evaluation, such as local observations, queried metrics, or forecasts. |
+| **Judge** | Implements `Judge<S, A>` and returns a typed action with optional confidence. It can call Jev or use an ordinary algorithm. |
+| **Controller** | Calls the judge with an inference deadline and returns a proposed decision or an evaluation error. It does not change system state. |
+| **State machine** | Declares phases and transitions. Guards check whether an action is allowed; invariants check properties every committed state must satisfy. |
+| **Executor** | Checks current state, prepares a candidate, validates it, and commits it. Declared asynchronous effects run after commit and return events to the machine. |
+
+Your application calls the controller, then the executor.
+
+```rust
+// Gather evidence (for example, Datadog observations and a Toto forecast) into `state`.
+let evaluation = controller.evaluate(&state).await;
+let outcome = executor.execute(evaluation).await?;
+```
+
+Pass the entire evaluation result to the executor; the machine can define transitions for inference failures as well as recommendations. State transitions commit in memory, and external effects run afterward. See [execution semantics](SDK_README.md#guarantees-and-current-scope) for persistence and failure handling.
+
+For a smaller, self-contained machine that runs without credentials, see the [circuit-breaker example](crates/reflex/examples/circuit_breaker.rs) and the [SDK guide](SDK_README.md).
+
+The crates are **not yet published to crates.io**. Add path dependencies on your checkout.
 
 ```toml
 [dependencies]
@@ -112,136 +172,28 @@ reflex = { path = "../reflex/crates/reflex" }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 ```
 
-Start by defining your state and action types, implementing a judge, and declaring the machine's transitions. Keep guards and updates short and free of external side effects. Use declared effects for network requests or other I/O.
-
-To use **Jev**, add the `typesafe-ai` and `reflex-typesafe` crates from the same checkout. Construct a standalone `TypeSafeClient`, define a typed task, and inject both into `TypeSafeJudge`. Your executor and its rules remain application-owned. The [live Jev example](crates/reflex-typesafe/examples/jev.rs) shows the client and controller setup:
-
-```sh
-# Set TYPESAFE_API_KEY in your environment before running.
-# This command makes a real provider request.
-cargo run -p reflex-typesafe --example jev
-```
-
-That example evaluates a recommendation; the circuit-breaker example above demonstrates execution. The [TypeSafe integration guide](SDK_README.md#typesafe-integration) explains how to connect them.
-
-## Explore the interactive systems
-
-The repository includes a local playground for circuit breaking and resource scheduling. Set `TYPESAFE_API_KEY` to enable Jev, then build and start the playground:
-
-```sh
-npm ci --prefix crates/reflex-sim/ui
-npm run build --prefix crates/reflex-sim/ui
-cargo run -p reflex-sim --locked -- --playground
-```
-
-The circuit-breaker playground uses Jev + Reflex by default. You can also select it explicitly:
-
-```sh
-cargo run -p reflex-sim --locked -- --playground --policy jev
-```
-
-Inject failures, change client traffic, adjust scheduling priorities, and inspect decisions and guard outcomes. The scheduler includes per-client lag charts so you can see how waiting times change during a run.
-
-The simulations can query **Datadog** for observed state and run **Toto** locally to forecast demand or resource pressure. Jev receives the observations and optional forecasts; Reflex checks its recommendation against current guards. Datadog and Toto integrations belong to the playground, outside the core SDK.
-
-- [Playground setup, scenarios, and simulation model](crates/reflex-sim/README.md)
-- [Forecasting interface](crates/reflex-sim/FORECASTING.md)
-- [Datadog telemetry and dashboards](dashboards/README.md)
-- [Capacity research: workloads, algorithms, methods, and results](studies/capacity/README.md)
-
-## Use Datadog telemetry as state
-
-The playground can publish application metrics to Datadog, query them back, and use the observations as state for Jev and Reflex:
-
-```text
-Simulated services → Datadog metrics → typed observations → Jev recommendation
-                                                               ↓
-                                           Reflex guards → state transition
-```
-
-This works for circuit breaking and resource scheduling. The application owns the telemetry queries and builds the typed state; the core Reflex SDK remains independent of Datadog.
-
-Build the UI as above, then copy [`.env.example`](.env.example) to `.env.local` and fill in `DD_API_KEY`, `DD_APP_KEY`, and `TYPESAFE_API_KEY`. Set `DD_SITE` to your Datadog site. The application key needs `timeseries_query` permission. Load the file and start the playground:
-
-```sh
-set -a
-. ./.env.local
-set +a
-cargo run -p reflex-sim --features datadog --locked -- \
-  --playground --policy jev --datadog --datadog-evidence
-```
-
-Click **Start traffic**. Each circuit shows whether it is waiting for telemetry or the age of its observations. Metrics export every 10 seconds; circuit-breaker decisions wait for usable observations to arrive. Scheduler placements continue using current application state while Datadog context loads. Open **Activity** and inspect a decision to see the queried values and timestamps. Use the `simulation_run` in a decision’s telemetry to filter the supplied [Datadog dashboards](dashboards/README.md).
-
-| Simulation | Observations queried from Datadog | Control state retained locally |
-| --- | --- | --- |
-| Circuit breaker | Request outcomes, latency, active work, queue depth, utilization | Circuit phase, revision, cooldown, legal transitions |
-| Resource scheduler | Per-client queue pressure and per-node CPU/memory reservations, capacity, running jobs | Current jobs, node reservations, priorities, FIFO/aging rules, legal placements |
-
-Reflex rechecks each recommendation against current control state before applying it. Circuit-breaker evaluations require valid Datadog telemetry. Scheduler evaluations always use current application state and attach Datadog telemetry only when valid; missing or stale telemetry does not block placement. The topology and live charts still show the simulator so you can compare current behavior with delayed observations. Datadog state mode uses continuous **1×** playback.
-
-To publish metrics, traces, and logs while keeping local state, use `--datadog` without `--datadog-evidence`. Only an API key is required for publishing; TypeSafe credentials are needed when using Jev. Press **Ctrl+C** to stop and flush telemetry. See the [Datadog walkthrough](crates/reflex-sim/DATADOG.md) for metrics, warmup, and troubleshooting.
-
-## Local Toto forecasts
-
-The playground includes a Python service that runs [open-source Toto](https://github.com/DataDog/toto)
-on your machine. It forecasts observed demand or resource pressure for circuit
-breaking and scheduling. Jev receives the forecast alongside current
-state; Reflex guards still determine whether an action can execute.
-
-From the repository root, start the service in one terminal using
-[uv](https://docs.astral.sh/uv/):
-
-```sh
-uv sync --project integrations/toto --python 3.12 --locked
-uv run --project integrations/toto --locked reflex-toto
-```
-
-Wait for `Ready: http://127.0.0.1:8765`. The first start downloads a pinned
-**Toto-2.0-22m** checkpoint. The model stays loaded and runs on CPU by default;
-Toto needs no API key. Python and Toto are optional simulator dependencies.
-
-In another terminal, with `TYPESAFE_API_KEY` set and the UI built as above,
-start the playground using local observations:
-
-```sh
-cargo run -p reflex-sim --locked -- \
-  --playground --policy jev --toto-url http://127.0.0.1:8765
-```
-
-To publish metrics and forecast **queried Datadog telemetry**, load the Datadog
-credentials described above and run:
-
-```sh
-cargo run -p reflex-sim --features datadog --locked -- \
-  --playground --policy jev --datadog --datadog-evidence \
-  --toto-url http://127.0.0.1:8765
-```
-
-Each simulation has a forecasting toggle and actual-versus-forecast charts.
-Forecasts cover the next 120 seconds. Ordinary local scenarios need 64 seconds
-of observed history; Datadog mode needs 320 seconds plus ingestion delay. Missing
-or stale forecasts leave Jev using observed state. Missing Datadog state blocks
-circuit-breaker evaluation; scheduler placement continues from current application state.
-
-For circuit breaking, select **Circuit Breaker → Cyclical load · Toto → Run**, then select **Payments**. The ten-minute scenario repeats a two-minute pattern: traffic rises 4× at +30s, service time rises 6× at +60s, and both recover at +90s. Toto receives observed history, not the schedule. Forecasting starts after enough observations have been collected during the run. In Datadog mode, Toto requires at least 320 seconds of history plus ingestion delay. **Actual vs Toto** compares forecasts with subsequent observations. Jev chooses when to open and probe; Reflex requires five consecutive successful probes before closing. Forecast accuracy and Jev's choices are not scripted.
-
-For a first example, select **Resource Scheduler → Cyclical load · Toto** and click **Run scenario**. With local observations, use 4× playback;
-the first forecast appears after three cycles (180 simulated seconds). In Circuit
-Breaker, select a service to inspect its forecast.
-
-See [local Toto setup](integrations/toto/README.md) for the API contract, model
-selection, tests, and offline operation.
+To use Jev, also add the `typesafe-ai` and `reflex-typesafe` crates and inject a `TypeSafeClient` into `TypeSafeJudge`. The [live Jev example](crates/reflex-typesafe/examples/jev.rs) shows the setup (`cargo run -p reflex-typesafe --example jev`, with `TYPESAFE_API_KEY` set). See the [SDK guide](SDK_README.md) for hook signatures, executor construction, and the [TypeSafe integration](SDK_README.md#typesafe-integration).
 
 ## Further reading
+
+**Datadog and Toto**
+
+- [Datadog control loop, covering metrics, warmup, delays, and troubleshooting](crates/reflex-sim/DATADOG.md)
+- [Forecasting, covering observation series, timing, uncertainty, and example workloads](crates/reflex-sim/FORECASTING.md)
+- [Local Toto service, covering the API contract, model selection, and offline use](integrations/toto/README.md)
+- [Datadog dashboards](dashboards/README.md)
+- [Simulator scenarios and simulation model](crates/reflex-sim/README.md)
+
+**Reflex SDK**
 
 - [SDK quickstart and API behavior](SDK_README.md)
 - [Core concepts and circuit-breaker walkthrough](REFLEX_SDK.md)
 - [Declarative state-machine design](DECLARATIVE_EXECUTOR.md)
 - [Core metrics, traces, and logs](crates/reflex/TELEMETRY.md)
 - [Standalone TypeSafe client instrumentation](crates/typesafe-ai/TELEMETRY.md)
+- [Capacity research on workloads, algorithms, and methods](studies/capacity/README.md)
 
-To run the workspace tests:
+Run the workspace tests with these commands.
 
 ```sh
 npm ci --prefix crates/reflex-sim/ui

@@ -13,5 +13,16 @@
   },
   "devDependencies": {
     "esbuild": "0.28.2"
+  },
+  "overrides": {
+    "@datadog/druids": {
+      "react-popper": {
+        "react": "$react",
+        "react-dom": "$react-dom"
+      },
+      "react-table": {
+        "react": "$react"
+      }
+    }
   }
 }

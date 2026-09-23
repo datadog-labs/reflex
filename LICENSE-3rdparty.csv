@@ -663,6 +663,7 @@ npm:rc-slider@11.1.9,https://registry.npmjs.org/rc-slider/-/rc-slider-11.1.9.tgz
 npm:rc-util@5.44.4,https://registry.npmjs.org/rc-util/-/rc-util-5.44.4.tgz,MIT,"Copyright (c) 2014-present yiminghe | Copyright (c) 2015-present Alipay.com, https://www.alipay.com"
 npm:react-calendar@5.0.0,https://www.npmjs.com/package/react-calendar/v/5.0.0,MIT,Wojciech Maj (https://github.com/wojtekmaj/react-calendar)
 npm:react-dom@18.3.1,https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz,MIT,"Copyright (c) Facebook, Inc. and its affiliates."
+npm:react-dom@19.3.0,https://registry.npmjs.org/react-dom/-/react-dom-19.3.0.tgz,MIT,"Copyright (c) Meta Platforms, Inc. and affiliates."
 npm:react-fast-compare@3.2.0,https://www.npmjs.com/package/react-fast-compare/v/3.2.0,MIT,Chris Bolin (https://github.com/FormidableLabs/react-fast-compare)
 npm:react-fast-compare@3.2.2,https://registry.npmjs.org/react-fast-compare/-/react-fast-compare-3.2.2.tgz,MIT,Copyright (c) 2018 Formidable Labs | Copyright (c) 2017 Evgeny Poberezkin
 npm:react-highlight-words@0.17.0,https://www.npmjs.com/package/react-highlight-words/v/0.17.0,MIT,Brian Vaughn (https://github.com/bvaughn/react-highlight-words#readme)
@@ -682,6 +683,7 @@ npm:react-table@7.8.0,https://registry.npmjs.org/react-table/-/react-table-7.8.0
 npm:react-tether@2.0.8,https://www.npmjs.com/package/react-tether/v/2.0.8,MIT,Travis Arnold (http://souporserious.com)
 npm:react-window@1.8.11,https://www.npmjs.com/package/react-window/v/1.8.11,MIT,Brian Vaughn (https://github.com/bvaughn/)
 npm:react@18.3.1,https://registry.npmjs.org/react/-/react-18.3.1.tgz,MIT,"Copyright (c) Facebook, Inc. and its affiliates."
+npm:react@19.3.0,https://registry.npmjs.org/react/-/react-19.3.0.tgz,MIT,"Copyright (c) Meta Platforms, Inc. and affiliates."
 npm:readable-stream@3.6.2,https://registry.npmjs.org/readable-stream/-/readable-stream-3.6.2.tgz,MIT,"Copyright Node.js contributors. All rights reserved. | Copyright Joyent, Inc. and other Node contributors. All rights reserved."
 npm:readdirp@3.6.0,https://www.npmjs.com/package/readdirp/v/3.6.0,MIT,Thorsten Lorenz (thlorenz.com)
 npm:refractor@4.9.0,https://www.npmjs.com/package/refractor/v/4.9.0,MIT,Titus Wormer (https://wooorm.com)
@@ -711,6 +713,7 @@ npm:safer-buffer@2.1.2,https://www.npmjs.com/package/safer-buffer/v/2.1.2,MIT,Ni
 npm:saxes@6.0.0,https://www.npmjs.com/package/saxes/v/6.0.0,ISC,Louis-Dominique Dubeau (https://github.com/lddubeau/saxes)
 npm:scheduler-polyfill@1.3.0,https://www.npmjs.com/package/scheduler-polyfill/v/1.3.0,Apache-2.0,The Chromium Authors (https://github.com/GoogleChromeLabs/scheduler-polyfill)
 npm:scheduler@0.23.2,https://registry.npmjs.org/scheduler/-/scheduler-0.23.2.tgz,MIT,"Copyright (c) Facebook, Inc. and its affiliates."
+npm:scheduler@0.28.0,https://registry.npmjs.org/scheduler/-/scheduler-0.28.0.tgz,MIT,"Copyright (c) Meta Platforms, Inc. and affiliates."
 npm:set-cookie-parser@2.4.8,https://www.npmjs.com/package/set-cookie-parser/v/2.4.8,MIT,Nathan Friedly (http://nfriedly.com/)
 npm:shebang-command@2.0.0,https://www.npmjs.com/package/shebang-command/v/2.0.0,MIT,Kevin Mårtensson (github.com/kevva)
 npm:shebang-regex@3.0.0,https://www.npmjs.com/package/shebang-regex/v/3.0.0,MIT,Sindre Sorhus (sindresorhus.com)

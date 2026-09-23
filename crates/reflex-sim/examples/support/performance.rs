@@ -1,3 +1,7 @@
+// Unless explicitly stated otherwise all files in this repository are licensed under the Apache-2.0 License.
+// This product includes software developed at Datadog (https://www.datadoghq.com/).
+// Copyright 2026-present Datadog, Inc.
+
 //! Observation-only feedback for the capacity study; no predicted execution times.
 use reflex_sim::capacity::engine::{Data, JobPhase};
 use serde_json::{json, Value};

@@ -1,3 +1,7 @@
+// Unless explicitly stated otherwise all files in this repository are licensed under the Apache-2.0 License.
+// This product includes software developed at Datadog (https://www.datadoghq.com/).
+// Copyright 2026-present Datadog, Inc.
+
 //! Discrete-event circuit-breaking laboratory with interchangeable client policies.
 //! Simulated time is independent of wall-clock time. The same immutable traffic
 //! trace and random draws can be replayed against every policy.

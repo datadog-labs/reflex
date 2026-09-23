@@ -3,6 +3,7 @@ name = "reflex-macros"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
+license.workspace = true
 publish = false
 description = "Declarative state-machine macro for Reflex"
 

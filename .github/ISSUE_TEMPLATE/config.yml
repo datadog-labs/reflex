@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/DataDog/.github/blob/master/SECURITY.md
+    about: Please do not report security issues in public GitHub issues.

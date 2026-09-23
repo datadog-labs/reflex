@@ -1,3 +1,7 @@
+// Unless explicitly stated otherwise all files in this repository are licensed under the Apache-2.0 License.
+// This product includes software developed at Datadog (https://www.datadoghq.com/).
+// Copyright 2026-present Datadog, Inc.
+
 //! Application-owned telemetry setup. The client itself never installs providers/exporters.
 use opentelemetry::{
     metrics::{Meter, MeterProvider},
@@ -75,8 +79,8 @@ impl Telemetry {
         trace_headers.insert("compute_stats".into(), "true".into());
         // Blocking HTTP clients run on the SDK's background threads. Initialize outside Tokio.
         // Disable redirects so authentication cannot be forwarded to a different endpoint.
-        let http = reqwest::blocking::Client::builder()
-            .redirect(reqwest::redirect::Policy::none())
+        let http = reqwest_otel::blocking::Client::builder()
+            .redirect(reqwest_otel::redirect::Policy::none())
             .timeout(Duration::from_secs(5))
             .build()?;
         let metric_exporter = opentelemetry_otlp::MetricExporter::builder()

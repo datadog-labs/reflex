@@ -1,0 +1,22 @@
+[
+  {
+    "Component": "asset:NotoSans (embedded in @datadog/druids@0.1.0)",
+    "Origin": "https://registry.npmjs.org/@datadog/druids/-/druids-0.1.0.tgz",
+    "License": "OFL-1.1",
+    "Copyright": "Copyright 2015-2021 Google LLC. All Rights Reserved.",
+    "Evidence": {
+      "source": "@datadog/druids@0.1.0/dist/styles.css"
+    },
+    "Scope": "UI embedded fonts"
+  },
+  {
+    "Component": "asset:Roboto Mono (embedded in @datadog/druids@0.1.0)",
+    "Origin": "https://registry.npmjs.org/@datadog/druids/-/druids-0.1.0.tgz",
+    "License": "Apache-2.0",
+    "Copyright": "Copyright 2015 The Roboto Mono Project Authors (https://github.com/googlefonts/robotomono)",
+    "Evidence": {
+      "source": "@datadog/druids@0.1.0/dist/styles.css"
+    },
+    "Scope": "UI embedded fonts"
+  }
+]

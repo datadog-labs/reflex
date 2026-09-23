@@ -20,6 +20,16 @@ under `src/`. These outputs are ignored by Git and embedded into the Rust binary
 Rebuild the browser assets and restart Rust after UI changes. No Node server or
 CDN is required at runtime; exported reports retain their embedded fonts.
 
+## Dependency alignment
+
+Keep React and React DOM on the same version. DRUIDS 0.1.0 declares support for
+React 18 and 19. Its `react-popper` and `react-table` dependencies still declare
+peer ranges ending at React 18, so the UI uses npm overrides scoped to DRUIDS to
+bind those peers to the application's React version. Their published package
+contents remain unchanged. Remove the overrides when upstream peer ranges cover
+React 19. Check clean installation, `npm ls --all`, the production build, and
+table, select, tooltip, and dialog interactions when updating this stack.
+
 ## Components and behavior
 
 - `header.jsx` composes the public ProminentTabList, Text, Button, and icons into

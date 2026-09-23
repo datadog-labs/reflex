@@ -26,7 +26,6 @@ const root = createRoot(document.getElementById('product-header'));
 const SCENARIOS = [
   { value: '/', label: 'Circuit Breaker' },
   { value: '/scheduler', label: 'Resource Scheduler' },
-  { value: '/recovery', label: 'Recovery' },
 ];
 
 function Header({ disabled, navigate }) {

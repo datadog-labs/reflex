@@ -10,12 +10,9 @@ export function ScenarioControls({state,disabled,send,options,description}) {
   const descriptions={
     sandbox:'Start traffic and adjust the simulation yourself. No scheduled changes.',
     slowdown_surge:'Payments slows down and traffic surges. Watch the circuit open, probe, and recover.',
-    error_waves:'Search encounters recurring error storms. Watch recovery between waves.',
+    cyclic_pressure:'Payments repeats traffic and slowdown cycles, then recovers. Toto learns the pattern; Jev controls the circuit. Forecasting starts after enough observations have been collected. Runs 10 min.',
     traffic_burst:'Client traffic surges, then eases. Watch the shared queue build and drain.',
     resource_mix:'Jobs shift toward CPU-heavy and memory-heavy workloads, then return to their original sizes.',
-    single_crash:'Replica A crashes, then restarts. Watch replacement and readiness checks.',
-    rebuild_pressure:'Traffic and request costs surge while a replica rebuilds, then recover.',
-    second_failure:'Replica A crashes, followed by B. Watch recovery as both replicas restart.',
   };
   return <section className="simulation-scenario-bar scenario-card-panel" aria-label="Simulation scenario">
     <div className="scenario-card-grid" style={{'--scenario-count':options.length}} role="group" aria-label="Available scenarios">

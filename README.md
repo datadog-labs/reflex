@@ -126,7 +126,7 @@ That example evaluates a recommendation; the circuit-breaker example above demon
 
 ## Explore the interactive systems
 
-The repository includes a local playground for circuit breaking, resource scheduling, and retry/recovery. Set `TYPESAFE_API_KEY` to enable Jev, then build and start the playground:
+The repository includes a local playground for circuit breaking and resource scheduling. Set `TYPESAFE_API_KEY` to enable Jev, then build and start the playground:
 
 ```sh
 npm ci --prefix crates/reflex-sim/ui
@@ -159,7 +159,7 @@ Simulated services → Datadog metrics → typed observations → Jev recommenda
                                            Reflex guards → state transition
 ```
 
-This works for circuit breaking, resource scheduling, and recovery. The application owns the telemetry queries and builds the typed state; the core Reflex SDK remains independent of Datadog.
+This works for circuit breaking and resource scheduling. The application owns the telemetry queries and builds the typed state; the core Reflex SDK remains independent of Datadog.
 
 Build the UI as above, then copy [`.env.example`](.env.example) to `.env.local` and fill in `DD_API_KEY`, `DD_APP_KEY`, and `TYPESAFE_API_KEY`. Set `DD_SITE` to your Datadog site. The application key needs `timeseries_query` permission. Load the file and start the playground:
 
@@ -171,13 +171,12 @@ cargo run -p reflex-sim --features datadog --locked -- \
   --playground --policy jev --datadog --datadog-evidence
 ```
 
-Click **Start traffic**. The Datadog panel shows the query status and run ID. Metrics export every 10 seconds; decisions wait for usable observations to arrive. Open **Activity** and inspect a decision to see the queried values and timestamps. Use the run ID to filter the supplied [Datadog dashboards](dashboards/README.md).
+Click **Start traffic**. Each circuit shows whether it is waiting for telemetry or the age of its observations. Metrics export every 10 seconds; decisions wait for usable observations to arrive. Open **Activity** and inspect a decision to see the queried values and timestamps. Use the `simulation_run` in a decision’s telemetry to filter the supplied [Datadog dashboards](dashboards/README.md).
 
 | Simulation | Observations queried from Datadog | Control state retained locally |
 | --- | --- | --- |
 | Circuit breaker | Request outcomes, latency, active work, queue depth, utilization | Circuit phase, revision, cooldown, legal transitions |
 | Resource scheduler | Per-client queue pressure and per-node CPU/memory reservations, capacity, running jobs | Candidate jobs, priorities, FIFO/aging rules, legal placements |
-| Recovery | Client success and latency, replica health, outstanding work, queue depth, heartbeat age | Replica lifecycle, retry/rebuild budgets, action eligibility |
 
 Reflex rechecks each recommendation against current control state before applying it. Missing or stale telemetry prevents a model evaluation; it is not silently replaced with local measurements. The topology and live charts still show the simulator so you can compare current behavior with delayed observations. Datadog state mode uses continuous **1×** playback.
 
@@ -187,7 +186,7 @@ To publish metrics, traces, and logs while keeping local state, use `--datadog` 
 
 The playground includes a Python service that runs [open-source Toto](https://github.com/DataDog/toto)
 on your machine. It forecasts observed demand or resource pressure for circuit
-breaking, scheduling, and recovery. Jev receives the forecast alongside current
+breaking and scheduling. Jev receives the forecast alongside current
 state; Reflex guards still determine whether an action can execute.
 
 From the repository root, start the service in one terminal using
@@ -224,6 +223,8 @@ Forecasts cover the next 120 seconds. Ordinary local scenarios need 64 seconds
 of observed history; Datadog mode needs 320 seconds plus ingestion delay. Missing
 or stale forecasts leave Jev using valid observed state; missing Datadog state
 still prevents evaluation.
+
+For circuit breaking, select **Circuit Breaker → Cyclical load · Toto → Run**, then select **Payments**. The ten-minute scenario repeats a two-minute pattern: traffic rises 4× at +30s, service time rises 6× at +60s, and both recover at +90s. Toto receives observed history, not the schedule. Forecasting starts after enough observations have been collected during the run. In Datadog mode, Toto requires at least 320 seconds of history plus ingestion delay. **Actual vs Toto** compares forecasts with subsequent observations. Jev chooses when to open and probe; Reflex requires five consecutive successful probes before closing. Forecast accuracy and Jev's choices are not scripted.
 
 For a first example, select **Resource Scheduler → Repeating demand waves · Toto
 example** and click **Run scenario**. With local observations, use 4× playback;

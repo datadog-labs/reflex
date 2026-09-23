@@ -1,6 +1,6 @@
 # Forecasts in the incident playground
 
-Circuit Breaker, Resource Scheduler, and Recovery each maintain their own observation history and can request forecasts from an application-supplied provider. Fresh forecasts are added to the next Jev evaluation. Reflex continues to check current legal choices, freshness, readiness, and resource limits before committing an action.
+Circuit Breaker and Resource Scheduler each maintain their own observation history and can request forecasts from an application-supplied provider. Fresh forecasts are added to the next Jev evaluation. Reflex continues to check current legal choices, freshness, readiness, and resource limits before committing an action.
 
 ## Connect a provider
 
@@ -39,21 +39,20 @@ The charts compare actual observations with a frozen forecast selected by its or
 
 | Scenario | Local simulator observations | Datadog observations |
 | --- | --- | --- |
-| Circuit breaker, one forecast per service | Offered requests/s; failed client responses/s (errors and timeouts); queue depth | `http.server.queue.depth`; `http.server.active`; `http.server.utilization` |
+| Circuit breaker, one forecast per service | Offered requests/s; failed client responses/s (errors and timeouts); queue depth | `http.client.requests` / bucket seconds (all outcomes); `http.server.queue.depth`; `http.server.utilization` |
 | Scheduler | Offered jobs/s; offered CPU-seconds/s; offered GiB-seconds/s | `scheduler.queue.depth`; `scheduler.node.cpu.reserved`; `scheduler.node.memory.reserved` |
-| Recovery | Offered requests/s; failed final responses/s excluding rejected traffic; aggregate replica queue depth | `http.server.queue.depth`; `http.server.active`; `recovery.replica.requests.outstanding` |
 
-Scheduler resource demand uses requested resources and estimated duration of jobs that actually arrived. No future arrivals, actual future completion times, fault settings, fault durations, or seeded prehistory are sent. Datadog mode queries run-scoped, policy-scoped, service-scoped gauges and sums across applicable nodes, clients, or replicas. It forecasts observed pressure, rather than inventing offered demand from completed requests. Missing or misaligned buckets make that refresh unavailable; local data does not substitute for missing Datadog history.
+Scheduler resource demand uses requested resources and estimated duration of jobs that actually arrived. No future arrivals, actual future completion times, fault settings, fault durations, or seeded prehistory are sent. Datadog mode queries run-scoped, policy-scoped metrics and sums across applicable nodes or clients. Circuit forecasts include completed client request rate across all outcomes, including circuit-blocked requests; this is a delayed proxy for client demand, not an exact arrival-rate measurement. Queue depth and utilization describe server pressure. Missing or misaligned buckets make that refresh unavailable; local data does not substitute for missing Datadog history.
 
 ## Timing and uncertainty
 
-Local histories contain up to 256 one-second samples and normally require 64 observed seconds before the first request. The repeating demand preset waits for 180 seconds. Toto predicts the next 120 seconds. Datadog histories contain up to 320 seconds in ten-second buckets and require 320 seconds for local Toto (32 observed samples), plus ingestion delay and the post-resume collection boundary. Their prediction horizon is twelve ten-second buckets. Datadog sessions run for up to ten minutes at 1× speed; local sessions last three simulated minutes, or six minutes for repeating demand.
+Local histories contain up to 256 one-second samples and normally require 64 observed seconds before the first request. The repeating demand preset waits for 180 seconds. Toto predicts the next 120 seconds. Datadog histories contain up to 320 seconds in ten-second buckets and require 320 seconds for local Toto (32 observed samples), plus ingestion delay and the post-resume collection boundary. Their prediction horizon is twelve ten-second buckets. Datadog sessions run for up to ten minutes at 1× speed; local sessions last three simulated minutes, six minutes for scheduler repeating demand, or ten minutes for circuit-breaker cyclical load.
 
 Each forecast driver allows at most 60 refresh attempts per run, no more frequently than every ten data-time seconds and five wall-clock seconds. Datadog warm-up does not spend refresh attempts. RPC work is asynchronous, with a twelve-second total deadline, so simulation and controls remain responsive. Reset cancels pending forecasts and clears history; Datadog pause/resume starts a fresh collection boundary.
 
 Jev receives only the remaining future portion of a forecast, grouped into ten-second buckets. The bucket values are averages of pointwise p10/p50/p90 predictions, **not quantiles of the aggregate bucket total**. Bucket offsets are relative to the forecast origin; `age_ms` gives elapsed time since that origin. Negative projections are clamped to zero for physical demand/pressure summaries. Freshness limits are thirty simulated seconds locally and sixty wall-clock seconds for Datadog, allowing for telemetry ingestion delay. Stale or failed forecasts do not prevent evaluations on valid observed state.
 
-Forecasts describe a continuation of recent observations, not the effect of an untried action. A decline in failures while a breaker blocks traffic is not proof of downstream health. Forecasts cannot establish replica readiness, authorize additional retries, or make unavailable node capacity legal. Jev receives these limitations in its instructions. No forecast-quality claim is implied by displaying a prediction.
+Forecasts describe a continuation of recent observations, not the effect of an untried action. A decline in failures while a breaker blocks traffic is not proof of downstream health. Forecasts cannot make unavailable node capacity legal. Jev receives these limitations in its instructions. No forecast-quality claim is implied by displaying a prediction.
 
 The shared sidecar lives in `reflex-sim::forecasting`, calling the application-owned `Forecaster` interface. The Reflex core SDK remains independent of Toto and Datadog. Jev cost displays still cover reported Jev usage; Toto does not return billing data.
 

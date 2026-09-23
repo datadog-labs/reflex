@@ -28,8 +28,8 @@ import { PauseIcon } from '@datadog/druids/icons/Pause';
 import { Topology } from './topology.jsx';
 import { ScenarioControls } from './scenario-controls.jsx';
 import { PressureChart } from './pressure.jsx';
+import {ForecastPanel as ForecastView} from './forecast-panel.jsx';
 import { helpIntroHtml, helpDetailsHtml } from './help.js';
-import { DatadogState } from './datadog-state.jsx';
 
 const fmt = (value, digits = 0) => Number(value).toLocaleString('en-US', { maximumFractionDigits: digits });
 const time = ms => `${String(Math.floor(ms / 60000)).padStart(2, '0')}:${(ms / 1000 % 60).toFixed(1).padStart(4, '0')}`;
@@ -49,20 +49,15 @@ function Section({ title, children, action, description }) {
   return <section className="inspector-section"><div className="section-heading"><Text as="h2" weight="bold" size="lg" className="section-title">{title}</Text>{action}</div>{description&&<Text as="p" size="sm" variant="secondary" className="section-description">{description}</Text>}{children}<HorizontalSeparator marginTop="md" marginBottom="none" /></section>;
 }
 function ScenarioPreset({state,disabled,send}) {
-  const options=[{value:'sandbox',label:'Live'},{value:'slowdown_surge',label:'Slowdown + traffic surge'},{value:'error_waves',label:'Recurring error storms'}];
+  const options=[{value:'sandbox',label:'Live'},{value:'slowdown_surge',label:'Slowdown + traffic surge'},{value:'cyclic_pressure',label:'Cyclical load · Toto'}];
   return <ScenarioControls state={state} disabled={disabled} send={send} options={options} description={state.scenario_description}/>;
 }
 function ForecastPanel({state,focus,disabled,send}) {
-  const host=useRef(null);
-  useEffect(()=>{
-    window.renderForecast?.(state.forecasts?.[focus],state.services[focus].definition.name,state.policy,disabled||state.replaying);
-    const element=host.current;
-    const change=e=>{if(e.target.id==='forecast-toggle')send({type:'forecast',enabled:e.target.checked});};
-    element.addEventListener('change',change);
-    return()=>element.removeEventListener('change',change);
-  },[state,focus,disabled,send]);
-  return <section ref={host} id="forecast-panel" className="forecast-panel inspector-section" aria-label="Toto forecast"/>;
+  return <section id="forecast-panel" className="forecast-panel inspector-section" aria-label="Toto forecast">
+    <ForecastView key={focus} view={state.forecasts?.[focus]} title={state.services[focus].definition.name} policy={state.policy} disabled={disabled||state.replaying} onToggle={enabled=>send({type:'forecast',enabled})}/>
+  </section>;
 }
+
 function Phase({phase}) {return <StatusPill isSoft level={phaseLevel(phase)}>{phaseName(phase)}</StatusPill>;}
 function Entity({name, gateway=false, color}) {
   const Icon = gateway ? GlobeIcon : ServerIcon;
@@ -88,14 +83,23 @@ function Transport({state,disabled,send}) {
     </div>
   </div>;
 }
+function TelemetryStatus({state,service}) {
+  if(state.inference?.evidence_source!=='datadog') return null;
+  const telemetry=state.inference.services?.[service];
+  const ready=telemetry?.status==='ready'&&telemetry.age_seconds!=null;
+  const stale=ready&&telemetry.age_seconds>60;
+  const waiting=!telemetry||/waiting|warming/i.test(telemetry.status);
+  const label=ready?`${stale?'Stale telemetry':'Telemetry age'}: ${Math.floor(telemetry.age_seconds)}s`:waiting?'Waiting for telemetry':'Telemetry unavailable';
+  return <span className="circuit-telemetry" title={ready?'Age of the latest Datadog observation window':telemetry?.status} role="status">{label}</span>;
+}
 function ServiceTable({state,onFocus}) {
   const [search,setSearch]=useState(''),[filter,setFilter]=useState('all');
   const data=useMemo(()=>state.services.map((s,i)=>({id:i,name:s.definition.name,phase:s.state.phase,queue:s.state.queued})).filter(s=>s.name.toLowerCase().includes(search.toLowerCase())&&(filter==='all'||s.phase===filter)),[state.services,search,filter]);
   const columns=useMemo(()=>[
     {Header:'Name',accessor:'name',width:'minmax(130px, 1fr)',Cell:({row,value})=><Button label={value} icon={ServerIcon} isPrimary isDangerouslyNaked isTitleCased={false} onClick={()=>onFocus(row.original.id)}/>},
-    {Header:'Circuit',accessor:'phase',width:'95px',Cell:({value})=><Phase phase={value}/>},
+    {Header:'Circuit',accessor:'phase',width:'155px',Cell:({row,value})=><><Phase phase={value}/><TelemetryStatus state={state} service={row.original.id}/></>},
     {Header:'Queued',accessor:'queue',width:'75px',type:'numeric'},
-  ],[onFocus]);
+  ],[onFocus,state.inference]);
   return <Section title="Downstream services"><div className="table-filters"><InputSearch ariaAttrs={{'aria-label':'Search services'}} placeholder="Search services" value={search} onChange={e=>setSearch(e.target.value)} isFullWidth/><div className="circuit-filter"><Select aria-label="Filter circuit state" value={filter} clearable={false} searchable={false} options={[{value:'all',label:'All circuits'},{value:'closed',label:'Closed'},{value:'open',label:'Open'},{value:'half_open',label:'Probe'}]} onChange={option=>setFilter(option.value)}/></div></div><DataTable data={data} columns={columns} empty="No matching services."/></Section>;
 }
 function RequestTable({state,focus,onInspect}) {
@@ -138,7 +142,7 @@ function Inspector({state,focus,onFocus,disabled,send,onRequest,onDecision}) {
   return <div className="discovery-panel" id="discovery-inspector">
     <header className="panel-heading" aria-label="Selected service summary">
       {service?<Button icon={HomeIcon} label="Back to gateway" isPrimary isDangerouslyNaked isTitleCased={false} size="sm" onClick={()=>onFocus(null)}/>:<Text size="sm" variant="secondary" weight="bold">Circuit breaker overview</Text>}
-      <div className="entity-heading"><Entity gateway={!service} name={service?.definition.name || 'gateway'} color={service?colors[focus]:undefined}/>{service?<Phase phase={service.state.phase}/>:<StatusPill isSoft level="success">Protected by Reflex</StatusPill>}</div>
+      <div className="entity-heading"><Entity gateway={!service} name={service?.definition.name || 'gateway'} color={service?colors[focus]:undefined}/>{service?<><Phase phase={service.state.phase}/><TelemetryStatus state={state} service={focus}/></>:<StatusPill isSoft level="success">Protected by Reflex</StatusPill>}</div>
       <Text size="sm" variant="secondary">{service?descriptions[focus]:'Routes client traffic through independent service circuits.'}</Text>
       <div className="header-stats">{service?<><Stat label="Workers" value={`${service.state.active} / ${service.definition.workers}`}/><Stat label="Queued" value={fmt(service.state.queued)}/><Stat label="Utilization" value={`${fmt(service.state.stress*100)}%`}/></>:<><Stat label="Requests" value={fmt(counts.offered)}/><Stat label="Services" value={state.services.length}/><Stat label="Circuits" value={state.services.length}/></>}</div>
     </header>
@@ -182,10 +186,10 @@ function App({state,disabled=true,connected=false,error,send,navigate}) {
   useEffect(()=>renderHeader({disabled,navigate}),[disabled,navigate]);
   return <DruidsEnvironment defaultThemePreference="light"><div className="discovery-app">
     {error&&<div className="error-banner" role="alert">{error}</div>}
-    {state?<><section className="simulation-intro"><div className="simulation-intro-copy"><h1 className="simulation-title">Circuit Breaker</h1><details className="circuit-description"><summary><span dangerouslySetInnerHTML={{__html:helpIntroHtml}}/><span className="description-toggle"><span className="description-more">Read more</span><span className="description-less">Show less</span></span></summary><div className="circuit-description-copy" dangerouslySetInnerHTML={{__html:helpDetailsHtml}}/></details></div><ScenarioPreset state={state} disabled={disabled} send={send}/></section><DatadogState state={state}/><div className="discovery-layout"><Topology state={state} focus={focus} onFocus={onFocus} panelOpen={panelOpen} setPanelOpen={setPanelOpen} playback={<Transport state={state} disabled={disabled} send={send}/>}/>{panelOpen&&<Inspector key={focus??"gateway"} state={state} focus={focus} onFocus={onFocus} disabled={disabled} send={send} onRequest={onRequest} onDecision={onDecision}/>}</div><footer className="app-footer"><Text size="xs" variant="secondary">Reflex</Text><Text size="xs" variant={connected?'success':'danger'}>{connected?'● Engine connected':'Engine disconnected'}</Text></footer></>:<div className="loading-state"><Text>Connecting to the Reflex engine…</Text></div>}
+    {state?<><section className="simulation-intro"><div className="simulation-intro-copy"><h1 className="simulation-title">Circuit Breaker</h1><details className="circuit-description"><summary><span dangerouslySetInnerHTML={{__html:helpIntroHtml}}/><span className="description-toggle"><span className="description-more">Read more</span><span className="description-less">Show less</span></span></summary><div className="circuit-description-copy" dangerouslySetInnerHTML={{__html:helpDetailsHtml}}/></details></div><ScenarioPreset state={state} disabled={disabled} send={send}/></section><div className="discovery-layout"><Topology state={state} focus={focus} onFocus={onFocus} panelOpen={panelOpen} setPanelOpen={setPanelOpen} playback={<Transport state={state} disabled={disabled} send={send}/>}/>{panelOpen&&<Inspector key={focus??"gateway"} state={state} focus={focus} onFocus={onFocus} disabled={disabled} send={send} onRequest={onRequest} onDecision={onDecision}/>}</div><footer className="app-footer"><Text size="xs" variant="secondary">Reflex</Text><Text size="xs" variant={connected?'success':'danger'}>{connected?'● Engine connected':'Engine disconnected'}</Text></footer></>:<div className="loading-state"><Text>Connecting to the Reflex engine…</Text></div>}
     <Modal isOpen={!!modal} onClose={()=>setModal(null)} title={modal?.type==='request'?`Request #${modal.request.id}`:'Jev decision'} size="md" isScrollable>
       {modal?.type==='request'&&state&&<RequestDetails request={modal.request} at={modal.at} state={state}/>}
-      {modal?.type==='decision'&&<div className="decision-detail"><Text as="p">{modal.decision.guard.status} · {modal.decision.guard.reason}</Text><Text as="h3" weight="bold">{modal.decision.inference.error?.code==='datadog_evidence'?'Telemetry unavailable · Jev was not called':'Evidence sent to Jev'}</Text><pre>{JSON.stringify(modal.decision.model_input||modal.decision.evidence,null,2)}</pre><Text as="h3" weight="bold">Provider result</Text><pre>{JSON.stringify(modal.decision.inference,null,2)}</pre></div>}
+      {modal?.type==='decision'&&<div className="decision-detail"><Text as="p">{modal.decision.guard.status} · {modal.decision.guard.reason}</Text><Text as="h3" weight="bold">{modal.decision.inference.error?.code==='datadog_evidence'?(/warming|waiting/i.test(modal.decision.inference.error.message)?'Waiting for Datadog observations · Jev was not called':'Telemetry unavailable · Jev was not called'):'Evidence sent to Jev'}</Text>{modal.decision.inference.error?.code==='datadog_evidence'?<Text as="p">{modal.decision.inference.error.message}</Text>:<pre>{JSON.stringify(modal.decision.model_input||modal.decision.evidence,null,2)}</pre>}<Text as="h3" weight="bold">Provider result</Text><pre>{JSON.stringify(modal.decision.inference,null,2)}</pre></div>}
     </Modal>
   </div></DruidsEnvironment>;
 }

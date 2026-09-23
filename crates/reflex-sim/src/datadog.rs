@@ -16,6 +16,15 @@ use std::{
 };
 
 pub const TRANSITION_MARGIN_MS: u64 = 20_000;
+// Initial state has no preceding circuit state to exclude. After a transition,
+// retain the export-boundary margin so old-state counts cannot reopen a circuit.
+pub(crate) fn control_floor(changed_at: u64, revision: u64) -> u64 {
+    changed_at.saturating_add(if revision == 0 {
+        0
+    } else {
+        TRANSITION_MARGIN_MS
+    })
+}
 pub const MAX_AGE_MS: u64 = 60_000;
 const BUCKET_MS: u64 = 10_000;
 pub fn unix_ms() -> u64 {
@@ -75,7 +84,7 @@ impl TelemetryEvidence {
             if w.start_unix_ms >= w.end_unix_ms
                 || w.end_unix_ms > now
                 || now - w.end_unix_ms > MAX_AGE_MS
-                || w.duration_seconds < 30.0
+                || w.duration_seconds < 10.0
                 || (w.duration_seconds - (w.end_unix_ms - w.start_unix_ms) as f64 / 1000.).abs()
                     > 0.001
             {
@@ -247,7 +256,7 @@ impl Source {
         let now = unix_ms();
         let to = now.saturating_sub(20_000) / BUCKET_MS * BUCKET_MS;
         let from = to.saturating_sub(120_000);
-        if not_before.saturating_add(30_000) > to {
+        if not_before.saturating_add(BUCKET_MS) > to {
             return Err("Warming up: waiting for a complete post-transition Datadog window".into());
         }
         let scope = self.scope(service, run, false);
@@ -388,13 +397,11 @@ fn parse(
         .ok_or("No recent request observations")?;
     let end = p.times[last] + width;
     let short_bins = 30_000u64.div_ceil(width) as usize;
-    let first = last
-        .checked_add(1)
-        .and_then(|n| n.checked_sub(short_bins))
-        .ok_or("Incomplete short window")?;
-    if p.times[first] < not_before {
-        return Err("Warming up: post-transition window is incomplete".into());
-    }
+    let eligible_first = (0..=last)
+        .find(|i| p.times[*i] >= not_before)
+        .ok_or("Warming up: post-transition window is incomplete")?;
+    // Start with one complete bucket; grow toward the normal 30-second window.
+    let first = (last + 1).saturating_sub(short_bins).max(eligible_first);
     let long_first = (0..=first)
         .find(|i| p.times[*i] >= not_before && end - p.times[*i] <= 120_000)
         .ok_or("Incomplete long window")?;
@@ -506,7 +513,7 @@ mod tests {
         assert_eq!(e.short_window.failure_ratio, Some(45. / 285.));
         assert_eq!(e.long_window.responses, 1140.);
         assert_eq!(e.server.queue_depth.observed_at_unix_ms, to - 10_000);
-        assert!(parse(&data, to - 20_000, to, to + 20_000, "run-a").is_err());
+        assert!(parse(&data, to - 5_000, to, to + 20_000, "run-a").is_err());
         assert!(parse(&data, to - 120_000, to, to + 70_000, "run-a").is_err());
         let mut missing = data.clone();
         missing["data"]["attributes"]["values"][0][10] = Value::Null;
@@ -521,6 +528,28 @@ mod tests {
         let mut e = e;
         e.fetched_at_unix_ms = to;
         assert!(e.validate(to + 20_000).is_err());
+    }
+    #[test]
+    fn startup_window_grows_and_never_crosses_the_state_boundary() {
+        let to = 1_000_000;
+        let data = fixture(to);
+        for seconds in [10, 20, 30, 60] {
+            let floor = to - seconds * 1000;
+            let evidence = parse(&data, floor, to, to + 20_000, "run").unwrap();
+            assert_eq!(
+                evidence.short_window.duration_seconds,
+                seconds.min(30) as f64
+            );
+            assert_eq!(evidence.long_window.duration_seconds, seconds as f64);
+            assert!(evidence.short_window.start_unix_ms >= floor);
+            evidence.validate(to + 20_000).unwrap();
+        }
+        assert!(parse(&data, to - 9_999, to, to + 20_000, "run").is_err());
+        assert_eq!(control_floor(to, 0), to);
+        assert_eq!(control_floor(to, 1), to + TRANSITION_MARGIN_MS);
+        let mut data = data;
+        data["data"]["attributes"]["values"][2][11] = Value::Null;
+        assert!(parse(&data, to - 10_000, to, to + 20_000, "run").is_err());
     }
     #[test]
     fn absent_outcome_is_zero_only_when_totals_prove_the_breakdown_complete() {

@@ -128,7 +128,120 @@ async fn model_actions_are_guarded_and_only_one_probe_is_reserved() {
         })
         .await
         .unwrap();
-    assert_eq!(policy.phase(), CircuitPhase::Closed);
+    assert_eq!(policy.phase(), CircuitPhase::HalfOpen);
+    // A duplicate completion cannot count as another successful probe.
+    policy
+        .observe(Observation {
+            at_ms: 3701.,
+            request_id: 100,
+            outcome: ClientOutcome::Success,
+            latency_ms: 99.,
+            generation,
+        })
+        .await
+        .unwrap();
+    for n in 1..=4 {
+        let id = 100 + n;
+        assert!(matches!(
+            policy
+                .admit(AdmissionContext {
+                    at_ms: 3800. + n as f64 * 100.,
+                    request_id: id
+                })
+                .await
+                .unwrap(),
+            Admission::Allow { probe: true, .. }
+        ));
+        assert!(matches!(
+            policy
+                .admit(AdmissionContext {
+                    at_ms: 3801. + n as f64 * 100.,
+                    request_id: id + 1000
+                })
+                .await
+                .unwrap(),
+            Admission::Shed
+        ));
+        policy
+            .observe(Observation {
+                at_ms: 3850. + n as f64 * 100.,
+                request_id: id,
+                outcome: ClientOutcome::Success,
+                latency_ms: 50.,
+                generation,
+            })
+            .await
+            .unwrap();
+        assert_eq!(
+            policy.phase(),
+            if n == 4 {
+                CircuitPhase::Closed
+            } else {
+                CircuitPhase::HalfOpen
+            }
+        );
+    }
+}
+#[tokio::test]
+async fn failed_probe_reopens_and_resets_consecutive_successes() {
+    for failure in [ClientOutcome::Error, ClientOutcome::Timeout] {
+        let mut policy = JevPolicy::new().unwrap();
+        observe(&mut policy).await;
+        let evidence = policy.evidence(500.).unwrap();
+        policy
+            .apply_model(550., evidence, answer(Choice::Open))
+            .await
+            .unwrap();
+        for cycle in 0..2 {
+            let start = 3600. + cycle as f64 * 4000.;
+            let evidence = policy.evidence(start).unwrap();
+            policy
+                .apply_model(start, evidence, answer(Choice::Probe))
+                .await
+                .unwrap();
+            let attempts = if cycle == 0 { 3 } else { 5 };
+            for n in 0..attempts {
+                let id = 100 + cycle * 10 + n;
+                let at = start + n as f64 * 100.;
+                let Admission::Allow {
+                    generation,
+                    probe: true,
+                } = policy
+                    .admit(AdmissionContext {
+                        at_ms: at,
+                        request_id: id,
+                    })
+                    .await
+                    .unwrap()
+                else {
+                    panic!("expected probe")
+                };
+                let outcome = if cycle == 0 && n == 2 {
+                    failure
+                } else {
+                    ClientOutcome::Success
+                };
+                policy
+                    .observe(Observation {
+                        at_ms: at + 50.,
+                        request_id: id,
+                        outcome,
+                        latency_ms: 50.,
+                        generation,
+                    })
+                    .await
+                    .unwrap();
+                let expected = if cycle == 0 && n == 2 {
+                    CircuitPhase::Open
+                } else if cycle == 1 && n == 4 {
+                    CircuitPhase::Closed
+                } else {
+                    CircuitPhase::HalfOpen
+                };
+                assert_eq!(policy.phase(), expected);
+            }
+        }
+    }
 }
 #[tokio::test]
 async fn stale_evidence_and_failed_inference_cannot_change_the_circuit() {

@@ -71,7 +71,7 @@ max:scheduler.node.cpu.reserved{service:reflex,env:local} by {node}
 
 ## Datadog as the scheduler's evidence source
 
-Add `--datadog-evidence` and provide `DD_APP_KEY` with `timeseries_query` permission to the instrumented runner. The flag enables Datadog evidence for circuit breaking, scheduling, and recovery. Credentials stay in the server process.
+Add `--datadog-evidence` and provide `DD_APP_KEY` with `timeseries_query` permission to the instrumented runner. The flag enables Datadog evidence for circuit breaking and scheduling. Credentials stay in the server process.
 
 The scheduler supplies the exact FIFO candidate, up to eight next queued jobs, and current legal choices. Datadog supplies delayed CPU/memory reservations and capacities, running-job counts, and per-client queue depths/oldest ages. The model receives:
 

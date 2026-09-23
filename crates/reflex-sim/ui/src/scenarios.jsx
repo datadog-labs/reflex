@@ -3,7 +3,6 @@
 // Copyright 2026-present Datadog, Inc.
 
 import '@datadog/druids/styles.css';
-import {DatadogState} from './datadog-state.jsx';
 import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {renderHeader} from './header.jsx';
@@ -27,6 +26,7 @@ import {ScenarioTrend} from './scenario-trend.jsx';
 import {SchedulerUtilizationCharts} from './scheduler-utilization.jsx';
 import {SchedulerLagChart} from './scheduler-lag.jsx';
 import {ScenarioControls} from './scenario-controls.jsx';
+import './forecast-panel.jsx';
 
 const scenario=location.pathname.slice(1);
 const $=id=>document.getElementById(id);
@@ -38,15 +38,13 @@ const oldHeader=document.querySelector('body>header');oldHeader.hidden=true;
 main.querySelector('nav').hidden=true;main.querySelector('.heading').hidden=true;
 const legacyScenarioControls=main.querySelector('.preset-controls,.scenario-controls');
 const scenarioOptions=$('scenario')?Array.from($('scenario').options,o=>({value:o.value,label:o.textContent})):[];
-const recoveryBudget=scenario==='recovery'?$('bandwidth').closest('label'):null;
 if(legacyScenarioControls)legacyScenarioControls.hidden=true;
 const toolbar=document.querySelector('.toolbar');toolbar.hidden=true;
 const toolbarHost=document.createElement('div');toolbar.before(toolbarHost);const toolbarRoot=mount('scenario-toolbar',toolbarHost);
 const intro=document.createElement('section');intro.className='simulation-intro';toolbarHost.before(intro);
-const introTitle=document.createElement('h1');introTitle.className='simulation-title';introTitle.textContent=scenario==='scheduler'?'Resource Scheduler':'Recovery';
+const introTitle=document.createElement('h1');introTitle.className='simulation-title';introTitle.textContent='Resource Scheduler';
 const introCopy=document.createElement('div');introCopy.className='simulation-intro-copy';introCopy.append(introTitle,main.querySelector('.scenario-description'));
 toolbarHost.className='simulation-intro-controls';intro.append(introCopy,toolbarHost);
-const datadogHost=document.createElement('div');intro.after(datadogHost);const datadogRoot=createRoot(datadogHost);
 
 const legacyComparison=$('comparison');
 let comparisonRoot;
@@ -73,7 +71,6 @@ if(scenario==='scheduler'){
 }
 
 if($('evidence-source'))$('evidence-source').style.display='none';
-if(recoveryBudget)overview.append(recoveryBudget);
 main.querySelectorAll('.status-line:not(#evidence-source)').forEach(el=>el.hidden=true);
 for(const selector of ['.metrics','#intervention']){const el=main.querySelector(selector);if(el)overview.append(el);}
 for(const selector of ['.bottom-grid','.pulse','.client-lag-panel','.forecast-panel']){const el=main.querySelector(selector);if(el)trends.append(el);}
@@ -90,27 +87,23 @@ const lagRoots=scenario==='scheduler'?[
 }):[];
 
 for(const el of trends.querySelectorAll('.chart-legend,.resource-key'))el.hidden=true;
-if(scenario==='recovery')trends.querySelector('.pulse .section-head>.helper').textContent='Essential success: left axis · ready replicas: right axis';
 const legacyMetrics=overview.querySelector('.metrics');
 const metricFields=legacyMetrics?Array.from(legacyMetrics.children,el=>({id:el.querySelector('strong').id,label:el.querySelector('span').childNodes[0].textContent.trim()})):[];
 const metricsRoot=legacyMetrics?mount('scenario-metrics',overview):null;
 if(legacyMetrics)legacyMetrics.hidden=true;
 function MetricCards(){return <section className="scenario-outcomes"><Text as="h2" weight="bold" size="lg">System metrics</Text><div className="scenario-metric-cards">{metricFields.map(({id,label})=><div key={id}><CalloutValue label={label} value={$(id).textContent} size="sm" level={id==='completed'||id==='success'?'success':id==='rejected'&&Number($(id).textContent.replaceAll(',',''))>0?'warning':'default'}/></div>)}</div><Button label="Cost details" size="sm" isPrimary isDangerouslyNaked isTitleCased={false} onClick={()=>$('cost-info').click()}/></section>;}
-const replicaLevel=n=>n.phase==='empty'?'default':n.phase==='unavailable'||(n.phase==='ready'&&!n.reachable)?'danger':n.phase==='ready'?'success':'warning';
 const titleCase=value=>value.charAt(0).toUpperCase()+value.slice(1);
 function InspectorHeading({state,selected,busy,connected,send}){
  const client=selected.kind==='client'?state.clients.find(c=>c.id===selected.id):null;
  const config=client?.config||client;
  const node=selected.kind==='node'?state.nodes?.[selected.id]:null;
- const replica=selected.kind==='replica'?state.replicas[selected.id]:null;
- const observed=replica?state.evidence.replicas[replica.id]:null;
- const Icon=client?UsersIcon:node||replica?ServerIcon:GlobeIcon;
- const color=client?'#54b49b':node||replica?'#bd53b5':'#54b49b';
- const status=client?(config.enabled?'Sending':'Paused'):replica?titleCase(replica.phase):node?'Ready':'Queued';
- const level=client?(config.enabled?'success':'default'):replica?replicaLevel(replica):node?'success':'default';
- const stats=client?[['Rate',`${fmt(config.rate)} ${scenario==='scheduler'?'jobs':'reads'}/s`],...(scenario==='scheduler'?[['Priority',titleCase(client.priority||'normal')]]:[['Essential',`${config.essential_pct}%`]])]:node?[['CPU',`${node.used_cpu} / ${node.cpu}`],['Memory',`${node.used_memory_gib} / ${node.memory_gib} GiB`]]:replica?[['In flight',observed.in_flight],['Queued',observed.queue_depth],['Snapshot',`v${replica.version}`]]:[['Queued',state.queued],['Oldest wait',`${fmt(state.oldest_wait_ms/1000)}s`]];
+ const Icon=client?UsersIcon:node?ServerIcon:GlobeIcon;
+ const color=client?'#54b49b':node?'#bd53b5':'#54b49b';
+ const status=client?(config.enabled?'Sending':'Paused'):node?'Ready':'Queued';
+ const level=client?(config.enabled?'success':'default'):node?'success':'default';
+ const stats=client?[['Rate',`${fmt(config.rate)} jobs/s`],['Priority',titleCase(client.priority||'normal')]]:node?[['CPU',`${node.used_cpu} / ${node.cpu}`],['Memory',`${node.used_memory_gib} / ${node.memory_gib} GiB`]]:[['Queued',state.queued],['Oldest wait',`${fmt(state.oldest_wait_ms/1000)}s`]];
  return <div className="scenario-entity-summary">
-  <div className="scenario-heading-actions"><Text size="sm" variant="secondary" weight="bold">{scenario==='scheduler'?'Resource scheduler':'Recovery'}</Text><Button label="Add client" icon={PlusLightIcon} size="sm" isPrimary isDangerouslyNaked isTitleCased={false} isDisabled={busy||!connected||state.replay||state.clients.length>=8} onClick={()=>$('add-client').click()}/></div>
+  <div className="scenario-heading-actions"><Text size="sm" variant="secondary" weight="bold">Resource scheduler</Text><Button label="Add client" icon={PlusLightIcon} size="sm" isPrimary isDangerouslyNaked isTitleCased={false} isDisabled={busy||!connected||state.replay||state.clients.length>=8} onClick={()=>$('add-client').click()}/></div>
   <div className="scenario-entity-row"><span className="scenario-entity"><span className="scenario-entity-icon" style={{background:color}}><Icon size="md"/></span><Text>{$('inspector-title').textContent}</Text></span><span className="scenario-client-traffic">{scenario==='scheduler'&&client?<ToggleSwitch id={`client-traffic-${client.id}`} ariaLabel={`${client.name} traffic`} label="Traffic" size="sm" hasStatusColor isChecked={config.enabled} isDisabled={busy||!connected} onChange={()=>send({type:'client',id:client.id,config:{...config,enabled:!config.enabled}})}/>:<StatusPill isSoft level={level}>{status}</StatusPill>}</span></div>
   <Text size="sm" variant="secondary">{$('inspector-help')?.textContent}</Text>
   <div className="scenario-header-stats">{stats.map(([label,value])=><span key={label}><Text variant="secondary">{label}: </Text><Text weight="bold">{value}</Text></span>)}</div>
@@ -145,17 +138,12 @@ function Graph({state,selected,onSelect,width,height,panelOpen,setPanelOpen}){
   const add=(id,data)=>nodes.set(id,{...data,selected:selected.kind===data.kind&&selected.id===data.id});
   const edge=(a,b,active=true,status='default')=>links.set(`${a}:${b}`,{sourceId:a,targetId:b,lineWidth:2,arrowStyle:'chevron',status,strokeStyle:active?'solid':'dotted',active});
   const hub=scenario==='scheduler'?'placement':'router';
-  state.clients.forEach(c=>{const config=c.config||c;add(`client-${c.id}`,{kind:'client',id:c.id,name:c.name||`Client ${c.id+1}`,subtext:config.enabled?`${fmt(config.rate)} ${scenario==='recovery'?'reads':'jobs'}/s`:'Paused',enabled:config.enabled});edge(`client-${c.id}`,scenario==='scheduler'?'queue':hub,config.enabled&&config.rate>0);});
+  state.clients.forEach(c=>{const config=c.config||c;add(`client-${c.id}`,{kind:'client',id:c.id,name:c.name||`Client ${c.id+1}`,subtext:config.enabled?`${fmt(config.rate)} jobs/s`:'Paused',enabled:config.enabled});edge(`client-${c.id}`,scenario==='scheduler'?'queue':hub,config.enabled&&config.rate>0);});
   if(scenario==='scheduler'){
    add('queue',{kind:'queue',id:0,name:'Shared queue',subtext:'Priority-aware · FIFO per client',subtextLines:2,metrics:[`${state.queued} waiting`,`${fmt(state.oldest_wait_ms/1000)}s oldest wait`]});edge('queue',hub,state.queued>0||state.running>0);
   }
-  add(hub,{kind:'hub',id:0,name:scenario==='recovery'?'Read router':scenario==='scheduler'?'Placement':'FIFO placement',subtext:'Protected by Reflex',metrics:scenario==='recovery'?[state.essential_only?'Essential reads only':'Normal service',state.retries_enabled?'Retries enabled':'Retries off']:scenario==='scheduler'?[state.policy==='jev'?'Jev + Reflex':state.policy==='best_fit'?'Best Fit':'First Fit',`${state.running} running`]:[lane.label,`${lane.queued} queued · ${lane.running} running`],status:'success'});
-  if(scenario==='recovery'){
-   state.replicas.forEach(n=>{const e=state.evidence.replicas[n.id],healthy=n.phase==='ready'&&n.reachable;add(`replica-${n.id}`,{kind:'replica',id:n.id,name:n.name,phase:n.phase,status:replicaLevel(n),metrics:[`${e.in_flight} in flight · ${e.queue_depth} queued`,`Snapshot v${n.version}`,n.serving?'In serving pool':'Not serving']});edge(hub,`replica-${n.id}`,n.serving&&healthy,healthy?'default':n.phase==='empty'?'default':'warning');});
-   const r=state.recovery;if(r&&['rebuilding','verifying'].includes(r.phase))edge(`replica-${r.source}`,`replica-${r.target}`,true,'warning');
-  }else{
+  add(hub,{kind:'hub',id:0,name:scenario==='scheduler'?'Placement':'FIFO placement',subtext:'Protected by Reflex',metrics:scenario==='scheduler'?[state.policy==='jev'?'Jev + Reflex':state.policy==='best_fit'?'Best Fit':'First Fit',`${state.running} running`]:[lane.label,`${lane.queued} queued · ${lane.running} running`],status:'success'});
    (lane?.nodes||state.nodes).forEach((n,i)=>{const id=n.id??i,phase=n.phase||'ready';add(`node-${id}`,{kind:'node',id,name:n.name||`Node ${id+1}`,phase,status:phase==='ready'?'success':['starting','draining'].includes(phase)?'warning':'default',metrics:[`${n.used_cpu} / ${n.cpu} CPU`,`${n.used_memory_gib} / ${n.memory_gib} GiB`],ratio:n.used_cpu/n.cpu});edge(hub,`node-${id}`,phase==='ready'&&n.used_cpu>0);});
-  }
   return {nodes,links};
  },[state,selected]);
  const running=!state.paused&&state.at_ms<(state.horizon_ms||state.duration_ms||180000);
@@ -169,12 +157,11 @@ function ScenarioMap(props){
  const onSelect=selection=>{setPanelOpen(true);props.onSelect(selection);};
  return <div className="scenario-graph" ref={ref}>
  {size.width>0&&size.height>0&&<Graph {...props} {...size} onSelect={onSelect} panelOpen={panelOpen} setPanelOpen={setPanelOpen}/>}
- <div className="scenario-map-footer"><div className="scenario-map-legend" aria-label={scenario==='recovery'?'Replica states':'Node CPU utilization'}>{(scenario==='recovery'?[['Ready','success'],['Rebuilding / Checking','warning'],['Unavailable','danger'],['Empty','default']]:[['CPU ≤30%','success'],['30–65%','warning'],['>65%','danger']]).map(([label,level])=><span key={label}><i data-level={level}/>{label}</span>)}</div><Text size="xs" variant="secondary">Drag to pan · select a node to inspect</Text></div></div>;
+ <div className="scenario-map-footer"><div className="scenario-map-legend" aria-label="Node CPU utilization">{[['CPU ≤30%','success'],['30–65%','warning'],['>65%','danger']].map(([label,level])=><span key={label}><i data-level={level}/>{label}</span>)}</div><Text size="xs" variant="secondary">Drag to pan · select a node to inspect</Text></div></div>;
 }
 window.renderScenarioUI=props=>{
  renderHeader({disabled:props.busy||!props.connected,navigate:async path=>{if(await props.send({type:'pause'}))location.href=path;}});
  toolbarRoot.render(env(scenarioOptions.length>0?<ScenarioControls state={props.state} disabled={props.busy||!props.connected} send={props.send} options={scenarioOptions} description={$('scenario-description').textContent}/>:null));
- datadogRoot.render(env(<DatadogState state={props.state}/>));
  playbackRoot.render(env(<Toolbar {...props}/>));
  headingRoot.render(env(<InspectorHeading {...props}/>));
  comparisonRoot?.render(env(<PolicyComparison {...props}/>));

@@ -65,6 +65,7 @@ pub struct View {
     pub enabled: bool,
     pub configured: bool,
     pub comparisons: Vec<Comparison>,
+    pub series_names: [String; 3],
     pub status: String,
     pub calls: usize,
     pub limit: usize,
@@ -188,6 +189,10 @@ impl Driver {
         dd: Option<(Arc<crate::datadog::Source>, String, u64, &str)>,
     ) {
         self.datadog = dd.is_some();
+        if let Some((_, _, _, domain)) = &dd {
+            self.names = dd_names(domain).map(str::to_owned);
+            self.source = "datadog_observations".into();
+        }
         if !self.enabled {
             return;
         }
@@ -427,6 +432,7 @@ impl Driver {
             enabled: self.enabled,
             configured: self.provider.is_some(),
             comparisons: self.comparisons(),
+            series_names: self.names.clone(),
             status,
             calls: self.calls,
             limit: 60,
@@ -444,12 +450,7 @@ impl Driver {
 fn dd_names(domain: &str) -> [&'static str; 3] {
     match domain {
         "scheduler" => ["queue_depth", "reserved_cpu", "reserved_memory_gib"],
-        "recovery" => [
-            "replica_queue_depth",
-            "active_requests",
-            "outstanding_requests",
-        ],
-        _ => ["queue_depth", "active_requests", "utilization"],
+        _ => ["client_requests_per_second", "queue_depth", "utilization"],
     }
 }
 impl crate::datadog::Source {
@@ -478,21 +479,39 @@ impl crate::datadog::Source {
                 ("scheduler.node.cpu.reserved", service.clone()),
                 ("scheduler.node.memory.reserved", service),
             ],
-            "recovery" => vec![
-                ("http.server.queue.depth", "replica_pool".into()),
-                ("http.server.active", "replica_pool".into()),
-                ("recovery.replica.requests.outstanding", service),
-            ],
             _ => vec![
+                ("http.client.requests", domain.into()),
                 ("http.server.queue.depth", domain.into()),
-                ("http.server.active", domain.into()),
                 ("http.server.utilization", domain.into()),
             ],
         };
-        let queries:Vec<_>=definitions.into_iter().enumerate().map(|(i,(metric,service))|serde_json::json!({"data_source":"metrics","name":format!("q{i}"),"query":format!("sum:{metric}{{{base},service:{service}}}.rollup(avg,10).fill(null)")})).collect();
+        let queries: Vec<_> = definitions
+            .into_iter()
+            .enumerate()
+            .map(|(i, (metric, service))| {
+                let query = if metric == "http.client.requests" {
+                    // Include every terminal outcome, including blocked requests, so
+                    // opening the circuit does not erase the client demand signal.
+                    format!("sum:{metric}{{{base},upstream:{service}}}.as_count().rollup(sum,10)")
+                } else {
+                    format!("sum:{metric}{{{base},service:{service}}}.rollup(avg,10).fill(null)")
+                };
+                serde_json::json!({"data_source":"metrics","name":format!("q{i}"),"query":query})
+            })
+            .collect();
         let body = serde_json::json!({"data":{"type":"timeseries_request","attributes":{"from":from,"to":to,"interval":10000,"queries":queries}}});
         let response = self.post("/api/v2/query/timeseries", body).await?;
-        parse_datadog(&response, from, to)
+        let mut input = parse_datadog(&response, from, to)?;
+        if domain != "scheduler" {
+            counts_to_rate(&mut input);
+        }
+        Ok(input)
+    }
+}
+fn counts_to_rate(input: &mut Input) {
+    let seconds = input.interval_ms as f32 / 1000.;
+    for row in &mut input.values {
+        row[0] /= seconds;
     }
 }
 fn parse_datadog(v: &serde_json::Value, from: u64, to: u64) -> Result<Input, String> {
@@ -652,6 +671,18 @@ pub(crate) mod tests {
         assert_eq!(driver.rows.len(), 1);
         assert_eq!(driver.rows[0].0, 3000);
     }
+    #[test]
+    fn circuit_request_counts_become_rates_without_changing_pressure_metrics() {
+        let (value, from, to) = dd_fixture();
+        let mut input = parse_datadog(&value, from, to).unwrap();
+        let before = input.values.clone();
+        counts_to_rate(&mut input);
+        for (row, original) in input.values.iter().zip(before) {
+            assert_eq!(row[0], original[0] / 10.);
+            assert_eq!(row[1..], original[1..]);
+        }
+        assert_eq!(dd_names("payments")[0], "client_requests_per_second");
+    }
     fn dd_fixture() -> (serde_json::Value, u64, u64) {
         let from = (EPOCH as u64 + 1000) * 1000;
         (
@@ -749,20 +780,8 @@ pub(crate) mod tests {
             Box::pin(async { crate::scheduler::judge::Inference::failed("test abstention") })
         }
     }
-    impl crate::recovery::judge::Evaluator for Capture {
-        fn evaluate(
-            &self,
-            e: crate::recovery::judge::Evidence,
-        ) -> crate::recovery::judge::Evaluation<'_> {
-            self.0
-                .lock()
-                .unwrap()
-                .push(serde_json::to_value(e).unwrap());
-            Box::pin(async { crate::recovery::judge::Inference::failed("test abstention") })
-        }
-    }
     #[tokio::test]
-    async fn scheduler_and_recovery_deliver_forecast_to_judge_and_clear_on_reset() {
+    async fn scheduler_delivers_forecast_to_judge_and_clears_on_reset() {
         let inputs = Arc::new(Mutex::new(vec![]));
         let settings = crate::playground::inference::JevSettings {
             dispatch_interval: Duration::ZERO,
@@ -795,29 +814,6 @@ pub(crate) mod tests {
             .await
             .unwrap();
         assert!(scheduler.view().forecast.forecast.is_none());
-        inputs.lock().unwrap().clear();
-        let mut recovery =
-            crate::recovery::Session::new(42, Some(Arc::new(Capture(inputs.clone()))), settings)
-                .unwrap();
-        recovery.forecast.provider = Some(mock);
-        for _ in 0..75 {
-            recovery
-                .command(crate::recovery::Command::Step)
-                .await
-                .unwrap();
-            tokio::task::yield_now().await;
-        }
-        assert!(inputs
-            .lock()
-            .unwrap()
-            .iter()
-            .any(|i| i["forecast"]["source"] == "simulator_observations"));
-        assert!(recovery.view().forecast.forecast.is_some());
-        recovery
-            .command(crate::recovery::Command::Reset)
-            .await
-            .unwrap();
-        assert!(recovery.view().forecast.forecast.is_none());
     }
     #[tokio::test]
     async fn toggle_stops_calls_and_evidence_without_resetting_observations_or_budget() {

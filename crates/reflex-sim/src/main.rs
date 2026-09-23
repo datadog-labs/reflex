@@ -29,7 +29,7 @@ struct Args {
     /// Publish metrics, traces, and logs directly to Datadog (requires --features datadog).
     #[arg(long, requires = "playground")]
     datadog: bool,
-    /// Use queried Datadog telemetry as Jev evidence for all three playgrounds.
+    /// Use queried Datadog telemetry as Jev evidence for both playgrounds.
     /// Requires --datadog, --policy jev, and DD_APP_KEY.
     #[arg(long, requires = "datadog")]
     datadog_evidence: bool,
@@ -98,7 +98,6 @@ fn start(args: Args) -> Result<(), Error> {
         Some([
             reflex_sim::datadog::Source::from_env()?,
             reflex_sim::datadog::Source::from_env()?,
-            reflex_sim::datadog::Source::from_env()?,
         ])
     } else {
         None
@@ -149,7 +148,7 @@ fn start(args: Args) -> Result<(), Error> {
     }
     result
 }
-async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 3]>) -> Result<(), Error> {
+async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 2]>) -> Result<(), Error> {
     if args.playground {
         let forecaster = args
             .toto_url
@@ -164,17 +163,12 @@ async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 3]>) -> R
             })
             .transpose()?;
         if forecaster.is_some() {
-            println!(
-                "Local Toto forecasting enabled for circuit breaker, scheduler, and recovery."
-            );
+            println!("Local Toto forecasting enabled for circuit breaker and scheduler.");
         }
         let settings = reflex_sim::playground::inference::JevSettings {
             model: args.jev_model.clone(),
             ..Default::default()
         };
-        let mut recovery_evaluator: Option<
-            std::sync::Arc<dyn reflex_sim::recovery::judge::Evaluator>,
-        > = None;
         let mut scheduler_evaluator: Option<
             std::sync::Arc<dyn reflex_sim::scheduler::judge::Evaluator>,
         > = None;
@@ -191,12 +185,6 @@ async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 3]>) -> R
                         .max_retries(0)
                         .build()
                         .map_err(|e| Error::Invalid(e.to_string()))?;
-                    recovery_evaluator = Some(std::sync::Arc::new(
-                        reflex_sim::recovery::judge::LiveEvaluator::new(
-                            client.clone(),
-                            args.jev_model.clone(),
-                        ),
-                    ));
                     scheduler_evaluator = Some(std::sync::Arc::new(
                         reflex_sim::scheduler::judge::LiveEvaluator::new(
                             client.clone(),
@@ -210,7 +198,7 @@ async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 3]>) -> R
                 }
                 None => None,
             };
-        if let Some([breaker_source, scheduler_source, recovery_source]) = sources {
+        if let Some([breaker_source, scheduler_source]) = sources {
             evaluator = evaluator.map(|inner| {
                 std::sync::Arc::new(reflex_sim::datadog::DatadogEvaluator::new(
                     inner,
@@ -223,12 +211,6 @@ async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 3]>) -> R
                     scheduler_source,
                 )) as std::sync::Arc<dyn reflex_sim::scheduler::judge::Evaluator>
             });
-            recovery_evaluator = recovery_evaluator.map(|inner| {
-                std::sync::Arc::new(reflex_sim::recovery::datadog::DatadogEvaluator::new(
-                    inner,
-                    recovery_source,
-                )) as std::sync::Arc<dyn reflex_sim::recovery::judge::Evaluator>
-            });
         }
         return reflex_sim::playground::serve_with_forecasts(
             args.seed,
@@ -238,7 +220,6 @@ async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 3]>) -> R
             evaluator,
             settings,
             scheduler_evaluator,
-            recovery_evaluator,
             forecaster,
         )
         .await;

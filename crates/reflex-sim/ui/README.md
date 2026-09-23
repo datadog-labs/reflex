@@ -36,7 +36,7 @@ table, select, tooltip, and dialog interactions when updating this stack.
   the compact application header. Navigation pauses the current simulation.
 - `controls.jsx` owns the Circuit Breaker inspector and playback controls. The
   existing API controller and Rust simulation remain authoritative.
-- `scenarios.jsx` supplies the same shell for Scheduler and Recovery,
+- `scenarios.jsx` supplies the shell for Scheduler,
   retaining the existing forms, validation, dialogs, and API controllers.
 - `flow-map.jsx` is a Reflex-owned SVG map with explicit horizontal columns,
   public DRUIDS node content, pan/zoom/fit, keyboard-accessible node buttons,

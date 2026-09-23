@@ -7,12 +7,17 @@ license.workspace = true
 publish = false
 description = "Deterministic circuit-breaking scenarios and an offline HTML laboratory"
 
+[features]
+default = []
+# Application exporters only; the core Reflex crates remain exporter-independent.
+datadog = ["dep:reqwest-otel", "dep:opentelemetry_sdk", "dep:opentelemetry-otlp", "dep:opentelemetry-appender-tracing", "dep:tracing-opentelemetry", "dep:tracing-subscriber"]
+
 [dependencies]
 reqwest.workspace = true
 reflex.workspace = true
 reflex-typesafe = { path = "../reflex-typesafe" }
 typesafe-ai.workspace = true
-tokio.workspace = true
+tokio = { workspace = true, features = ["signal"] }
 serde.workspace = true
 serde_json = { workspace = true, features = ["float_roundtrip"] }
 thiserror.workspace = true
@@ -22,6 +27,15 @@ tracing = "0.1"
 pin-project-lite = "0.2"
 
 axum = { version = "0.8", default-features = false, features = ["http1", "json", "tokio"] }
+
+
+# Direct Datadog OTLP export, enabled only for the playground's datadog feature.
+reqwest-otel = { package = "reqwest", version = "0.13", default-features = false, features = ["blocking", "rustls"], optional = true }
+opentelemetry_sdk = { version = "0.33", optional = true }
+opentelemetry-otlp = { version = "0.33", default-features = false, features = ["http-proto", "reqwest-blocking-client", "reqwest-rustls", "metrics", "trace", "logs"], optional = true }
+opentelemetry-appender-tracing = { version = "0.33", optional = true }
+tracing-opentelemetry = { version = "0.34", optional = true }
+tracing-subscriber = { version = "0.3", features = ["registry"], optional = true }
 
 [dev-dependencies]
 # Match the HTTP client used by the OpenTelemetry exporters.

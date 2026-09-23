@@ -1,5 +1,8 @@
 # Circuit Lab
 
+For applications that **publish telemetry to Datadog and query it back as decision state**, see the [Datadog control-loop walkthrough](DATADOG.md). It covers circuit breaking, scheduling, and recovery through the normal playground CLI.
+
+
 Circuit Lab replays the same offered traffic against independent circuit-breaker policies. Each downstream has a worker pool and a bounded queue. Sending more traffic into a degraded service builds pressure, raises failure probability, and can prolong the incident.
 
 Canned reports include an unprotected reference and a deterministic threshold breaker implemented with Reflex. They make no inference calls and need no API key. Incident Playground also supports live Jev recommendations through the TypeSafe client and Reflex controller.

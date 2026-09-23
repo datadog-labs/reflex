@@ -3,6 +3,7 @@
 // Copyright 2026-present Datadog, Inc.
 
 import '@datadog/druids/styles.css';
+import {DatadogState} from './datadog-state.jsx';
 import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {renderHeader} from './header.jsx';
@@ -45,6 +46,7 @@ const intro=document.createElement('section');intro.className='simulation-intro'
 const introTitle=document.createElement('h1');introTitle.className='simulation-title';introTitle.textContent=scenario==='scheduler'?'Resource Scheduler':'Recovery';
 const introCopy=document.createElement('div');introCopy.className='simulation-intro-copy';introCopy.append(introTitle,main.querySelector('.scenario-description'));
 toolbarHost.className='simulation-intro-controls';intro.append(introCopy,toolbarHost);
+const datadogHost=document.createElement('div');intro.after(datadogHost);const datadogRoot=createRoot(datadogHost);
 
 const legacyComparison=$('comparison');
 let comparisonRoot;
@@ -70,7 +72,7 @@ if(scenario==='scheduler'){
   const host=document.createElement('div');trends.prepend(host);poolUtilizationRoot=createRoot(host);
 }
 
-if($('evidence-source'))overview.prepend($('evidence-source'));
+if($('evidence-source'))$('evidence-source').style.display='none';
 if(recoveryBudget)overview.append(recoveryBudget);
 main.querySelectorAll('.status-line:not(#evidence-source)').forEach(el=>el.hidden=true);
 for(const selector of ['.metrics','#intervention']){const el=main.querySelector(selector);if(el)overview.append(el);}
@@ -172,6 +174,7 @@ function ScenarioMap(props){
 window.renderScenarioUI=props=>{
  renderHeader({disabled:props.busy||!props.connected,navigate:async path=>{if(await props.send({type:'pause'}))location.href=path;}});
  toolbarRoot.render(env(scenarioOptions.length>0?<ScenarioControls state={props.state} disabled={props.busy||!props.connected} send={props.send} options={scenarioOptions} description={$('scenario-description').textContent}/>:null));
+ datadogRoot.render(env(<DatadogState state={props.state}/>));
  playbackRoot.render(env(<Toolbar {...props}/>));
  headingRoot.render(env(<InspectorHeading {...props}/>));
  comparisonRoot?.render(env(<PolicyComparison {...props}/>));

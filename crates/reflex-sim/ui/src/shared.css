@@ -119,3 +119,7 @@
 
 .reflex-gateway-circuits{display:flex;flex-direction:column;width:100%}
 .reflex-gateway-circuit{display:flex;align-items:center;justify-content:space-between;gap:8px;height:36px;padding:4px 10px;border-top:1px solid #e2e5ed;text-align:left}
+.datadog-state { padding: 12px 20px; background: #f5f0ff; border-bottom: 1px solid #ded3ee; color: #303344; }
+.datadog-state h2, .datadog-state p { margin: 0 0 6px; }
+.datadog-state summary { cursor: pointer; font-size: 12px; overflow-wrap: anywhere; }
+.datadog-state details p { max-width: 1000px; margin-top: 8px; font-size: 13px; line-height: 1.5; }

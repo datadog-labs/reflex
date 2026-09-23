@@ -35,7 +35,7 @@ fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     } else {
         None
     };
-    let telemetry = datadog::Telemetry::from_env()?;
+    let telemetry = datadog::Telemetry::from_env_with_service("reflex")?;
     telemetry.install_global()?;
     let runtime = tokio::runtime::Runtime::new()?;
     let result = runtime.block_on(async {

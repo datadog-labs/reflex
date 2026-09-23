@@ -149,6 +149,40 @@ The simulations can query **Datadog** for observed state. An application-supplie
 - [Datadog telemetry and dashboards](dashboards/README.md)
 - [Capacity research: workloads, algorithms, methods, and results](studies/capacity/README.md)
 
+## Use Datadog telemetry as state
+
+The playground can publish application metrics to Datadog, query them back, and use the observations as state for Jev and Reflex:
+
+```text
+Simulated services → Datadog metrics → typed observations → Jev recommendation
+                                                               ↓
+                                           Reflex guards → state transition
+```
+
+This works for circuit breaking, resource scheduling, and recovery. The application owns the telemetry queries and builds the typed state; the core Reflex SDK remains independent of Datadog.
+
+Build the UI as above, then copy [`.env.example`](.env.example) to `.env.local` and fill in `DD_API_KEY`, `DD_APP_KEY`, and `TYPESAFE_API_KEY`. Set `DD_SITE` to your Datadog site. The application key needs `timeseries_query` permission. Load the file and start the playground:
+
+```sh
+set -a
+. ./.env.local
+set +a
+cargo run -p reflex-sim --features datadog --locked -- \
+  --playground --policy jev --datadog --datadog-evidence
+```
+
+Click **Start traffic**. The Datadog panel shows the query status and run ID. Metrics export every 10 seconds; decisions wait for usable observations to arrive. Open **Activity** and inspect a decision to see the queried values and timestamps. Use the run ID to filter the supplied [Datadog dashboards](dashboards/README.md).
+
+| Simulation | Observations queried from Datadog | Control state retained locally |
+| --- | --- | --- |
+| Circuit breaker | Request outcomes, latency, active work, queue depth, utilization | Circuit phase, revision, cooldown, legal transitions |
+| Resource scheduler | Per-client queue pressure and per-node CPU/memory reservations, capacity, running jobs | Candidate jobs, priorities, FIFO/aging rules, legal placements |
+| Recovery | Client success and latency, replica health, outstanding work, queue depth, heartbeat age | Replica lifecycle, retry/rebuild budgets, action eligibility |
+
+Reflex rechecks each recommendation against current control state before applying it. Missing or stale telemetry prevents a model evaluation; it is not silently replaced with local measurements. The topology and live charts still show the simulator so you can compare current behavior with delayed observations. Datadog state mode uses continuous **1×** playback.
+
+To publish metrics, traces, and logs while keeping local state, use `--datadog` without `--datadog-evidence`. Only an API key is required for publishing; a deterministic policy does not need a TypeSafe key. Press **Ctrl+C** to stop and flush telemetry. See the [Datadog walkthrough](crates/reflex-sim/DATADOG.md) for metrics, warmup, and troubleshooting.
+
 ## Further reading
 
 - [SDK quickstart and API behavior](SDK_README.md)

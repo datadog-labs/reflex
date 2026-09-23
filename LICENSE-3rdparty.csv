@@ -107,6 +107,7 @@ cargo:displaydoc@0.2.7,https://crates.io/crates/displaydoc/0.2.7,MIT OR Apache-2
 cargo:dunce@1.0.5,https://crates.io/crates/dunce/1.0.5,CC0-1.0 OR MIT-0 OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:either@1.18.0,https://crates.io/crates/either/1.18.0,MIT OR Apache-2.0,Copyright (c) 2015 
 cargo:equivalent@1.0.2,https://crates.io/crates/equivalent/1.0.2,Apache-2.0 OR MIT,Copyright (c) 2016--2023 
+cargo:errno@0.3.14,https://crates.io/crates/errno/0.3.14,MIT OR Apache-2.0,Copyright (c) 2014 Chris Wong
 cargo:find-msvc-tools@0.1.13,https://crates.io/crates/find-msvc-tools/0.1.13,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
 cargo:form_urlencoded@1.2.2,https://crates.io/crates/form_urlencoded/1.2.2,MIT OR Apache-2.0,Copyright (c) 2013-2016 The rust-url developers
 cargo:fs_extra@1.3.0,https://crates.io/crates/fs_extra/1.3.0,MIT,Copyright (c) 2017 Denis Kurilenko
@@ -219,6 +220,7 @@ cargo:serde_spanned@1.1.1,https://crates.io/crates/serde_spanned/1.1.1,MIT OR Ap
 cargo:serde_urlencoded@0.7.1,https://crates.io/crates/serde_urlencoded/0.7.1,MIT OR Apache-2.0,Copyright (c) 2016 Anthony Ramine
 cargo:sharded-slab@0.1.7,https://crates.io/crates/sharded-slab/0.1.7,MIT,Copyright (c) 2019 Eliza Weisman
 cargo:shlex@2.0.1,https://crates.io/crates/shlex/2.0.1,MIT OR Apache-2.0,Copyright 2015 Nicholas Allegra (comex). | Copyright (c) 2015 Nicholas Allegra (comex).
+cargo:signal-hook-registry@1.4.8,https://crates.io/crates/signal-hook-registry/1.4.8,MIT OR Apache-2.0,Copyright (c) 2017 tokio-jsonrpc developers
 cargo:simd_cesu8@1.2.0,https://crates.io/crates/simd_cesu8/1.2.0,Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
 cargo:simdutf8@0.1.5,https://crates.io/crates/simdutf8/0.1.5,MIT OR Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:slab@0.4.12,https://crates.io/crates/slab/0.4.12,MIT,Copyright (c) 2019 Carl Lerche

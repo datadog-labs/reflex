@@ -2,6 +2,11 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/).
 // Copyright 2026-present Datadog, Inc.
 
+#[cfg(feature = "datadog")]
+#[allow(dead_code)]
+#[path = "../../typesafe-ai/examples/support/datadog.rs"]
+mod datadog_export;
+
 use clap::Parser;
 use reflex_sim::{
     generate_trace,
@@ -18,6 +23,13 @@ use std::path::PathBuf;
     about = "Run reproducible circuit-breaking experiments and open an offline HTML report"
 )]
 struct Args {
+    /// Publish metrics, traces, and logs directly to Datadog (requires --features datadog).
+    #[arg(long, requires = "playground")]
+    datadog: bool,
+    /// Use queried Datadog telemetry as Jev evidence for all three playgrounds.
+    /// Requires --datadog, --policy jev, and DD_APP_KEY.
+    #[arg(long, requires = "datadog")]
+    datadog_evidence: bool,
     /// Launch the interactive incident playground instead of generating a report.
     #[arg(long, conflicts_with_all = ["scenario", "scenario_file", "algorithms", "output", "list_scenarios"])]
     playground: bool,
@@ -52,14 +64,89 @@ struct Args {
     #[arg(long)]
     list_scenarios: bool,
 }
-#[tokio::main]
-async fn main() {
-    if let Err(error) = run(Args::parse()).await {
+fn main() {
+    if let Err(error) = start(Args::parse()) {
         eprintln!("Error: {error}");
         std::process::exit(1);
     }
 }
-async fn run(args: Args) -> Result<(), Error> {
+fn start(args: Args) -> Result<(), Error> {
+    if args.datadog_evidence && args.policy != reflex_sim::jev::PolicyKind::Jev {
+        return Err(Error::Invalid(
+            "--datadog-evidence requires --policy jev".into(),
+        ));
+    }
+    #[cfg(not(feature = "datadog"))]
+    if args.datadog {
+        return Err(Error::Invalid(
+            "Datadog export requires building with --features datadog".into(),
+        ));
+    }
+    // Validate query credentials before starting exporters or accepting browser commands.
+    let sources = if args.datadog_evidence {
+        if std::env::var("TYPESAFE_API_KEY")
+            .ok()
+            .is_none_or(|key| key.trim().is_empty())
+        {
+            return Err(Error::Invalid(
+                "TYPESAFE_API_KEY is required for Datadog evidence".into(),
+            ));
+        }
+        Some([
+            reflex_sim::datadog::Source::from_env()?,
+            reflex_sim::datadog::Source::from_env()?,
+            reflex_sim::datadog::Source::from_env()?,
+        ])
+    } else {
+        None
+    };
+    // Blocking exporter clients must be constructed and shut down outside Tokio.
+    #[cfg(feature = "datadog")]
+    let telemetry = if args.datadog {
+        let telemetry = datadog_export::Telemetry::from_env_with_service("reflex")
+            .map_err(|e| Error::Invalid(e.to_string()))?;
+        telemetry
+            .install_global()
+            .map_err(|e| Error::Invalid(e.to_string()))?;
+        println!(
+            "Datadog export enabled: metrics every 10s, plus traces and logs. State source: {}.",
+            if args.datadog_evidence {
+                "queried Datadog telemetry"
+            } else {
+                "local simulation"
+            }
+        );
+        Some(telemetry)
+    } else {
+        None
+    };
+    let playground = args.playground;
+    let runtime = tokio::runtime::Runtime::new()?;
+    let result = runtime.block_on(async {
+        if playground {
+            tokio::select! {
+                result = run(args, sources) => result,
+                signal = tokio::signal::ctrl_c() => signal.map_err(Error::Io),
+            }
+        } else {
+            run(args, sources).await
+        }
+    });
+    // Drop simulation tasks before flushing final application telemetry.
+    drop(runtime);
+    #[cfg(feature = "datadog")]
+    if let Some(telemetry) = telemetry {
+        let flushed = telemetry
+            .shutdown()
+            .map_err(|e| Error::Invalid(e.to_string()));
+        result?;
+        flushed?;
+        println!("Datadog metrics, traces and logs flushed successfully.");
+        return Ok(());
+    }
+    result
+}
+async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 3]>) -> Result<(), Error> {
     if args.playground {
         let settings = reflex_sim::playground::inference::JevSettings {
             model: args.jev_model.clone(),
@@ -71,7 +158,7 @@ async fn run(args: Args) -> Result<(), Error> {
         let mut scheduler_evaluator: Option<
             std::sync::Arc<dyn reflex_sim::scheduler::judge::Evaluator>,
         > = None;
-        let evaluator: Option<std::sync::Arc<dyn reflex_sim::jev::Evaluator>> =
+        let mut evaluator: Option<std::sync::Arc<dyn reflex_sim::jev::Evaluator>> =
             match std::env::var("TYPESAFE_API_KEY")
                 .ok()
                 .filter(|key| !key.trim().is_empty())
@@ -79,6 +166,7 @@ async fn run(args: Args) -> Result<(), Error> {
                 Some(key) => {
                     let client = typesafe_ai::TypeSafeClient::builder()
                         .api_key(key)
+                        .meter(opentelemetry::global::meter("typesafe-ai"))
                         .timeout(std::time::Duration::from_secs(2))
                         .max_retries(0)
                         .build()
@@ -102,6 +190,26 @@ async fn run(args: Args) -> Result<(), Error> {
                 }
                 None => None,
             };
+        if let Some([breaker_source, scheduler_source, recovery_source]) = sources {
+            evaluator = evaluator.map(|inner| {
+                std::sync::Arc::new(reflex_sim::datadog::DatadogEvaluator::new(
+                    inner,
+                    breaker_source,
+                )) as std::sync::Arc<dyn reflex_sim::jev::Evaluator>
+            });
+            scheduler_evaluator = scheduler_evaluator.map(|inner| {
+                std::sync::Arc::new(reflex_sim::scheduler::datadog::DatadogEvaluator::new(
+                    inner,
+                    scheduler_source,
+                )) as std::sync::Arc<dyn reflex_sim::scheduler::judge::Evaluator>
+            });
+            recovery_evaluator = recovery_evaluator.map(|inner| {
+                std::sync::Arc::new(reflex_sim::recovery::datadog::DatadogEvaluator::new(
+                    inner,
+                    recovery_source,
+                )) as std::sync::Arc<dyn reflex_sim::recovery::judge::Evaluator>
+            });
+        }
         return reflex_sim::playground::serve_with_forecasts(
             args.seed,
             args.port,

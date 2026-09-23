@@ -58,10 +58,14 @@ The shared sidecar lives in `reflex-sim::forecasting`, calling the application-o
 
 ## A predictable workload to explore
 
-With a forecast provider attached, select the **Repeating demand waves · Toto example** preset in **Resource Scheduler**. Each of three clients follows the same smooth 60-second demand cycle, updated every five seconds, with fixed request sizes and rates from 0.08 to 0.28 jobs/s per client. The local run lasts six minutes. Use 4× playback to shorten the wait.
+With a forecast provider attached, select **Cyclical load · Toto** in **Resource Scheduler** and click **Run**. Three clients repeat a 60-second workload:
 
-This preset waits for three observed cycles (180 simulated seconds) before requesting its first forecast. Its local inputs are trailing ten-second means of actual arrived jobs and their requested resource demand, sampled every second. The series names explicitly include `10s_mean`. Toto sees only the observations; it receives neither the cycle formula nor future arrivals. Datadog mode continues to forecast the remote pressure metrics listed above, with its usual history requirements.
+- Client 1 sends one job per second throughout.
+- Client 2 adds one job per second from +15s to +45s.
+- Client 3 adds one job per second from +25s to +35s.
 
-Compare a recorded forecast from 180s or later with the next 120 seconds of observations. Both use the same ten-second buckets of the smoothed series. Manual rate or size changes can break this regularity.
+Jobs request two CPU cores and 2, 6, or 4 GiB respectively, with an estimated duration of eight seconds. Peak CPU demand exceeds the pool's 36 cores briefly; average demand stays below capacity so the queue can drain between peaks. Actual durations vary as usual, and Jev's decisions remain unscripted.
 
-A historical check using the previous research provider at origin 180s compared the following twelve ten-second buckets with a persistence baseline that holds the final observed value constant. Toto's mean absolute error for job arrival rate was 0.0234 jobs/s versus 0.2425 jobs/s for persistence, about 90% lower. This is one origin of one deliberately predictable synthetic workload, not evidence that forecasting improves Jev's placement decisions or that the local Toto 2.0 model achieves the same accuracy. The same resource profiles make the three demand series proportional; their scores are not independent experiments.
+Local runs last six minutes and forecasts start after three observed cycles (180 simulated seconds). Local inputs are trailing ten-second means of actual job arrivals and requested CPU/memory demand. Datadog runs last ten minutes and require 320 seconds of observed telemetry plus ingestion delay; forecasts use queue depth and reserved CPU/memory. There is no preloaded history, and Toto receives neither the workload schedule nor future arrivals.
+
+Open **Trends → Actual vs Toto · Placement pressure** and compare a forecast with subsequent observations. Local mode supports 4× playback; Datadog mode uses 1×. Quiet periods make the next peak easier to distinguish from a permanently saturated queue. Forecast accuracy and placement benefits are not guaranteed, and manual workload edits can break the repeating pattern.

@@ -11,6 +11,7 @@ export function ScenarioControls({state,disabled,send,options,description}) {
     sandbox:'Start traffic and adjust the simulation yourself. No scheduled changes.',
     slowdown_surge:'Payments slows down and traffic surges. Watch the circuit open, probe, and recover.',
     cyclic_pressure:'Payments repeats traffic and slowdown cycles, then recovers. Toto learns the pattern; Jev controls the circuit. Forecasting starts after enough observations have been collected. Runs 10 min.',
+    cyclical:'Every minute, a steady client is joined by a broad peak and a short burst. Watch queues build and drain, then compare Actual vs Toto in Trends. Forecasts use history collected during the run.',
     traffic_burst:'Client traffic surges, then eases. Watch the shared queue build and drain.',
     resource_mix:'Jobs shift toward CPU-heavy and memory-heavy workloads, then return to their original sizes.',
   };

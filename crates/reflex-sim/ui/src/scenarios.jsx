@@ -63,8 +63,10 @@ while(inspector.firstChild)overview.append(inspector.firstChild);
 inspector.append(heading);const tabRoot=mount('scenario-inspector-tabs',inspector);inspector.append(content);content.append(overview);
 const trends=document.createElement('div');trends.dataset.section='trends';trends.hidden=true;content.append(trends);
 const activity=document.createElement('div');activity.dataset.section='activity';activity.hidden=true;content.append(activity);
-let nodeUtilizationHost,nodeUtilizationRoot,poolUtilizationRoot;
+let nodeUtilizationHost,nodeUtilizationRoot,poolUtilizationRoot,queueLagRoot;
 if(scenario==='scheduler'){
+  const queueHost=document.createElement('div');queueHost.className='queue-wait-chart';$('queue-details').append(queueHost);queueLagRoot=createRoot(queueHost);
+  $('queue').style.display='none';$('queue-more').style.display='none';
   nodeUtilizationHost=document.createElement('div');nodeUtilizationHost.hidden=true;
   $('node-details').after(nodeUtilizationHost);nodeUtilizationRoot=createRoot(nodeUtilizationHost);
   const host=document.createElement('div');trends.prepend(host);poolUtilizationRoot=createRoot(host);
@@ -127,7 +129,7 @@ function Toolbar({state,busy,connected,send,selected,onSelectPolicy}){
  {scenario==='capacity'&&<PolicySwitcher state={state} selected={selected} onSelectPolicy={onSelectPolicy}/>}
 
  </div><div className="scenario-transport-group playback-actions">
- <ToggleButtons aria-label="Playback speed" options={(scenario==='capacity'?[1,2,4,10]:[1,2,4]).map(n=>({value:n,label:`${n}×`}))} value={state.speed} isDisabled={datadog||disabled} onChange={value=>send({type:'speed',value})}/>
+ {!datadog && <ToggleButtons aria-label="Playback speed" options={(scenario==='capacity'?[1,2,4,10]:[1,2,4]).map(n=>({value:n,label:`${n}×`}))} value={state.speed} isDisabled={disabled} onChange={value=>send({type:'speed',value})}/>}
  {scenario==='capacity'&&<Button label="Replay" isBorderless isDisabled={disabled||!state.at_ms} onClick={()=>send({type:'replay'},true)}/>}
  <Button label="Reset" isBorderless isDisabled={disabled} onClick={()=>send({type:'reset'},true)}/></div></div></>;
 }
@@ -172,6 +174,7 @@ window.renderScenarioUI=props=>{
   poolUtilizationRoot.render(env(<SchedulerUtilizationCharts state={props.state}/>));
  }
 
+ queueLagRoot?.render(env(props.selected.kind==='queue'?<section aria-label="Queue waiting time by client"><Text as="h2" size="lg" weight="bold">Oldest waiting time by client</Text><SchedulerLagChart state={props.state} field="oldest_wait_ms" label="Oldest waiting time by client"/><Text as="p" size="xs" variant="secondary">Last 60 simulated seconds. Each line shows the oldest queued job for a client; zero means no queued jobs. Dashed markers show priority changes.</Text></section>:null));
  for(const {root,field,label} of lagRoots)root.render(env(<SchedulerLagChart state={props.state} hiddenClients={props.hiddenLagClients} field={field} label={label}/>));
  metricsRoot?.render(env(<MetricCards/>));
  tabRoot.render(env(<InspectorTabs selection={`${props.selected.kind}:${props.selected.id}`}/>));

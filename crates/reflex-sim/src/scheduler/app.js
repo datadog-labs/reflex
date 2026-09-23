@@ -40,7 +40,7 @@ function render(){
  $('scenario-description').textContent=state.scenario_description;
  $('run-scenario').disabled=busy||!connected||state.scenario==='sandbox';
  const ended=state.at_ms>=state.horizon_ms;
- $('evidence-source').hidden=state.evidence_source!=='datadog';$('evidence-source').textContent=`Evidence: Datadog · Run: ${state.simulation_run||'—'}`;
+ $('evidence-source').hidden=state.evidence_source!=='datadog';$('evidence-source').textContent=`Current state + optional Datadog context · Run: ${state.simulation_run||'—'}`;
  $('clock').textContent=time(state.at_ms);if($('duration'))$('duration').textContent=`/ ${String(Math.floor(state.horizon_ms/60000)).padStart(2,'0')}:00`;$('run-status').textContent=ended?'COMPLETE':state.paused?'PAUSED':'RUNNING';
  $('play').textContent=ended?'Session complete':state.paused?(state.at_ms?'▶ Resume traffic':'▶ Start traffic'):'Ⅱ Pause traffic';
  $('play').disabled=busy||!connected||ended;$('step').disabled=busy||!connected||ended||state.evidence_source==='datadog';$('reset').disabled=busy||!connected;
@@ -89,7 +89,7 @@ function renderInspector(){
  $('clients').hidden=selected.kind!=='client';$('node-details').hidden=selected.kind!=='node';$('queue-details').hidden=selected.kind!=='queue';
  const c=state.clients.find(c=>c.id===selected.id);
  $('inspector-title').textContent=selected.kind==='client'?c.name:selected.kind==='node'?state.nodes[selected.id].name:'Shared queue';
- $('inspector-help').textContent=selected.kind==='client'?'Change priority live for queued and future jobs; workload edits affect future arrivals.':selected.kind==='node'?'Live reservations and running jobs. Completed work releases its capacity.':'FIFO within each client. Jev chooses among fitting client heads; after 30s the oldest fitting head takes precedence. Cards are shown in arrival order.';
+ $('inspector-help').textContent=selected.kind==='client'?'Change priority live for queued and future jobs; workload edits affect future arrivals.':selected.kind==='node'?'Live reservations and running jobs. Completed work releases its capacity.':'FIFO within each client. Jev chooses among fitting client heads; after 30s the oldest fitting head takes precedence. The graph shows each client’s oldest queued job.';
 }
 function collectParticles(next){
  const previous=seenJobs;

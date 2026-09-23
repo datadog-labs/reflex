@@ -70,18 +70,13 @@ pub struct Evidence {
 }
 impl Serialize for Evidence {
     fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-        let mut value = if let Some(telemetry) = &self.telemetry {
-            serde_json::json!({
-                "request": {"candidate": self.candidate, "candidates": self.candidates, "upcoming_jobs": self.upcoming_jobs},
-                "control": {"observed_at_ms": self.observed_at_ms, "revision": self.revision,
-                            "legal_choices": self.legal_choices,"priority_revision":self.priority_revision,"aging_ms":self.aging_ms},
-                "telemetry": telemetry
-            })
-        } else {
-            serde_json::json!({"observed_at_ms":self.observed_at_ms,"revision":self.revision,
-                "client_performance":self.client_performance,"candidate":self.candidate,"nodes":self.nodes,"waiting_jobs":self.waiting_jobs,
-                "upcoming_jobs":self.upcoming_jobs,"legal_choices":self.legal_choices,"candidates":self.candidates,"priority_revision":self.priority_revision,"aging_ms":self.aging_ms})
-        };
+        let mut value = serde_json::json!({"observed_at_ms":self.observed_at_ms,"revision":self.revision,
+            "client_performance":self.client_performance,"candidate":self.candidate,"nodes":self.nodes,"waiting_jobs":self.waiting_jobs,
+            "upcoming_jobs":self.upcoming_jobs,"legal_choices":self.legal_choices,"candidates":self.candidates,"priority_revision":self.priority_revision,"aging_ms":self.aging_ms});
+        if let Some(telemetry) = &self.telemetry {
+            value["telemetry"] =
+                serde_json::to_value(telemetry).map_err(serde::ser::Error::custom)?;
+        }
         if let Some(forecast) = &self.forecast {
             value["forecast"] =
                 serde_json::to_value(forecast).map_err(serde::ser::Error::custom)?;
@@ -221,7 +216,7 @@ impl Evaluator for LiveEvaluator {
                 })
                 .collect();
             let task = SystemOneTask::builder().model(&self.model).questions(questions! {
-                placement: choice("Choose a request and node from legal_choices. Each candidate is the oldest queued request from one client; preserve FIFO within each client. Prefer Critical over High over Normal, balancing waiting time and useful throughput. Priorities are live operator preferences, not estimates. When the oldest feasible head has waited 30 seconds, the deterministic aging rule restricts choices to that job and excludes Defer. Node-only choices refer to candidate.id; place choices contain an explicit job ID and node index. Jobs are non-preemptive. Consider CPU/memory fragmentation, estimated durations and upcoming queued work. Defer delays all placement until the next evaluation; use sparingly. Optional forecasts are uncertain demand/pressure projections, not future jobs or permission to exceed capacity. In Datadog mode, delayed telemetry is context only; exact candidates and legal choices are current application inputs. Never infer current capacity or exact future completion times from delayed metrics. Only choose a supplied legal choice.", options)
+                placement: choice("Choose a request and node from legal_choices. Each candidate is the oldest queued request from one client; preserve FIFO within each client. Prefer Critical over High over Normal, balancing waiting time and useful throughput. Priorities are live operator preferences, not estimates. When the oldest feasible head has waited 30 seconds, the deterministic aging rule restricts choices to that job and excludes Defer. Node-only choices refer to candidate.id; place choices contain an explicit job ID and node index. Jobs are non-preemptive. Consider CPU/memory fragmentation, estimated durations and upcoming queued work. Defer delays all placement until the next evaluation; use sparingly. Optional forecasts are uncertain demand/pressure projections, not future jobs or permission to exceed capacity. Current jobs, priorities, and node reservations are the placement state. Optional Datadog telemetry is delayed context; missing telemetry must not cause deferral. Never infer current capacity or exact future completion times from delayed metrics. Only choose a supplied legal choice.", options)
             }).build();
             let task = match task {
                 Ok(t) => t,

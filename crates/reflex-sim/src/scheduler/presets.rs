@@ -26,7 +26,7 @@ impl Scenario {
     pub(super) fn description(self, remote: bool) -> String {
         let k = if remote { 3 } else { 1 };
         match self {
-            Self::Cyclical=>"Whole-number demand waves repeat every 60s for six minutes (ten in Datadog mode). Local forecasts use observed 10-second mean demand, after three real cycles (180s). Compare a forecast from 180s or later against the following cycles; Toto never sees the schedule.".into(),
+            Self::Cyclical=>"A 60s cycle repeats: Client 1 sends 1 job/s throughout; Client 2 adds 1 job/s from +15s to +45s; Client 3 adds 1 job/s from +25s to +35s. Eight-second jobs create a brief capacity peak, then queues can drain. Local forecasts start after 180s of observed history; Datadog forecasts need 320s plus ingestion delay. Runs six minutes locally or ten with Datadog. Toto never sees the schedule.".into(),
             Self::Sandbox=>"Set each client's traffic and job sizes. No scheduled changes.".into(),
             Self::TrafficBurst=>format!("Three clients start at 2 jobs/s each. At {}s each jumps to 6 jobs/s; at {}s arrivals ease to 1 job/s. Watch the queue build and drain.",75*k,115*k),
             Self::ResourceMix=>format!("At {}s, Client 2 requests CPU-heavy jobs (8 CPU / 2 GiB) and Client 3 requests memory-heavy jobs (2 CPU / 24 GiB). Original sizes return at {}s; arrival rates stay fixed.",75*k,125*k),
@@ -79,14 +79,32 @@ pub(super) fn update(scenario: Scenario, stage: usize, c: &mut Client) {
         }
         Scenario::Cyclical => {
             let seconds = (stage + 1) as f64 * 5.;
-            c.config.rate = cycle_rate(seconds);
+            c.config.rate = cycle_rate(c.id, seconds);
         }
         Scenario::Sandbox => {}
     }
 }
 
-pub(super) fn cycle_rate(seconds: f64) -> f64 {
-    (2. + (std::f64::consts::TAU * seconds / 60.).sin()).round()
+pub(super) fn cycle_clients() -> Vec<Client> {
+    let mut clients = clients();
+    for c in &mut clients {
+        c.config.cpu = 2;
+        c.config.memory_gib = [2, 6, 4][c.id as usize];
+        c.config.duration_ms = 8000;
+        c.config.rate = cycle_rate(c.id, 0.);
+        c.next_at = c.config.next(0);
+    }
+    clients
+}
+
+pub(super) fn cycle_rate(client: u64, seconds: f64) -> f64 {
+    let phase = seconds.rem_euclid(60.);
+    match client {
+        0 => 1.,
+        1 if (15. ..45.).contains(&phase) => 1.,
+        2 if (25. ..35.).contains(&phase) => 1.,
+        _ => 0.,
+    }
 }
 
 #[cfg(test)]
@@ -123,9 +141,39 @@ mod tests {
             serde_json::to_value(b.data()).unwrap()
         );
         assert!(a.data().jobs.len() > 100);
+        assert!(a
+            .data()
+            .jobs
+            .iter()
+            .all(|j| j.phase != crate::scheduler::engine::JobPhase::Rejected));
+        // Every cycle creates pressure and recovers, rather than a growing backlog.
+        for cycle in 1..5 {
+            let samples: Vec<_> = a
+                .history
+                .iter()
+                .filter(|s| s.at_ms >= cycle * 60_000 && s.at_ms < (cycle + 1) * 60_000)
+                .collect();
+            assert!(
+                samples.iter().any(|s| s.queued > 0),
+                "cycle {cycle} never queued"
+            );
+            assert!(
+                samples
+                    .iter()
+                    .any(|s| s.at_ms % 60_000 >= 55_000 && s.queued == 0),
+                "cycle {cycle} failed to drain"
+            );
+        }
         a.command(Command::Reset).await.unwrap();
         assert_eq!(a.view().at_ms, 0);
-        assert!(a.view().clients.iter().all(|c| c.config.rate == 2.));
+        assert_eq!(
+            a.view()
+                .clients
+                .iter()
+                .map(|c| c.config.rate)
+                .collect::<Vec<_>>(),
+            vec![1., 0., 0.]
+        );
         a.command(Command::Scenario {
             scenario: Scenario::Sandbox,
         })

@@ -1,3 +1,7 @@
+// Unless explicitly stated otherwise all files in this repository are licensed under the Apache-2.0 License.
+// This product includes software developed at Datadog (https://www.datadoghq.com/).
+// Copyright 2026-present Datadog, Inc.
+
 'use strict';
 // Rust owns simulation state. React owns presentation and local inspection state.
 let state = null, busy = false, connected = false, revision = 0, polling = false, error = null;

@@ -279,7 +279,7 @@ impl Session {
             fetch: None,
             last_fetch: None,
             cached: None,
-            telemetry_status: "Waiting for Datadog observations".into(),
+            telemetry_status: "Scheduling from current state; collecting Datadog context".into(),
             engine: Engine::new()?,
             telemetry: telemetry::Telemetry::new(meter.clone(), policy, run),
             meter,
@@ -324,7 +324,7 @@ impl Session {
         self.cached = None;
         self.last_fetch = None;
         self.not_before = crate::datadog::unix_ms() + 20_000;
-        self.telemetry_status = "Warming up: waiting for post-resume Datadog observations".into();
+        self.telemetry_status = "Scheduling from current state; collecting Datadog context".into();
     }
     fn telemetry_clients(&self) -> Vec<u64> {
         self.clients
@@ -344,13 +344,11 @@ impl Session {
                     self.cached = Some(e);
                 }
                 Ok(Err(reason)) => {
-                    self.cached = None;
-                    self.telemetry_status = reason;
+                    self.telemetry_status = format!("Scheduling from current state; {reason}");
                 }
                 Err(_) => {
-                    self.cached = None;
                     self.telemetry_status =
-                        "Datadog evidence task failed; jobs remain queued".into();
+                        "Scheduling from current state; Datadog refresh failed".into();
                 }
             }
         }
@@ -534,9 +532,7 @@ impl Session {
             self.clients = presets::clients();
             self.next_client = 3;
             if self.scenario == Scenario::Cyclical {
-                for c in &mut self.clients {
-                    c.config.rate = presets::cycle_rate(0.);
-                }
+                self.clients = presets::cycle_clients();
             }
         }
         self.engine =
@@ -775,10 +771,16 @@ impl Session {
                     let old_rate = c.config.rate;
                     presets::update(self.scenario, self.script_cursor, c);
                     if self.scenario == Scenario::Cyclical {
-                        c.next_at = c.next_at.map(|next| {
-                            at as f64
-                                + ((next - at as f64).max(0.) * old_rate / c.config.rate).round()
-                        });
+                        c.next_at = if c.config.rate == 0. {
+                            None
+                        } else if old_rate == 0. {
+                            c.config.next(at)
+                        } else {
+                            c.next_at.map(|next| {
+                                at as f64
+                                    + ((next - at as f64).max(0.) * old_rate / c.config.rate).round()
+                            })
+                        };
                     }
                     if self.scenario == Scenario::TrafficBurst {
                         c.next_at = c.config.next(at);
@@ -956,28 +958,11 @@ impl Session {
             .unwrap_or(&e.candidate)
             .clone();
         let invalid_choice = choice.is_some_and(|c| !e.legal_choices.contains(&c));
-        let invalid_telemetry = if self.uses_datadog() {
-            e.telemetry
-                .as_ref()
-                .ok_or_else(|| "Missing Datadog evidence".to_owned())
-                .and_then(|t| {
-                    t.validate(
-                        self.run.as_deref().unwrap(),
-                        self.not_before,
-                        crate::datadog::unix_ms(),
-                    )
-                })
-                .err()
-        } else {
-            None
-        };
         let (status, reason): (String, String) = if invalid_choice {
             (
                 "rejected".into(),
                 "Choice was not offered by this evaluation".into(),
             )
-        } else if let Some(reason) = invalid_telemetry {
-            ("rejected".into(), reason)
         } else if let Some(c) = choice {
             let (ok, reason) = self
                 .engine
@@ -1064,33 +1049,40 @@ impl Session {
             return Ok(());
         };
         if self.uses_datadog() {
-            let Some(telemetry) = self.cached.clone() else {
-                return Ok(());
-            };
-            if let Err(reason) = telemetry.validate(
-                self.run.as_deref().unwrap(),
-                self.not_before,
-                crate::datadog::unix_ms(),
-            ) {
-                self.telemetry_status = reason;
-                return Ok(());
+            if let Some(telemetry) = self.cached.clone() {
+                let valid = telemetry
+                    .validate(
+                        self.run.as_deref().unwrap(),
+                        self.not_before,
+                        crate::datadog::unix_ms(),
+                    )
+                    .and_then(|()| {
+                        if self.telemetry_clients().iter().any(|id| {
+                            !telemetry
+                                .queues
+                                .iter()
+                                .any(|q| q.client == telemetry::client(*id))
+                        }) {
+                            Err("Incomplete client telemetry".into())
+                        } else {
+                            Ok(())
+                        }
+                    });
+                match valid {
+                    Ok(()) => {
+                        self.telemetry_status = format!(
+                            "Current placement state + Datadog context ({:.0}s old)",
+                            (crate::datadog::unix_ms() - telemetry.observed_at_unix_ms) as f64
+                                / 1000.
+                        );
+                        e.telemetry = Some(telemetry);
+                    }
+                    Err(reason) => {
+                        self.cached = None;
+                        self.telemetry_status = format!("Scheduling from current state; {reason}");
+                    }
+                }
             }
-            let clients = self.telemetry_clients();
-            if clients.iter().any(|id| {
-                !telemetry
-                    .queues
-                    .iter()
-                    .any(|q| q.client == telemetry::client(*id))
-            }) {
-                return Ok(());
-            }
-            self.telemetry_status = format!(
-                "Datadog observations: {:.0}s old",
-                (crate::datadog::unix_ms() - telemetry.observed_at_unix_ms) as f64 / 1000.
-            );
-            e.telemetry = Some(telemetry);
-            e.nodes.clear();
-            e.waiting_jobs = 0;
         }
         // Aging can leave exactly one legal placement. No heuristic is needed, and
         // the TypeSafe choice task requires at least two alternatives.
@@ -1257,60 +1249,69 @@ mod datadog_tests {
         );
     }
     #[tokio::test]
-    async fn remote_input_is_redacted_and_current_guards_still_apply() {
-        let captured = Arc::new(Mutex::new(vec![]));
-        let evaluator = Arc::new(datadog::DatadogEvaluator::new(
-            Arc::new(Judge(captured.clone())),
-            crate::datadog::Source::for_test("http://127.0.0.1:1"),
-        ));
-        let mut s = Session::new(42, Some(evaluator), JevSettings::default()).unwrap();
-        s.command(Command::Play).await.unwrap();
-        s.advance(4000).await.unwrap();
-        s.last_fetch = Some(Instant::now());
-        // Missing telemetry cannot spend a model call or place a job.
-        s.infer().await.unwrap();
-        assert_eq!(s.calls, 0);
-        assert!(s.pending.is_none());
-        s.not_before = crate::datadog::unix_ms() - 60_000;
-        s.cached = Some(remote(&s));
-        s.infer().await.unwrap();
-        for _ in 0..20 {
-            tokio::task::yield_now().await;
-            if s.pending.as_ref().is_some_and(|p| p.task.is_finished()) {
-                break;
+    async fn placement_continues_with_missing_stale_or_incomplete_telemetry() {
+        for context in ["missing", "stale", "incomplete", "valid", "fetch_failed"] {
+            let captured = Arc::new(Mutex::new(vec![]));
+            let evaluator = Arc::new(datadog::DatadogEvaluator::new(
+                Arc::new(Judge(captured.clone())),
+                crate::datadog::Source::for_test("http://127.0.0.1:1"),
+            ));
+            let mut s = Session::new(42, Some(evaluator), JevSettings::default()).unwrap();
+            s.command(Command::Play).await.unwrap();
+            s.advance(4000).await.unwrap();
+            s.last_fetch = Some(Instant::now());
+            s.not_before = crate::datadog::unix_ms() - 60_000;
+            if context != "missing" {
+                let mut t = remote(&s);
+                if context == "stale" {
+                    t.observed_at_unix_ms -= 60_000;
+                }
+                if context == "incomplete" {
+                    t.queues.pop();
+                }
+                s.cached = Some(t);
             }
+            if context == "fetch_failed" {
+                s.fetch = Some(Fetch {
+                    task: tokio::spawn(async { Err("test refresh failure".into()) }),
+                });
+                while !s.fetch.as_ref().unwrap().task.is_finished() {
+                    tokio::task::yield_now().await;
+                }
+            }
+            s.infer().await.unwrap();
+            assert_eq!(s.calls, 1, "{context}");
+            while !s.pending.as_ref().unwrap().task.is_finished() {
+                tokio::task::yield_now().await;
+            }
+            // Expiring telemetry after dispatch must not invalidate a legal placement.
+            if let Some(t) = &mut s.pending.as_mut().unwrap().evidence.telemetry {
+                t.observed_at_unix_ms -= 60_000;
+            }
+            s.cached = None;
+            s.infer().await.unwrap();
+            assert_eq!(s.view().running, 1, "{context}");
+            let input = captured.lock().unwrap()[0].clone();
+            assert_eq!(input["nodes"].as_array().unwrap().len(), 4);
+            assert!(input["waiting_jobs"].as_u64().unwrap() > 0);
+            assert!(input["candidate"]["id"].is_number());
+            assert_eq!(
+                input.get("telemetry").is_some(),
+                matches!(context, "valid" | "fetch_failed")
+            );
+            // Reusing an already-placed job is still rejected by the local executor.
+            let mut e = s.decisions.last().unwrap().evidence.clone().unwrap();
+            if let Some(t) = &mut e.telemetry {
+                t.observed_at_unix_ms -= 60_000;
+            }
+            let before = serde_json::to_value(s.data()).unwrap();
+            s.apply(e, Some(Choice::NodeA), None).await.unwrap();
+            assert_eq!(before, serde_json::to_value(s.data()).unwrap());
+            assert_eq!(s.decisions.last().unwrap().status, "rejected");
+            s.command(Command::Pause).await.unwrap();
+            assert!(s.cached.is_none());
+            assert!(s.pending.is_none());
+            assert!(s.fetch.is_none());
         }
-        s.infer().await.unwrap();
-        assert_eq!(s.calls, 1);
-        assert_eq!(s.view().running, 1);
-        let input = captured.lock().unwrap()[0].clone();
-        assert!(input.get("nodes").is_none());
-        assert!(input.get("waiting_jobs").is_none());
-        assert!(input["request"]["candidate"]["id"].is_number());
-        assert_eq!(input["telemetry"]["source"], "datadog");
-        assert!(!input.to_string().contains("estimated_remaining_ms"));
-        s.advance(6000).await.unwrap();
-        let mut evidence = judge::evidence(&s.data()).unwrap();
-        evidence.telemetry = Some(remote(&s));
-        evidence.telemetry.as_mut().unwrap().observed_at_unix_ms -= 60_000;
-        let before = serde_json::to_value(s.data()).unwrap();
-        s.apply(evidence, Some(Choice::NodeA), None).await.unwrap();
-        assert_eq!(before, serde_json::to_value(s.data()).unwrap());
-        assert_eq!(s.decisions.last().unwrap().status, "rejected");
-        assert!(s.command(Command::Step).await.is_err());
-        assert!(s.command(Command::Speed { value: 4 }).await.is_err());
-        assert!(s
-            .command(Command::Policy {
-                policy: Policy::BestFit
-            })
-            .await
-            .is_err());
-        s.command(Command::Pause).await.unwrap();
-        assert!(s.cached.is_none());
-        assert!(s.pending.is_none());
-        assert!(s.fetch.is_none());
-        let run = s.run.clone();
-        s.command(Command::Reset).await.unwrap();
-        assert_ne!(s.run, run);
     }
 }

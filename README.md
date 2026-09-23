@@ -171,14 +171,14 @@ cargo run -p reflex-sim --features datadog --locked -- \
   --playground --policy jev --datadog --datadog-evidence
 ```
 
-Click **Start traffic**. Each circuit shows whether it is waiting for telemetry or the age of its observations. Metrics export every 10 seconds; decisions wait for usable observations to arrive. Open **Activity** and inspect a decision to see the queried values and timestamps. Use the `simulation_run` in a decision’s telemetry to filter the supplied [Datadog dashboards](dashboards/README.md).
+Click **Start traffic**. Each circuit shows whether it is waiting for telemetry or the age of its observations. Metrics export every 10 seconds; circuit-breaker decisions wait for usable observations to arrive. Scheduler placements continue using current application state while Datadog context loads. Open **Activity** and inspect a decision to see the queried values and timestamps. Use the `simulation_run` in a decision’s telemetry to filter the supplied [Datadog dashboards](dashboards/README.md).
 
 | Simulation | Observations queried from Datadog | Control state retained locally |
 | --- | --- | --- |
 | Circuit breaker | Request outcomes, latency, active work, queue depth, utilization | Circuit phase, revision, cooldown, legal transitions |
-| Resource scheduler | Per-client queue pressure and per-node CPU/memory reservations, capacity, running jobs | Candidate jobs, priorities, FIFO/aging rules, legal placements |
+| Resource scheduler | Per-client queue pressure and per-node CPU/memory reservations, capacity, running jobs | Current jobs, node reservations, priorities, FIFO/aging rules, legal placements |
 
-Reflex rechecks each recommendation against current control state before applying it. Missing or stale telemetry prevents a model evaluation; it is not silently replaced with local measurements. The topology and live charts still show the simulator so you can compare current behavior with delayed observations. Datadog state mode uses continuous **1×** playback.
+Reflex rechecks each recommendation against current control state before applying it. Circuit-breaker evaluations require valid Datadog telemetry. Scheduler evaluations always use current application state and attach Datadog telemetry only when valid; missing or stale telemetry does not block placement. The topology and live charts still show the simulator so you can compare current behavior with delayed observations. Datadog state mode uses continuous **1×** playback.
 
 To publish metrics, traces, and logs while keeping local state, use `--datadog` without `--datadog-evidence`. Only an API key is required for publishing; TypeSafe credentials are needed when using Jev. Press **Ctrl+C** to stop and flush telemetry. See the [Datadog walkthrough](crates/reflex-sim/DATADOG.md) for metrics, warmup, and troubleshooting.
 
@@ -221,13 +221,12 @@ cargo run -p reflex-sim --features datadog --locked -- \
 Each simulation has a forecasting toggle and actual-versus-forecast charts.
 Forecasts cover the next 120 seconds. Ordinary local scenarios need 64 seconds
 of observed history; Datadog mode needs 320 seconds plus ingestion delay. Missing
-or stale forecasts leave Jev using valid observed state; missing Datadog state
-still prevents evaluation.
+or stale forecasts leave Jev using observed state. Missing Datadog state blocks
+circuit-breaker evaluation; scheduler placement continues from current application state.
 
 For circuit breaking, select **Circuit Breaker → Cyclical load · Toto → Run**, then select **Payments**. The ten-minute scenario repeats a two-minute pattern: traffic rises 4× at +30s, service time rises 6× at +60s, and both recover at +90s. Toto receives observed history, not the schedule. Forecasting starts after enough observations have been collected during the run. In Datadog mode, Toto requires at least 320 seconds of history plus ingestion delay. **Actual vs Toto** compares forecasts with subsequent observations. Jev chooses when to open and probe; Reflex requires five consecutive successful probes before closing. Forecast accuracy and Jev's choices are not scripted.
 
-For a first example, select **Resource Scheduler → Repeating demand waves · Toto
-example** and click **Run scenario**. With local observations, use 4× playback;
+For a first example, select **Resource Scheduler → Cyclical load · Toto** and click **Run scenario**. With local observations, use 4× playback;
 the first forecast appears after three cycles (180 simulated seconds). In Circuit
 Breaker, select a service to inspect its forecast.
 

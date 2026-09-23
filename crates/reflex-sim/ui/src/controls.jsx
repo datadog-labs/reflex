@@ -77,7 +77,7 @@ function Transport({state,disabled,send}) {
       <Text isMonospace size="sm">{time(state.at_ms)} / {time(state.horizon_ms)}</Text>
       <StatusPill isSoft level={!state.paused&&!ended?'success':'default'}>{ended?'Complete':state.replaying?'Replay':state.paused?'Paused':'Running'}</StatusPill>
     </div><div className="transport-group playback-actions">
-      <ToggleButtons aria-label="Playback speed" options={[{value:1,label:"1×"},{value:2,label:"2×"},{value:4,label:"4×"}]} value={state.speed} isDisabled={datadog || disabled} onChange={value=>send({type:'speed',value})}/>
+      {!datadog && <ToggleButtons aria-label="Playback speed" options={[{value:1,label:"1×"},{value:2,label:"2×"},{value:4,label:"4×"}]} value={state.speed} isDisabled={disabled} onChange={value=>send({type:'speed',value})}/>}
       <Button id="replay" label="Replay" isBorderless isDisabled={datadog || disabled || !state.at_ms} onClick={()=>send({type:'replay'})}/>
       <Button id="reset" label="Reset" isBorderless isDisabled={disabled} onClick={()=>send({type:'reset'})}/>
     </div>

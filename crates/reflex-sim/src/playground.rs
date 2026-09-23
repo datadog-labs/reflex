@@ -46,7 +46,8 @@ pub enum IncidentScenario {
     #[default]
     Sandbox,
     SlowdownSurge,
-    ErrorWaves,
+    #[serde(alias = "error_waves")]
+    CyclicPressure,
 }
 impl IncidentScenario {
     fn events(self, remote: bool) -> Vec<(f64, usize, Faults)> {
@@ -65,26 +66,35 @@ impl IncidentScenario {
                 ),
                 (120., 1, Faults::default()),
             ],
-            Self::ErrorWaves => vec![
-                (
-                    75.,
-                    2,
-                    Faults {
-                        errors: true,
-                        ..Default::default()
-                    },
-                ),
-                (100., 2, Faults::default()),
-                (
-                    125.,
-                    2,
-                    Faults {
-                        errors: true,
-                        ..Default::default()
-                    },
-                ),
-                (150., 2, Faults::default()),
-            ],
+            Self::CyclicPressure => {
+                // Identical two-minute cycles: traffic rises, capacity slows,
+                // then both recover. No schedule is supplied to either model.
+                return (0..5)
+                    .flat_map(|cycle| {
+                        let start = cycle as f64 * 120_000.;
+                        [
+                            (
+                                start + 30_000.,
+                                1,
+                                Faults {
+                                    surge: true,
+                                    ..Default::default()
+                                },
+                            ),
+                            (
+                                start + 60_000.,
+                                1,
+                                Faults {
+                                    surge: true,
+                                    slow: true,
+                                    errors: false,
+                                },
+                            ),
+                            (start + 90_000., 1, Faults::default()),
+                        ]
+                    })
+                    .collect();
+            }
         };
         rows.into_iter()
             .map(|(t, i, f)| (t * 1000. * scale, i, f))
@@ -95,7 +105,7 @@ impl IncidentScenario {
         match self {
             Self::Sandbox=>"Inject your own faults. No scheduled changes.".into(),
             Self::SlowdownSurge=>format!("Payments slows 6× and receives 4× traffic at {}s; both recover at {}s. Watch pressure build, the circuit open, and recovery probes.",75*k,120*k),
-            Self::ErrorWaves=>format!("Search gets an 85% error storm at {}–{}s, then {}–{}s. Watch opening, probing, and recovery between waves.",75*k,100*k,125*k,150*k),
+            Self::CyclicPressure=>"Payments repeats a two-minute cycle: 4× traffic at +30s, 6× slowdown at +60s, and recovery at +90s. Runs for 10 minutes. Toto learns from observations collected during the run. Jev decides when to open and probe; five successful probes close the circuit.".into(),
         }
     }
 }
@@ -207,7 +217,12 @@ impl Session {
         }
     }
     pub async fn command(&mut self, command: Command) -> Result<(), Error> {
-        if matches!(command, Command::Policy { policy: PolicyKind::Threshold }) {
+        if matches!(
+            command,
+            Command::Policy {
+                policy: PolicyKind::Threshold
+            }
+        ) {
             return Err(Error::Invalid(
                 "The circuit-breaker playground supports only Jev + Reflex".into(),
             ));
@@ -328,9 +343,13 @@ impl Session {
                 }
                 let edits = self.timeline.iter().cloned().collect();
                 self.driver.cancel();
-                self.simulation =
-                    LiveSimulation::with_policy(self.simulation.seed(), self.simulation.policy())?
-                        .without_telemetry();
+                self.simulation = LiveSimulation::with_horizon(
+                    self.simulation.seed(),
+                    self.simulation.policy(),
+                    None,
+                    self.simulation.horizon(),
+                )?
+                .without_telemetry();
                 self.timeline.clear();
                 self.decisions.clear();
                 self.replay = Some((edits, end));
@@ -352,6 +371,14 @@ impl Session {
             self.driver.settings.clone(),
         )?;
         next.scenario = self.scenario;
+        if self.scenario == IncidentScenario::CyclicPressure {
+            next.simulation = LiveSimulation::with_horizon(
+                next.simulation.seed(),
+                policy,
+                next.driver.datadog().then(|| next.driver.run()),
+                600_000.,
+            )?;
+        }
         next.driver.cost = self.driver.cost.clone();
         for i in 0..3 {
             next.driver.forecasts[i].provider = self.driver.forecasts[i].provider.clone();
@@ -603,9 +630,33 @@ fn router(shared: Shared) -> Router {
                 )
             }),
         )
-        .route("/scenario-ui.js", get(|| async { ([(header::CONTENT_TYPE, "text/javascript")], include_str!("playground/scenario-ui.js")) }))
-        .route("/scenario-ui.css", get(|| async { ([(header::CONTENT_TYPE, "text/css")], include_str!("playground/scenario-ui.css")) }))
-        .route("/scenario.css", get(|| async { ([(header::CONTENT_TYPE, "text/css")], include_str!("playground/scenario.css")) }))
+        .route(
+            "/scenario-ui.js",
+            get(|| async {
+                (
+                    [(header::CONTENT_TYPE, "text/javascript")],
+                    include_str!("playground/scenario-ui.js"),
+                )
+            }),
+        )
+        .route(
+            "/scenario-ui.css",
+            get(|| async {
+                (
+                    [(header::CONTENT_TYPE, "text/css")],
+                    include_str!("playground/scenario-ui.css"),
+                )
+            }),
+        )
+        .route(
+            "/scenario.css",
+            get(|| async {
+                (
+                    [(header::CONTENT_TYPE, "text/css")],
+                    include_str!("playground/scenario.css"),
+                )
+            }),
+        )
         .route(
             "/forecast.js",
             get(|| async {
@@ -671,29 +722,6 @@ pub async fn serve_with_scheduler(
     settings: JevSettings,
     scheduler_evaluator: Option<Arc<dyn crate::scheduler::judge::Evaluator>>,
 ) -> Result<(), Error> {
-    serve_with_recovery(
-        seed,
-        port,
-        open,
-        policy,
-        evaluator,
-        settings,
-        scheduler_evaluator,
-        None,
-    )
-    .await
-}
-#[allow(clippy::too_many_arguments)]
-pub async fn serve_with_recovery(
-    seed: u64,
-    port: u16,
-    open: bool,
-    policy: PolicyKind,
-    evaluator: Option<Arc<dyn Evaluator>>,
-    settings: JevSettings,
-    scheduler_evaluator: Option<Arc<dyn crate::scheduler::judge::Evaluator>>,
-    recovery_evaluator: Option<Arc<dyn crate::recovery::judge::Evaluator>>,
-) -> Result<(), Error> {
     serve_with_forecasts(
         seed,
         port,
@@ -702,7 +730,6 @@ pub async fn serve_with_recovery(
         evaluator,
         settings,
         scheduler_evaluator,
-        recovery_evaluator,
         None,
     )
     .await
@@ -716,7 +743,6 @@ pub async fn serve_with_forecasts(
     evaluator: Option<Arc<dyn Evaluator>>,
     settings: JevSettings,
     scheduler_evaluator: Option<Arc<dyn crate::scheduler::judge::Evaluator>>,
-    recovery_evaluator: Option<Arc<dyn crate::recovery::judge::Evaluator>>,
     forecaster: Option<Arc<dyn crate::capacity::forecast::Forecaster>>,
 ) -> Result<(), Error> {
     if policy != PolicyKind::Jev {
@@ -725,31 +751,10 @@ pub async fn serve_with_forecasts(
         ));
     }
     if evaluator.is_none() {
-        return Err(Error::Invalid("set TYPESAFE_API_KEY before starting the playground".into()));
+        return Err(Error::Invalid(
+            "set TYPESAFE_API_KEY before starting the playground".into(),
+        ));
     }
-    let recovery = Arc::new(Mutex::new(crate::recovery::Session::new(
-        seed,
-        recovery_evaluator,
-        settings.clone(),
-    )?));
-    recovery.lock().await.forecast.provider = forecaster.clone();
-    let recovery_clock = recovery.clone();
-    let recovery_task = tokio::spawn(async move {
-        let mut previous = std::time::Instant::now();
-        let mut interval = tokio::time::interval(std::time::Duration::from_millis(50));
-        interval.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
-        loop {
-            interval.tick().await;
-            let mut session = recovery_clock.lock().await;
-            let elapsed = previous.elapsed().as_millis() as u64;
-            previous += std::time::Duration::from_millis(elapsed);
-            let ms = if session.uses_datadog() { elapsed } else { 50 };
-            if let Err(e) = session.tick(ms).await {
-                let _ = session.command(crate::recovery::Command::Pause).await;
-                session.error = Some(e.to_string());
-            }
-        }
-    });
     let listener = tokio::net::TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, port)).await?;
     let scheduler = Arc::new(Mutex::new(crate::scheduler::Session::new(
         seed,
@@ -808,12 +813,10 @@ pub async fn serve_with_forecasts(
     }
     let app = router(shared)
         .merge(crate::scheduler::web::router(scheduler))
-        .merge(crate::recovery::web::router(recovery))
         .layer(DefaultBodyLimit::max(16 * 1024))
         .layer(middleware::from_fn(local_only));
     let result = axum::serve(listener, app).await;
 
-    recovery_task.abort();
     scheduler_task.abort();
     task.abort();
     result.map_err(Error::Io)

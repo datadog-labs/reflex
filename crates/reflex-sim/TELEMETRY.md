@@ -86,7 +86,7 @@ cargo run -p reflex-sim --locked --example datadog_playground -- \
   --datadog-evidence --port 8743 --duration-secs 600
 ```
 
-`DD_APP_KEY` must permit `timeseries_query`. Credentials stay on the server; they never enter the browser, evidence, logs or recordings. The runner reads the process environment, not an env file automatically. The flag enables Datadog evidence for circuit breaking, [resource scheduling](SCHEDULER_TELEMETRY.md), and [retry/recovery](RECOVERY_TELEMETRY.md). Without the flag, circuit breaking continues to use local evidence.
+`DD_APP_KEY` must permit `timeseries_query`. Credentials stay on the server; they never enter the browser, evidence, logs or recordings. The runner reads the process environment, not an env file automatically. The flag enables Datadog evidence for circuit breaking and [resource scheduling](SCHEDULER_TELEMETRY.md). Without the flag, circuit breaking continues to use local evidence.
 
 Datadog mode runs at 1× real time for up to ten minutes. Pause cancels pending work; resume requires a new collection window. Step, accelerated playback, replay and switching to the threshold policy are disabled in this mode. Other tabs retain their normal controls. The circuit breaker's phase, revision, timeout, cooldown and single-probe reservation remain authoritative in Reflex. A successful probe still closes automatically, and a failed probe reopens immediately.
 
@@ -94,7 +94,7 @@ The UI identifies Datadog as the source, reports warm-up/query failures and evid
 
 ### Query scope and timing
 
-Every HTTP and breaker metric in this mode has a `simulation_run` tag. Queries filter that run, `env`, `policy:jev`, and the upstream/receiving service. Reset rotates the run identifier. This prevents prior runs, the scheduler, and the recovery workload from supplying evidence to the breaker. The tag creates one metric-series family per incident; use this run isolation for the playground, and a stable deployment/instance scope for production systems.
+Every HTTP and breaker metric in this mode has a `simulation_run` tag. Queries filter that run, `env`, `policy:jev`, and the upstream/receiving service. Reset rotates the run identifier. This prevents prior runs and the scheduler from supplying evidence to the breaker. The tag creates one metric-series family per incident; use this run isolation for the playground, and a stable deployment/instance scope for production systems.
 
 The driver performs at most one evidence fetch at a time, round-robin across the three services, at least ten wall-clock seconds apart. It uses Datadog's v2 timeseries endpoint for counts and gauges. Optional v2 scalar queries obtain each window's aggregate p95, rather than averaging bucket percentiles. Percentile queries can fail independently: latency stays `null` with an explicit status, while otherwise usable count/gauge evidence remains available. Enable percentile aggregations on the client-duration distribution to obtain p95.
 

@@ -2,7 +2,7 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/).
 // Copyright 2026-present Datadog, Inc.
 
-//! Time-bounded circuit-breaker, scheduler and recovery playgrounds with direct Datadog export.
+//! Time-bounded circuit-breaker and scheduler playgrounds with direct Datadog export.
 //! Requires DD_API_KEY and TYPESAFE_API_KEY; accepts DD_SITE, DD_SERVICE, DD_ENV.
 // Share the application exporter used by the standalone client example and its wire tests.
 #[path = "../../typesafe-ai/examples/support/datadog.rs"]
@@ -17,7 +17,7 @@ use std::{sync::Arc, time::Duration};
 
 #[derive(Parser)]
 struct Args {
-    /// Query Datadog for circuit-breaker, scheduler and recovery evidence. Requires DD_APP_KEY.
+    /// Query Datadog for circuit-breaker and scheduler evidence. Requires DD_APP_KEY.
     #[arg(long)]
     datadog_evidence: bool,
     #[arg(long, default_value_t = 8743)]
@@ -35,7 +35,7 @@ fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     } else {
         None
     };
-    let telemetry = datadog::Telemetry::from_env()?;
+    let telemetry = datadog::Telemetry::from_env_with_service("reflex")?;
     telemetry.install_global()?;
     let runtime = tokio::runtime::Runtime::new()?;
     let result = runtime.block_on(async {
@@ -53,16 +53,9 @@ fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         let mut scheduler: Arc<dyn reflex_sim::scheduler::judge::Evaluator> = Arc::new(
             reflex_sim::scheduler::judge::LiveEvaluator::new(client.clone(), model.clone()),
         );
-        let mut recovery: Arc<dyn reflex_sim::recovery::judge::Evaluator> = Arc::new(
-            reflex_sim::recovery::judge::LiveEvaluator::new(client.clone(), model.clone()),
-        );
         let mut breaker: Arc<dyn reflex_sim::jev::Evaluator> =
             Arc::new(LiveEvaluator::new(client, model));
         if args.datadog_evidence {
-            recovery = Arc::new(reflex_sim::recovery::datadog::DatadogEvaluator::new(
-                recovery,
-                reflex_sim::datadog::Source::from_env()?,
-            ));
             scheduler = Arc::new(reflex_sim::scheduler::datadog::DatadogEvaluator::new(
                 scheduler,
                 reflex_sim::datadog::Source::from_env()?,
@@ -74,7 +67,7 @@ fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         tracing::info!(target: "reflex_sim::playground", "Datadog playground started");
         tokio::select! {
             result = playground::serve_with_forecasts(42, args.port, false, PolicyKind::Jev,
-                Some(breaker), settings, Some(scheduler), Some(recovery), None) => result?,
+                Some(breaker), settings, Some(scheduler), None) => result?,
             _ = tokio::time::sleep(Duration::from_secs(u64::from(args.duration_secs))) => {}
         }
         Ok::<_, Box<dyn std::error::Error + Send + Sync>>(())

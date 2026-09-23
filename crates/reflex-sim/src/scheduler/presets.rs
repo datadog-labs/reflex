@@ -125,11 +125,7 @@ mod tests {
         assert!(a.data().jobs.len() > 100);
         a.command(Command::Reset).await.unwrap();
         assert_eq!(a.view().at_ms, 0);
-        assert!(a
-            .view()
-            .clients
-            .iter()
-            .all(|c| c.config.rate == 2.));
+        assert!(a.view().clients.iter().all(|c| c.config.rate == 2.));
         a.command(Command::Scenario {
             scenario: Scenario::Sandbox,
         })

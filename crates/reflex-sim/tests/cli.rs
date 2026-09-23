@@ -133,3 +133,81 @@ fn report_escapes_embedded_json_without_changing_exported_content() {
         report.scenarios[0].scenario.name
     );
 }
+
+#[test]
+fn datadog_configuration_fails_before_starting_the_playground() {
+    let cases: Vec<(Vec<&str>, &str)> = vec![
+        (vec!["--datadog"], "--playground"),
+        (vec!["--playground", "--datadog-evidence"], "--datadog"),
+        (
+            vec![
+                "--playground",
+                "--datadog",
+                "--datadog-evidence",
+                "--policy",
+                "threshold",
+            ],
+            "invalid value",
+        ),
+    ];
+    for (args, expected) in cases {
+        let result = cli()
+            .args(args)
+            .env_remove("DD_API_KEY")
+            .env_remove("DD_APP_KEY")
+            .env_remove("TYPESAFE_API_KEY")
+            .output()
+            .unwrap();
+        assert!(!result.status.success());
+        assert!(String::from_utf8_lossy(&result.stderr).contains(expected));
+    }
+    let result = cli()
+        .args(["--playground", "--datadog", "--no-open"])
+        .env_remove("DD_API_KEY")
+        .output()
+        .unwrap();
+    assert!(!result.status.success());
+    let expected = if cfg!(feature = "datadog") {
+        "DD_API_KEY is required"
+    } else {
+        "--features datadog"
+    };
+    assert!(String::from_utf8_lossy(&result.stderr).contains(expected));
+}
+
+#[cfg(feature = "datadog")]
+#[test]
+fn datadog_state_requires_credentials_before_exporters_start() {
+    let result = cli()
+        .args([
+            "--playground",
+            "--datadog",
+            "--datadog-evidence",
+            "--policy",
+            "jev",
+            "--no-open",
+        ])
+        .env("TYPESAFE_API_KEY", "test-only")
+        .env("DD_API_KEY", "test-only")
+        .env_remove("DD_APP_KEY")
+        .output()
+        .unwrap();
+    assert!(!result.status.success());
+    assert!(String::from_utf8_lossy(&result.stderr).contains("DD_APP_KEY"));
+}
+
+#[test]
+fn toto_requires_playground_and_a_loopback_url() {
+    for args in [
+        vec!["--toto-url", "http://localhost:8765"],
+        vec!["--playground", "--toto-url", "https://example.com"],
+    ] {
+        let result = cli()
+            .args(args)
+            .env_remove("TYPESAFE_API_KEY")
+            .output()
+            .unwrap();
+        assert!(!result.status.success());
+        assert!(String::from_utf8_lossy(&result.stderr).contains("--toto-url"));
+    }
+}

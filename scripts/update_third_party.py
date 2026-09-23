@@ -322,6 +322,41 @@ def collect_python():
                 target.write_bytes(d.locate_file(f).read_bytes())
 
 
+def collect_toto():
+    """Inventory the optional service lock, including other-platform dependencies."""
+    import tomllib
+    project = ROOT / 'integrations/toto'
+    lock = tomllib.loads((project / 'uv.lock').read_text())
+    sites = list((project / '.venv/lib').glob('python*/site-packages'))
+    installed = {
+        re.sub(r"[-_.]+", "-", d.metadata['Name']).lower(): d
+        for site in sites for d in importlib.metadata.distributions(path=[str(site)])
+    }
+    for package in lock['package']:
+        if 'registry' not in package['source']:
+            continue
+        name, version = package['name'], package['version']
+        component = f'pypi:{name}@{version}'
+        metadata_url = f'https://pypi.org/pypi/{name}/{version}/json'
+        info = json.loads(download(metadata_url))['info']
+        d = installed.get(name)
+        notices = []
+        if d and d.version == version:
+            notices = [(str(f), d.locate_file(f).read_text(errors='replace')) for f in d.files or []
+                       if re.match(r'^(licen[cs]e|copying|copyright|notice)(?:[-_.]|$)', f.name, re.I)
+                       and not str(f).endswith(('.py', '.pyc')) and d.locate_file(f).is_file()]
+        declared = info.get('license_expression') or info.get('license') or ''
+        license_id = declared if len(declared) < 100 and '\n' not in declared else 'NOASSERTION'
+        if not license_id or license_id == 'NOASSERTION':
+            license_id = infer_license('\n'.join(text for _, text in notices))
+        retain_notices(component, notices)
+        add(component, f'https://pypi.org/project/{name}/{version}/', license_id,
+            credits('\n'.join(text for _, text in notices)),
+            {'manifest': 'integrations/toto/uv.lock', 'metadata': metadata_url,
+             'installed_wheel_inspected': bool(notices), 'license_files': [n for n, _ in notices]},
+            'Optional local Toto service (all locked platforms; not core SDK runtime)')
+
+
 def collect_additional():
     for row in json.loads((ROOT / 'third_party/additional-components.json').read_text()):
         add(row['Component'], row['Origin'], row['License'], row['Copyright'], row['Evidence'], row['Scope'])
@@ -341,6 +376,7 @@ def check():
     lock = json.loads((ROOT/'crates/reflex-sim/ui/package-lock.json').read_text())
     npm = {f"npm:{path.split('node_modules/')[-1]}@{p['version']}" for path,p in lock['packages'].items() if path}
     python = {f"pypi:{n}@{v}" for line in (ROOT/'studies/capacity/report-requirements.txt').read_text().splitlines() if '==' in line for n,v in [line.split('==')]}
+    python |= {f"pypi:{p['name']}@{p['version']}" for p in tomllib.loads((ROOT/'integrations/toto/uv.lock').read_text())['package'] if 'registry' in p['source']}
     assert {n for n in names if n.startswith('pypi:')} == python, 'Python inventory differs from pinned requirements'
     additional = {row['Component'] for row in json.loads((ROOT/'third_party/additional-components.json').read_text())}
     expected = cargo | npm | python | additional
@@ -357,14 +393,14 @@ def main():
         check()
         return
     REVIEW.mkdir(parents=True, exist_ok=True)
-    for label, fn in [('Rust',collect_rust),('npm and DRUIDS',collect_npm),('Python',collect_python),('additional assets',collect_additional)]:
+    for label, fn in [('Rust',collect_rust),('npm and DRUIDS',collect_npm),('Python',collect_python),('local Toto',collect_toto),('additional assets',collect_additional)]:
         print('Collecting '+label, flush=True)
         fn()
     with (ROOT/'LICENSE-3rdparty.csv').open('w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=['Component','Origin','License','Copyright'], lineterminator='\n')
         writer.writeheader()
         writer.writerows(ROWS[k] for k in sorted(ROWS))
-    inputs = ['Cargo.lock', 'crates/reflex-sim/ui/package-lock.json', 'studies/capacity/report-requirements.txt', 'third_party/additional-components.json']
+    inputs = ['Cargo.lock', 'crates/reflex-sim/ui/package-lock.json', 'studies/capacity/report-requirements.txt', 'third_party/additional-components.json', 'integrations/toto/uv.lock']
     report = {'python_environment': {'platform': sys.platform, 'python': sys.version.split()[0]}, 'inputs': {p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in inputs}, 'components': {k:EVIDENCE[k] for k in sorted(EVIDENCE)}}
     (REVIEW/'evidence.json').write_text(json.dumps(report,indent=2)+'\n')
     unresolved = [r for r in ROWS.values() if r['License']=='NOASSERTION' or r['Copyright'].startswith('NOASSERTION') or 'LicenseRef-' in r['License'] or 'GPL' in r['License']]

@@ -152,9 +152,9 @@ impl Evaluator for LiveEvaluator {
         Box::pin(async move {
             let start = Instant::now();
             let task=SystemOneTask::builder().model(&self.model).questions(questions! {
-                action: choice("Protect useful traffic in this circuit breaker. When forecast is present, use its uncertain p10/p50/p90 projections of recent observations to anticipate pressure. Forecasts cannot predict injected faults or certify recovery, and lower observed failures while blocking are not proof of health. Never bypass a recovery probe based on forecasts. Use only the supplied client-visible evidence. Compare the supplied short and long windows, respecting their explicit durations and timestamps. Datadog measurements are delayed and may be missing; never interpret missing data as health. Locally blocked requests are not downstream failures. Server queue and utilization measurements, when present, describe resource pressure. Opening blocks requests and lets downstream work drain; blocking healthy traffic loses useful work. Once open and cooldown has elapsed, recommend a probe to test recovery. A successful probe automatically closes the circuit; a failed probe reopens it. Select only a legal action. NoChange means maintain the current state or abstain when evidence is weak. Confidence, if supplied, describes the choice, not guaranteed operational success.", [
+                action: choice("Protect useful traffic in this circuit breaker. When forecast is present, use its uncertain p10/p50/p90 projections of recent observations to anticipate pressure. Forecasts cannot predict injected faults or certify recovery, and lower observed failures while blocking are not proof of health. Never bypass a recovery probe based on forecasts. Use only the supplied client-visible evidence. Compare the supplied short and long windows, respecting their explicit durations and timestamps. Datadog measurements are delayed and may be missing; never interpret missing data as health. Locally blocked requests are not downstream failures. Server queue and utilization measurements, when present, describe resource pressure. Opening blocks requests and lets downstream work drain; blocking healthy traffic loses useful work. Once open and cooldown has elapsed, recommend a probe to test recovery. Five consecutive successful probes close the circuit, with only one probe in flight at a time; any failed probe reopens it. Select only a legal action. NoChange means maintain the current state or abstain when evidence is weak. Confidence, if supplied, describes the choice, not guaranteed operational success.", [
                     (Choice::Open,"Open the closed circuit to relieve sustained distress"),
-                    (Choice::Probe,"Permit one recovery probe after the open circuit's cooldown"),
+                    (Choice::Probe,"Begin sequential recovery probes after the open circuit's cooldown"),
                     (Choice::NoChange,"Keep the circuit unchanged; abstain or wait for more evidence"),
                 ])
             }).build();
@@ -208,7 +208,8 @@ struct Data {
     until: Option<f64>,
     generation: u64,
     revision: u64,
-    probe_reserved: bool,
+    probe_request_id: Option<usize>,
+    probe_successes: u8,
     samples: VecDeque<Observation>,
     datadog: bool,
     changed_wall_ms: u64,
@@ -224,11 +225,14 @@ struct Action {
 enum Event {
     Clock(f64),
     Response(Observation),
-    ReserveProbe,
+    ReserveProbe(usize),
+    FinalProbe(Observation),
 }
 fn valid_phase(phase: &CircuitPhase, d: &Data) -> Result<(), Rejection> {
     if (*phase == CircuitPhase::Open) == d.until.is_some()
-        && (!d.probe_reserved || *phase == CircuitPhase::HalfOpen)
+        && (d.probe_request_id.is_none() || *phase == CircuitPhase::HalfOpen)
+        && d.probe_successes < 5
+        && (*phase == CircuitPhase::HalfOpen || d.probe_successes == 0)
     {
         Ok(())
     } else {
@@ -268,8 +272,7 @@ fn can_open(d: &Data, a: &Action, now: Instant) -> Result<(), Rejection> {
     if d.datadog {
         let t = a.telemetry.as_ref().expect("freshness checked");
         if t.short_window.start_unix_ms
-            < d.changed_wall_ms
-                .saturating_add(crate::datadog::TRANSITION_MARGIN_MS)
+            < crate::datadog::control_floor(d.changed_wall_ms, d.revision)
             || t.short_window.responses < 10.0
         {
             return Err(Rejection::new(
@@ -310,7 +313,8 @@ fn start_cooldown(d: &mut Data) {
     d.until = Some(d.now + 3000.0);
     d.generation += 1;
     d.revision += 1;
-    d.probe_reserved = false;
+    d.probe_request_id = None;
+    d.probe_successes = 0;
     d.samples.clear();
     if d.datadog {
         d.changed_wall_ms = crate::datadog::unix_ms();
@@ -319,7 +323,8 @@ fn start_cooldown(d: &mut Data) {
 fn probe(d: &mut Data, _: &Action, _: Instant) -> Result<(), Rejection> {
     d.until = None;
     d.revision += 1;
-    d.probe_reserved = false;
+    d.probe_request_id = None;
+    d.probe_successes = 0;
     Ok(())
 }
 fn clock(d: &mut Data, e: &Event, _: Instant) -> Result<(), Rejection> {
@@ -348,12 +353,14 @@ fn record(d: &mut Data, e: &Event, _: Instant) -> Result<(), Rejection> {
     }
     Ok(())
 }
-fn reserve(d: &mut Data, _: &Event, _: Instant) -> Result<(), Rejection> {
-    d.probe_reserved = true;
+fn reserve(d: &mut Data, e: &Event, _: Instant) -> Result<(), Rejection> {
+    if let Event::ReserveProbe(id) = e {
+        d.probe_request_id = Some(*id);
+    }
     Ok(())
 }
 fn unreserved(d: &Data, _: &Event, _: Instant) -> Result<(), Rejection> {
-    if !d.probe_reserved {
+    if d.probe_request_id.is_none() {
         Ok(())
     } else {
         Err(Rejection::new(
@@ -362,10 +369,40 @@ fn unreserved(d: &Data, _: &Event, _: Instant) -> Result<(), Rejection> {
         ))
     }
 }
+fn current_probe(d: &Data, e: &Event, _: Instant) -> Result<(), Rejection> {
+    if matches!(e, Event::Response(o) | Event::FinalProbe(o)
+        if o.generation == d.generation && d.probe_request_id == Some(o.request_id))
+    {
+        Ok(())
+    } else {
+        Err(Rejection::new(
+            "invalid_probe",
+            "response does not belong to the in-flight probe",
+        ))
+    }
+}
+fn final_probe(d: &Data, e: &Event, now: Instant) -> Result<(), Rejection> {
+    current_probe(d, e, now)?;
+    if d.probe_successes == 4 {
+        Ok(())
+    } else {
+        Err(Rejection::new(
+            "insufficient_probes",
+            "five consecutive successful probes are required",
+        ))
+    }
+}
+fn probe_succeeded(d: &mut Data, _: &Event, _: Instant) -> Result<(), Rejection> {
+    d.probe_successes += 1;
+    d.probe_request_id = None;
+    d.revision += 1;
+    Ok(())
+}
 fn close(d: &mut Data, _: &Event, _: Instant) -> Result<(), Rejection> {
     d.until = None;
     d.revision += 1;
-    d.probe_reserved = false;
+    d.probe_request_id = None;
+    d.probe_successes = 0;
     d.samples.clear();
     if d.datadog {
         d.changed_wall_ms = crate::datadog::unix_ms();
@@ -402,9 +439,10 @@ impl JevPolicy {
                 CircuitPhase::HalfOpen + event(Event::Clock(_)) => CircuitPhase::HalfOpen {update:clock},
                 CircuitPhase::Closed + event(Event::Response(_)) => CircuitPhase::Closed {guard:current_response,update:record},
                 CircuitPhase::Open + event(Event::Response(_)) => unchanged {},
-                CircuitPhase::HalfOpen + event(Event::ReserveProbe) => CircuitPhase::HalfOpen {guard:unreserved,update:reserve},
-                CircuitPhase::HalfOpen + event(Event::Response(Observation{outcome:ClientOutcome::Success,..})) => CircuitPhase::Closed {guard:current_response,update:close},
-                CircuitPhase::HalfOpen + event(Event::Response(Observation{outcome:ClientOutcome::Error|ClientOutcome::Timeout,..})) => CircuitPhase::Open {guard:current_response,update:reopen},
+                CircuitPhase::HalfOpen + event(Event::ReserveProbe(_)) => CircuitPhase::HalfOpen {guard:unreserved,update:reserve},
+                CircuitPhase::HalfOpen + event(Event::Response(Observation{outcome:ClientOutcome::Success,..})) => CircuitPhase::HalfOpen {guard:current_probe,update:probe_succeeded},
+                CircuitPhase::HalfOpen + event(Event::FinalProbe(Observation{outcome:ClientOutcome::Success,..})) => CircuitPhase::Closed {guard:final_probe,update:close},
+                CircuitPhase::HalfOpen + event(Event::Response(Observation{outcome:ClientOutcome::Error|ClientOutcome::Timeout,..})) => CircuitPhase::Open {guard:current_probe,update:reopen},
                 CircuitPhase::Closed + evaluation_error(_) => unchanged {},
                 CircuitPhase::Open + evaluation_error(_) => unchanged {},
                 CircuitPhase::HalfOpen + evaluation_error(_) => unchanged {},
@@ -418,7 +456,8 @@ impl JevPolicy {
                     until: None,
                     generation: 0,
                     revision: 0,
-                    probe_reserved: false,
+                    probe_request_id: None,
+                    probe_successes: 0,
                     samples: VecDeque::new(),
                     datadog,
                     changed_wall_ms: if datadog {
@@ -527,10 +566,10 @@ impl Policy for JevPolicy {
                     generation: d.generation,
                     probe: false,
                 }),
-                CircuitPhase::HalfOpen if !d.probe_reserved => {
+                CircuitPhase::HalfOpen if d.probe_request_id.is_none() => {
                     let outcome = self
                         .machine
-                        .handle_event(Event::ReserveProbe)
+                        .handle_event(Event::ReserveProbe(c.request_id))
                         .await
                         .map_err(|e| Error::Policy(e.to_string()))?;
                     if matches!(outcome, ExecutionOutcome::Applied(_)) {
@@ -552,8 +591,16 @@ impl Policy for JevPolicy {
     fn observe(&mut self, o: Observation) -> PolicyFuture<'_, ()> {
         Box::pin(async move {
             self.clock(o.at_ms).await?;
+            let event = if self.phase == CircuitPhase::HalfOpen
+                && o.outcome == ClientOutcome::Success
+                && self.data()?.probe_successes == 4
+            {
+                Event::FinalProbe(o)
+            } else {
+                Event::Response(o)
+            };
             self.machine
-                .handle_event(Event::Response(o))
+                .handle_event(event)
                 .await
                 .map_err(|e| Error::Policy(e.to_string()))?;
             self.refresh()
@@ -669,7 +716,8 @@ mod datadog_guards {
             until: None,
             generation: 0,
             revision: 7,
-            probe_reserved: false,
+            probe_request_id: None,
+            probe_successes: 0,
             samples: VecDeque::new(),
             datadog: true,
             changed_wall_ms: now - 90_000,
@@ -684,6 +732,24 @@ mod datadog_guards {
             can_open(&d, &a, Instant::now()).is_ok(),
             "No local samples are required in Datadog mode"
         );
+        // A ten-second startup window is enough; the same window after a
+        // transition must still respect the export-boundary margin.
+        let mut startup = a.clone();
+        startup.revision = 0;
+        let telemetry = startup.telemetry.as_mut().unwrap();
+        for window in [&mut telemetry.short_window, &mut telemetry.long_window] {
+            window.start_unix_ms = now - 30_000;
+            window.end_unix_ms = now - 20_000;
+            window.duration_seconds = 10.;
+        }
+        d.revision = 0;
+        d.changed_wall_ms = now - 40_000;
+        assert!(can_open(&d, &startup, Instant::now()).is_ok());
+        d.revision = 1;
+        startup.revision = 1;
+        assert!(can_open(&d, &startup, Instant::now()).is_err());
+        d.revision = 7;
+        d.changed_wall_ms = now - 90_000;
         let mut bad = a.clone();
         bad.telemetry = None;
         assert!(can_open(&d, &bad, Instant::now()).is_err());

@@ -4,7 +4,7 @@
 
 use reflex_sim::{
     playground::{self, inference::JevSettings, IncidentScenario},
-    recovery, scheduler,
+    scheduler,
 };
 
 async fn breaker(scenario: IncidentScenario, step: u64) -> playground::Session {
@@ -26,7 +26,7 @@ async fn breaker(scenario: IncidentScenario, step: u64) -> playground::Session {
 async fn circuit_presets_apply_at_exact_times_and_replay_without_duplicate_injections() {
     for scenario in [
         IncidentScenario::SlowdownSurge,
-        IncidentScenario::ErrorWaves,
+        IncidentScenario::CyclicPressure,
     ] {
         let mut a = breaker(scenario, 1000).await;
         let b = breaker(scenario, 137).await;
@@ -46,15 +46,20 @@ async fn circuit_presets_apply_at_exact_times_and_replay_without_duplicate_injec
             if scenario == IncidentScenario::SlowdownSurge {
                 vec![75_000, 120_000]
             } else {
-                vec![75_000, 100_000, 125_000, 150_000]
+                vec![30_000, 60_000, 90_000, 150_000]
             }
         );
-        assert!(a
-            .view()
-            .simulation
-            .services
-            .iter()
-            .all(|s| !s.faults.slow && !s.faults.errors && !s.faults.surge));
+        if scenario == IncidentScenario::CyclicPressure {
+            assert_eq!(a.view().simulation.horizon_ms, 600_000.);
+            assert!(a.view().simulation.services[1].faults.surge);
+        } else {
+            assert!(a
+                .view()
+                .simulation
+                .services
+                .iter()
+                .all(|s| !s.faults.slow && !s.faults.errors && !s.faults.surge));
+        }
         a.command(playground::Command::Replay).await.unwrap();
         while !a.view().paused {
             a.tick(1000.).await.unwrap();
@@ -65,6 +70,69 @@ async fn circuit_presets_apply_at_exact_times_and_replay_without_duplicate_injec
         a.command(playground::Command::Reset).await.unwrap();
         assert_eq!(a.view().scenario, scenario);
         assert_eq!(a.view().simulation.at_ms, 0.);
+    }
+}
+#[tokio::test]
+async fn cyclic_pressure_repeats_and_recovers_through_the_forecast_learning_period() {
+    let mut session = playground::Session::new(42).unwrap();
+    session
+        .command(playground::Command::Scenario {
+            scenario: IncidentScenario::CyclicPressure,
+        })
+        .await
+        .unwrap();
+    session.command(playground::Command::Play).await.unwrap();
+    let mut all_transitions = Vec::new();
+    for second in 0..600 {
+        session.tick(1000.).await.unwrap();
+        all_transitions.extend(
+            session
+                .view()
+                .simulation
+                .transitions
+                .into_iter()
+                .filter(|t| t.at_ms > second as f64 * 1000.),
+        );
+    }
+    let view = session.view();
+    assert_eq!(view.simulation.at_ms, 600_000.);
+    assert!(view.paused);
+    assert_eq!(view.simulation.injections.len(), 15);
+    let mut times: Vec<_> = view
+        .simulation
+        .injections
+        .iter()
+        .map(|e| e.at_ms as u64)
+        .collect();
+    times.sort();
+    for cycle in 0..5 {
+        assert_eq!(
+            &times[cycle * 3..cycle * 3 + 3],
+            &[
+                cycle as u64 * 120_000 + 30_000,
+                cycle as u64 * 120_000 + 60_000,
+                cycle as u64 * 120_000 + 90_000
+            ]
+        );
+    }
+    assert_eq!(
+        view.simulation.services[1].state.phase,
+        reflex_sim::policy::CircuitPhase::Closed
+    );
+    // Verify the scripted environment repeatedly creates and releases pressure.
+    // Model decisions remain unscripted; this test uses the classical policy.
+    for cycle in 0..5 {
+        let start = cycle as f64 * 120_000.;
+        let transitions: Vec<_> = all_transitions
+            .iter()
+            .filter(|t| t.service == 1 && t.at_ms >= start && t.at_ms < start + 120_000.)
+            .collect();
+        assert!(transitions
+            .iter()
+            .any(|t| t.to == reflex_sim::policy::CircuitPhase::Open));
+        assert!(transitions.iter().any(
+            |t| t.to == reflex_sim::policy::CircuitPhase::Closed && t.at_ms >= start + 90_000.
+        ));
     }
 }
 async fn schedule(scenario: scheduler::Scenario, step: u64) -> scheduler::Session {
@@ -111,26 +179,4 @@ async fn scheduling_presets_are_repeatable_and_restore_original_client_profiles_
         assert!(a.view().clients.iter().all(|c| c.config.rate == 2.));
         assert_eq!(a.view().scenario, scenario);
     }
-}
-#[tokio::test]
-async fn recovery_presets_restart_with_known_traffic_and_bandwidth() {
-    let mut s = recovery::Session::new(42, None, JevSettings::default()).unwrap();
-    s.command(recovery::Command::Scenario {
-        scenario: recovery::Scenario::RebuildPressure,
-    })
-    .await
-    .unwrap();
-    s.command(recovery::Command::Play).await.unwrap();
-    for _ in 0..20 {
-        s.tick(1000).await.unwrap();
-    }
-    assert!(s.data().clients.iter().all(|c| c.config.rate == 25.));
-    s.command(recovery::Command::Reset).await.unwrap();
-    assert!(s
-        .data()
-        .clients
-        .iter()
-        .all(|c| c.config.rate == 8. && c.config.cost_ms == 150));
-    assert_eq!(s.data().bandwidth_limit, 12.);
-    assert_eq!(s.view().scenario, recovery::Scenario::RebuildPressure);
 }

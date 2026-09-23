@@ -119,3 +119,7 @@
 
 .reflex-gateway-circuits{display:flex;flex-direction:column;width:100%}
 .reflex-gateway-circuit{display:flex;align-items:center;justify-content:space-between;gap:8px;height:36px;padding:4px 10px;border-top:1px solid #e2e5ed;text-align:left}
+
+.circuit-telemetry { display: block; font-size: 11px; font-weight: normal; color: #66717b; margin-top: 4px; }
+
+.reflex-chart-legend .reflex-chart-band-key{height:8px;border:1px solid;opacity:.3}

@@ -131,6 +131,14 @@ pub struct ResultRecord {
 }
 pub type ForecastFuture<'a> = Pin<Box<dyn Future<Output = Result<Snapshot, String>> + Send + 'a>>;
 pub trait Forecaster: Send + Sync {
+    /// Required observed samples before this provider can forecast on a time grid.
+    fn minimum_samples(&self, interval_ms: u64) -> usize {
+        if interval_ms == 1000 {
+            64
+        } else {
+            16
+        }
+    }
     fn forecast(&self, input: Input) -> ForecastFuture<'_>;
     fn description(&self) -> String;
 }

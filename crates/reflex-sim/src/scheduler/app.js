@@ -34,6 +34,7 @@ function render(){
  $('connection').dataset.connected=String(connected);
 
  if(!state)return;
+ renderForecast(state.forecast, "Placement pressure", state.policy, busy || !connected);
 
  $('scenario').value=state.scenario;$('scenario').disabled=busy||!connected;
  $('scenario-description').textContent=state.scenario_description;
@@ -153,7 +154,7 @@ $('clients').addEventListener('submit',e=>{e.preventDefault();const f=e.target,i
 $('clients').addEventListener('click',e=>{const remove=e.target.closest('[data-remove]');if(remove)send({type:'remove_client',id:Number(remove.dataset.remove)},true);});
 $('inspect-latest').addEventListener('click',()=>inspect(state.decisions[0]));$('decisions').addEventListener('click',e=>{const b=e.target.closest('[data-inspect]');if(b)inspect(state.decisions.find(d=>`${d.job}:${d.at_ms}`===b.dataset.inspect));});
 $('cost-info').addEventListener('click',()=>$('cost-dialog').showModal());document.querySelectorAll('.close').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
-document.querySelectorAll('a[href="/"],a[href="/recovery"]').forEach(a=>a.addEventListener('click',async e=>{e.preventDefault();if(await send({type:'pause'}))location.href=a.getAttribute('href');}));
+document.querySelectorAll('a[href="/"]').forEach(a=>a.addEventListener('click',async e=>{e.preventDefault();if(await send({type:'pause'}))location.href=a.getAttribute('href');}));
 document.querySelectorAll('#map-clients').forEach(el=>el.addEventListener('click',e=>{const b=e.target.closest('[data-select-client]');if(b){selected={kind:'client',id:Number(b.dataset.selectClient)};clients(true);render();}}));
 $('map-nodes').addEventListener('click',e=>{const b=e.target.closest('[data-select-node]');if(b){selected={kind:'node',id:Number(b.dataset.selectNode)};render();}});
 $('queue-hub').addEventListener('click',()=>{selected={kind:'queue',id:0};render();});
@@ -168,3 +169,5 @@ $('run-scenario').addEventListener('click',async()=>{const scenario=state.scenar
 $('clients').addEventListener('change', e=>{if(e.target.matches('[data-priority]'))send({type:'priority',id:Number(e.target.dataset.priority),priority:e.target.value});});
 
 $('lag-legend').addEventListener('click',e=>{const b=e.target.closest('[data-lag-client]');if(!b)return;const id=Number(b.dataset.lagClient);hiddenLagClients.has(id)?hiddenLagClients.delete(id):hiddenLagClients.add(id);render();});
+
+$('forecast-panel').addEventListener('change', e => { if(e.target.id === 'forecast-toggle') send({type:'forecast',enabled:e.target.checked}); });

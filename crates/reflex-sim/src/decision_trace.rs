@@ -43,21 +43,9 @@ impl DecisionTrace {
             self.span.record("client", format!("client_{}", client + 1));
         });
     }
-    pub fn recovery(id: u64, policy: &'static str, simulation_time_ms: u64) -> Self {
-        Self {
-            span: tracing::info_span!(target: "reflex_sim::recovery", "recovery.decision", decision_id = id, policy, simulation_time_ms, status = Empty, otel.status_code = Empty),
-            dispatch: tracing::dispatcher::get_default(Clone::clone),
-            finished: false,
-            kind: "recovery",
-        }
-    }
     pub fn child(&self, stage: &str) -> Span {
         tracing::dispatcher::with_default(&self.dispatch, || {
-            if self.kind == "recovery" && stage == "evaluate" {
-                tracing::info_span!(target: "reflex_sim::recovery", parent: &self.span, "recovery.evaluate")
-            } else if self.kind == "recovery" {
-                tracing::info_span!(target: "reflex_sim::recovery", parent: &self.span, "recovery.apply")
-            } else if self.kind == "scheduler" && stage == "evaluate" {
+            if self.kind == "scheduler" && stage == "evaluate" {
                 tracing::info_span!(target: "reflex_sim::scheduler", parent: &self.span, "scheduler.evaluate")
             } else if self.kind == "scheduler" {
                 tracing::info_span!(target: "reflex_sim::scheduler", parent: &self.span, "scheduler.apply")

@@ -1,5 +1,8 @@
 # Circuit Lab
 
+For applications that **publish telemetry to Datadog and query it back as decision state**, see the [Datadog control-loop walkthrough](DATADOG.md). It covers circuit breaking and scheduling through the normal playground CLI.
+
+
 Circuit Lab replays the same offered traffic against independent circuit-breaker policies. Each downstream has a worker pool and a bounded queue. Sending more traffic into a degraded service builds pressure, raises failure probability, and can prolong the incident.
 
 Canned reports include an unprotected reference and a deterministic threshold breaker implemented with Reflex. They make no inference calls and need no API key. Incident Playground also supports live Jev recommendations through the TypeSafe client and Reflex controller.
@@ -82,7 +85,7 @@ Jev receives circuit phase and revision, one-second and five-second response win
 - **Probe**: enter half-open and reserve capacity for one recovery probe.
 - **NoChange**: retain the circuit state, including abstaining when evidence is insufficient.
 
-The Reflex executor checks the recommendation against current state. Opening requires 10 responses in the current five-second window, but it does not duplicate the threshold policy's 50% failure heuristic. Probing requires a three-second cooldown. Responses from earlier circuit generations cannot close a newer circuit. A successful probe closes the circuit; an error or timeout reopens it. Jev cannot directly force the circuit closed.
+The Reflex executor checks the recommendation against current state. Opening requires 10 responses in the current five-second window, but it does not duplicate the threshold policy's 50% failure heuristic. Probing requires a three-second cooldown. Responses from earlier circuit generations cannot close a newer circuit. Five consecutive successful probes close the circuit, with only one probe in flight at a time. An error or timeout reopens it and resets the success count. Jev cannot directly force the circuit closed.
 
 Recommendations from an earlier circuit revision or more than five simulated seconds ago are rejected. Evaluation errors go through explicit executor `evaluation_error` rows that retain the current phase. There is no silent switch to the threshold algorithm on provider failure.
 
@@ -204,87 +207,9 @@ Click a client and change **Live priority** to Normal, High or Critical. This is
 
 The topology and queued cards show priority badges. The client inspector reports queued count, completions, completed jobs per simulated second since run start, mean/p95 wait for started jobs, and oldest current queue wait. Priorities remain attached to queued work from removed clients. Sandbox resets retain priority settings; selecting/resetting a canned scenario restores its default clients at Normal priority. Priorities are live controls, not part of a canned schedule.
 
-## Recovery playground
-
-Open `/recovery` on the playground server (normally
-`http://127.0.0.1:8742/recovery`). It shares the CLI and TypeSafe client setup with
-Circuit Breaker and Resource Scheduler, with an independent paused session and
-cost meter. Navigating between scenario tabs pauses the tab you leave.
-
-The topology shows up to eight independently configurable clients, a read router,
-three initial replicas, and one spare slot. Click a client to set its request rate,
-work per read and essential traffic share. Click a replica to crash or restart it,
-isolate read or recovery traffic, introduce errors or slowdown, or invalidate its
-snapshot. A global budget caps rebuild bandwidth. Fault switches control the
-simulated world; Jev receives only observations from health checks and requests.
-
-Choose a canned incident or inject faults in Sandbox:
-
-| Incident | Timeline |
-| --- | --- |
-| Single replica crash | A crashes at 10s and restarts at 65s. |
-| Overload during rebuild | A crashes at 10s; all clients change to 25 requests/s and 300ms work at 16s, then 8 requests/s and 150ms at 50s; A restarts at 65s. |
-| A second failure | A crashes at 10s and B at 18s; A restarts at 65s, B at 80s. |
-
-Scripted traffic edits apply to all clients present at that instant, retaining each
-client's enabled flag and essential share. The script can be combined with manual
-controls. Reset clears faults and work and preserves current client configuration
-and bandwidth budget; selecting an incident or changing policy also resets the run.
-
-Both **Jev + Reflex** and **Fixed recovery + Reflex** use the same Rust executor.
-Actions select serving members, bounded retries, normal/essential-only service,
-rebuild endpoints and rate, cancellation, or an operator-intervention flag. Reflex
-rechecks evidence age, configuration/lifecycle revision, a one-second action
-cooldown, snapshot readiness, the last ready serving member, one active rebuild,
-and the bandwidth budget. Invariants validate resource and request accounting.
-A committed rebuild records the operation; subsequent simulation events perform
-the transfer and verification. Failures remain visible instead of being treated
-as successful effects. Inference errors retain the current plan.
-
-Jev receives one-second/five-second response summaries, per-replica observed
-health and queues, routing, retry/recovery budgets, rebuild progress, recent
-applied actions and currently legal choices. It never receives fault switches,
-future script events, per-request remaining work, or the random seed. Actual
-confidence, choice distribution, latency and token usage are preserved with the
-decision. There is no confidence threshold. Evaluation is asynchronous, at most one
-call per wall-clock second by default and one in flight; the CLI evaluation limit
-applies independently to this tab. Pause stops simulation progress; an in-flight
-response is metered when it arrives but applied only on resume or step. Reset
-cancels pending work. Reported usage cost survives resets, not server restarts.
-
-The model uses a deterministic 50ms event lattice, 500ms health probes, four
-concurrent reads and a total queue capacity of 32 per replica. Arrivals preserve
-the configured average rate (rounded to a millisecond inter-arrival interval) and
-are processed at the next tick. Request timeout is 1.5s per attempt and cancels
-work in this model. At most one retry is permitted per original request, with one
-credit per ten arrivals and a bucket capacity of two. Queue pressure raises failure
-probability. All original requests are conserved as in-flight, successful, failed,
-or rejected; retries do not inflate the offered count.
-
-A rebuild transfers 100MB, then verifies for one second. Transfer reservations
-reduce read-processing capacity at both endpoints by `rate / 16 * 70%`. A stalled
-transfer fails after three seconds without progress; interrupted verification has
-a bounded failure deadline. A restarted replica with a valid snapshot passes a
-one-second readiness check. A stale replica needs a rebuild, even after its fault
-switch is cleared. The pool serves a static versioned snapshot: this example does
-not model writes, quorum consistency or leader election.
-
-Green traffic dots are colored by client and sized by request work; queue blocks
-show actual in-flight work. Ochre chunks represent observed snapshot progress.
-Animation is sampled, while metrics count all requests. The essential-success
-metric uses successful essential reads divided by offered essential reads,
-including requests still in flight. The journal separates proposals, guard
-rejections and later recovery outcomes. JSON export includes complete decisions,
-controls and the final state; it does not include credentials or implement replay.
-
-For comparisons, use the same seed, starting client configuration and script for
-each policy and export both runs. The fixed policy is deterministic across playback
-step sizes. Jev timing depends on wall-clock response latency, so those runs are
-illustrations, not controlled performance benchmarks.
-
 ## Forecasting
 
-Toto forecasting is integrated into circuit breaking, scheduling, and recovery. See the [forecasting guide](FORECASTING.md) for setup, observation series, history windows, uncertainty, and fallback behavior. The standalone capacity tab is retired; its underlying module remains available for research and recorded study replay.
+Toto forecasting is integrated into circuit breaking and scheduling. See the [forecasting guide](FORECASTING.md) for setup, observation series, history windows, uncertainty, and fallback behavior. The standalone capacity tab is retired; its underlying module remains available for research and recorded study replay.
 
 
 ## Canned incident runs
@@ -297,9 +222,15 @@ Each playground has a Scenario selector and a **Run scenario** button. Selecting
 | Circuit breaker | Recurring error storms | Search receives an 85% injected error probability during 75–100s and 125–150s. |
 | Scheduler | Traffic burst | Three clients start at 2 jobs/s each, rise to 6 jobs/s at 75s, then ease to 1 job/s at 115s. |
 | Scheduler | CPU / memory mix shift | At 75s Client 2 changes to 8 CPU / 2 GiB jobs and Client 3 to 2 CPU / 24 GiB jobs. Original sizes return at 125s; rates stay fixed. |
-| Recovery | Single replica crash | Replica A crashes at 10s and restarts at 65s. |
-| Recovery | Overload during rebuild | Replica A crashes at 10s; traffic and request cost rise at 16s and normalize at 50s; A restarts at 65s. |
 
-Recovery also retains the existing second-failure scenario. Scheduler presets restore three known client profiles, and recovery presets restore the default clients and 12 MB/s recovery budget. Sandbox mode retains custom client settings on reset. Manual controls remain available during presets; later scheduled changes still apply. Circuit-breaker replay records the actual fault edits, including scheduled changes.
+Scheduler presets restore three known client profiles. Sandbox mode retains custom client settings on reset. Manual controls remain available during presets; later scheduled changes still apply. Circuit-breaker replay records the actual fault edits, including scheduled changes.
 
-For Datadog-backed circuit breaking and scheduling, incident preset times are multiplied by three (the repeating demand cycle remains 60 seconds), allowing remote history to warm up before the first change. Their descriptions display the actual times. Recovery's existing incident scripts keep their original timing.
+For Datadog-backed circuit breaking and scheduling, incident preset times are multiplied by three (the repeating demand cycle remains 60 seconds), allowing remote history to warm up before the first change. Their descriptions display the actual times.
+
+## Local Toto forecasts
+
+Run the optional [Python Toto service](../../integrations/toto/README.md), then add
+`--toto-url http://127.0.0.1:8765` to the playground command. The same provider
+serves Circuit Breaker and Resource Scheduler using local observations
+or queried Datadog history. Forecast switches and comparison charts are available
+in each simulation.

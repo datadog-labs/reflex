@@ -88,7 +88,7 @@ impl LiveSimulation {
         policy: PolicyKind,
         meter: opentelemetry::metrics::Meter,
     ) -> Result<Self, Error> {
-        Self::configured_meter(seed, policy, meter, None)
+        Self::configured_meter(seed, policy, meter, None, HORIZON_MS)
     }
     pub fn with_datadog(seed: u64, run: &str) -> Result<Self, Error> {
         Self::configured_meter(
@@ -96,6 +96,21 @@ impl LiveSimulation {
             PolicyKind::Jev,
             opentelemetry::global::meter("circuit_breaker"),
             Some(run),
+            600_000.,
+        )
+    }
+    pub(crate) fn with_horizon(
+        seed: u64,
+        policy: PolicyKind,
+        run: Option<&str>,
+        duration_ms: f64,
+    ) -> Result<Self, Error> {
+        Self::configured_meter(
+            seed,
+            policy,
+            opentelemetry::global::meter("circuit_breaker"),
+            run,
+            duration_ms,
         )
     }
     fn configured_meter(
@@ -103,11 +118,12 @@ impl LiveSimulation {
         policy: PolicyKind,
         meter: opentelemetry::metrics::Meter,
         run: Option<&str>,
+        duration_ms: f64,
     ) -> Result<Self, Error> {
         let mut scenario = presets().remove(0);
         scenario.id = "incident-playground".into();
         scenario.name = "Incident Playground".into();
-        scenario.duration_ms = if run.is_some() { 600_000. } else { HORIZON_MS };
+        scenario.duration_ms = duration_ms;
         scenario.phases.truncate(1);
         scenario.phases[0].end_ms = scenario.duration_ms;
         let trace = Trace {

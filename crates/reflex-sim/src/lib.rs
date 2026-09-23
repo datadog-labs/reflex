@@ -11,7 +11,6 @@ pub mod engine;
 pub mod jev;
 pub mod playground;
 pub mod policy;
-pub mod recovery;
 pub mod report;
 pub mod scenario;
 pub mod scheduler;
@@ -43,3 +42,5 @@ pub mod datadog;
 mod metric_capture;
 
 pub mod forecasting;
+
+pub mod toto;

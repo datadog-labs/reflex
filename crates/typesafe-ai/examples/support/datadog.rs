@@ -27,7 +27,12 @@ pub struct Telemetry {
     pub dispatch: tracing::Dispatch,
 }
 impl Telemetry {
+    #[allow(dead_code)] // Some applications supply their own default service.
     pub fn from_env() -> Result<Self, SetupError> {
+        Self::from_env_with_service("typesafe-client-example")
+    }
+    /// Application default; DD_SERVICE can override it.
+    pub fn from_env_with_service(service: &str) -> Result<Self, SetupError> {
         let key = std::env::var("DD_API_KEY").map_err(|_| "DD_API_KEY is required")?;
         if key.trim().is_empty() {
             return Err("DD_API_KEY must not be empty".into());
@@ -49,9 +54,7 @@ impl Telemetry {
             );
         }
         let resource = Resource::builder()
-            .with_service_name(
-                std::env::var("DD_SERVICE").unwrap_or_else(|_| "typesafe-client-example".into()),
-            )
+            .with_service_name(std::env::var("DD_SERVICE").unwrap_or_else(|_| service.into()))
             .with_attributes([
                 KeyValue::new(
                     "deployment.environment.name",

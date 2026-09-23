@@ -667,9 +667,7 @@ impl Session {
                 },
             )
             .await?;
-            if !fresh
-                || self.evaluator.is_none()
-            {
+            if !fresh || self.evaluator.is_none() {
                 self.thresholds(
                     2,
                     false,

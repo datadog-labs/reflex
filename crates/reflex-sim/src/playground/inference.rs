@@ -33,6 +33,11 @@ impl Default for JevSettings {
     }
 }
 #[derive(Serialize)]
+pub struct ServiceTelemetryStatus {
+    pub status: String,
+    pub age_seconds: Option<f64>,
+}
+#[derive(Serialize)]
 pub struct InferenceStatus {
     pub available: bool,
     pub model: String,
@@ -41,6 +46,7 @@ pub struct InferenceStatus {
     pub cost: CostStatus,
     pub evidence_source: &'static str,
     pub telemetry_status: String,
+    pub services: [ServiceTelemetryStatus; 3],
     pub evidence_age_seconds: Option<f64>,
     pub simulation_run: Option<String>,
 }
@@ -110,7 +116,8 @@ pub struct Driver {
     pub evaluator: Option<Arc<dyn Evaluator>>,
     pub settings: JevSettings,
     pub(super) cost: Arc<Mutex<CostStatus>>,
-    pending: Option<Pending>,
+    pending: Vec<Pending>,
+    service_dispatch: [Option<Instant>; 3],
     calls: Arc<AtomicUsize>,
     next_due: [f64; 3],
     last_dispatch: Option<Instant>,
@@ -120,6 +127,8 @@ pub struct Driver {
     attempts: u64,
     telemetry_status: String,
     latest_evidence_at: Option<u64>,
+    service_evidence_at: [Option<u64>; 3],
+    service_status: [String; 3],
 }
 static NEXT_RUN: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
 impl Driver {
@@ -130,7 +139,8 @@ impl Driver {
             evaluator,
             settings,
             cost: Arc::new(Mutex::new(CostStatus::default())),
-            pending: None,
+            pending: Vec::new(),
+            service_dispatch: [None; 3],
             calls: Arc::new(AtomicUsize::new(0)),
             next_due: [0.0; 3],
             last_dispatch: None,
@@ -144,6 +154,8 @@ impl Driver {
             active_since: crate::datadog::unix_ms(),
             attempts: 0,
             latest_evidence_at: None,
+            service_evidence_at: [None; 3],
+            service_status: std::array::from_fn(|_| "Waiting for Datadog observations".into()),
             telemetry_status: "Start traffic to collect a fresh Datadog window".into(),
         }
     }
@@ -197,6 +209,8 @@ impl Driver {
             f.reset();
         }
         self.active_since = crate::datadog::unix_ms();
+        self.service_evidence_at = [None; 3];
+        self.service_status = std::array::from_fn(|_| "Waiting for Datadog observations".into());
         self.telemetry_status = "Warming up: collecting a complete Datadog window".into();
     }
     pub fn fresh(&self) -> Self {
@@ -209,13 +223,18 @@ impl Driver {
         next
     }
     pub fn cancel(&mut self) {
-        self.pending = None;
+        self.pending.clear();
     }
     pub fn status(&self) -> InferenceStatus {
         InferenceStatus {
             evidence_source: if self.datadog() { "datadog" } else { "local" },
             simulation_run: self.datadog().then(|| self.run.clone()),
             telemetry_status: self.telemetry_status.clone(),
+            services: std::array::from_fn(|i| ServiceTelemetryStatus {
+                status: self.service_status[i].clone(),
+                age_seconds: self.service_evidence_at[i]
+                    .map(|at| crate::datadog::unix_ms().saturating_sub(at) as f64 / 1000.),
+            }),
             evidence_age_seconds: self
                 .latest_evidence_at
                 .map(|at| crate::datadog::unix_ms().saturating_sub(at) as f64 / 1000.),
@@ -223,7 +242,7 @@ impl Driver {
             available: self.evaluator.is_some(),
             model: self.settings.model.clone(),
             calls: self.calls.load(Ordering::Relaxed),
-            pending: self.pending.as_ref().map(|p| PendingStatus {
+            pending: self.pending.first().map(|p| PendingStatus {
                 service: p.service,
                 observed_at_ms: p.evidence.observed_at_ms,
                 response_ready: p.task.is_finished(),
@@ -231,10 +250,8 @@ impl Driver {
         }
     }
     pub(super) async fn take_ready(&mut self) -> Option<CompletedInference> {
-        if !self.pending.as_ref().is_some_and(|p| p.task.is_finished()) {
-            return None;
-        }
-        let mut pending = self.pending.take().unwrap();
+        let index = self.pending.iter().position(|p| p.task.is_finished())?;
+        let mut pending = self.pending.remove(index);
         let (evidence, result) = match (&mut pending.task).await {
             Ok(r) => r,
             Err(_) => (
@@ -245,6 +262,7 @@ impl Driver {
         if self.datadog() {
             if let Some(t) = &evidence.telemetry {
                 self.latest_evidence_at = Some(t.short_window.end_unix_ms);
+                self.service_evidence_at[pending.service] = Some(t.short_window.end_unix_ms);
             }
             self.telemetry_status = result
                 .error
@@ -252,6 +270,11 @@ impl Driver {
                 .filter(|e| e.code == "datadog_evidence")
                 .map_or_else(|| "Datadog evidence received".into(), |e| e.message.clone());
         }
+        self.service_status[pending.service] = if evidence.telemetry.is_some() {
+            "ready".into()
+        } else {
+            self.telemetry_status.clone()
+        };
         Some(CompletedInference {
             id: pending.id,
             service: pending.service,
@@ -264,7 +287,7 @@ impl Driver {
         })
     }
     pub fn dispatch(&mut self, simulation: &LiveSimulation) -> Result<(), Error> {
-        if self.pending.is_some() || simulation.policy() != PolicyKind::Jev {
+        if simulation.policy() != PolicyKind::Jev || (!self.datadog() && !self.pending.is_empty()) {
             return Ok(());
         }
         let interval = if self.datadog() {
@@ -272,7 +295,7 @@ impl Driver {
         } else {
             self.settings.dispatch_interval
         };
-        if self.last_dispatch.is_some_and(|at| at.elapsed() < interval) {
+        if !self.datadog() && self.last_dispatch.is_some_and(|at| at.elapsed() < interval) {
             return Ok(());
         }
         let Some(evaluator) = &self.evaluator else {
@@ -281,8 +304,15 @@ impl Driver {
             ));
         };
         let evidence = simulation.evidence();
+        let first_service = self.round_robin;
         for offset in 0..3 {
-            let service = (self.round_robin + offset) % 3;
+            let service = (first_service + offset) % 3;
+            if self.pending.iter().any(|p| p.service == service)
+                || (self.datadog()
+                    && self.service_dispatch[service].is_some_and(|at| at.elapsed() < interval))
+            {
+                continue;
+            }
             let Some((_, state)) = evidence.iter().find(|(i, e)| {
                 *i == service && e.legal_actions.len() > 1 && simulation.now() >= self.next_due[*i]
             }) else {
@@ -304,14 +334,13 @@ impl Driver {
             let calls = self.calls.clone();
             let run = self.run.clone();
             let upstream = simulation.service_id(service).to_owned();
-            let floor = self
-                .active_since
-                .max(if state.phase == crate::policy::CircuitPhase::Closed {
-                    state.control_since_unix_ms
-                } else {
-                    0
-                })
-                .saturating_add(crate::datadog::TRANSITION_MARGIN_MS);
+            let floor =
+                self.active_since
+                    .max(if state.phase == crate::policy::CircuitPhase::Closed {
+                        crate::datadog::control_floor(state.control_since_unix_ms, state.revision)
+                    } else {
+                        0
+                    });
             // HTTP awaits outside the session lock. Simulation and fault controls continue.
             let cost = self.cost.clone();
             if source.is_none() {
@@ -365,7 +394,7 @@ impl Driver {
                     .instrument(span),
                 ),
             );
-            self.pending = Some(Pending {
+            self.pending.push(Pending {
                 id: self.attempts,
                 service,
                 evidence: state,
@@ -375,7 +404,10 @@ impl Driver {
             self.next_due[service] = simulation.now() + 3000.0;
             self.round_robin = (service + 1) % 3;
             self.last_dispatch = Some(Instant::now());
-            break;
+            self.service_dispatch[service] = self.last_dispatch;
+            if !self.datadog() {
+                break;
+            }
         }
         Ok(())
     }
@@ -463,6 +495,17 @@ mod datadog_driver_tests {
         let mut simulation = LiveSimulation::with_policy(42, PolicyKind::Jev).unwrap();
         simulation.advance_to(1000.).await.unwrap();
         driver.dispatch(&simulation).unwrap();
+        assert_eq!(driver.pending.len(), 3);
+        assert_eq!(
+            driver.pending.iter().map(|p| p.service).collect::<Vec<_>>(),
+            vec![0, 1, 2]
+        );
+        driver.dispatch(&simulation).unwrap();
+        assert_eq!(
+            driver.pending.len(),
+            3,
+            "in-flight services must not be dispatched twice"
+        );
         tokio::time::timeout(Duration::from_secs(2), arrived.notified())
             .await
             .unwrap();

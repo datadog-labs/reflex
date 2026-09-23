@@ -22,14 +22,12 @@ use tracing::Instrument;
 #[derive(Clone)]
 pub struct JevSettings {
     pub model: String,
-    pub max_evaluations: usize,
     pub dispatch_interval: Duration,
 }
 impl Default for JevSettings {
     fn default() -> Self {
         Self {
             model: "jev-1.13.0".into(),
-            max_evaluations: 180,
             dispatch_interval: Duration::from_secs(1),
         }
     }
@@ -39,8 +37,6 @@ pub struct InferenceStatus {
     pub available: bool,
     pub model: String,
     pub calls: usize,
-    pub limit: usize,
-    pub budget_exhausted: bool,
     pub pending: Option<PendingStatus>,
     pub cost: CostStatus,
     pub evidence_source: &'static str,
@@ -227,8 +223,6 @@ impl Driver {
             available: self.evaluator.is_some(),
             model: self.settings.model.clone(),
             calls: self.calls.load(Ordering::Relaxed),
-            limit: self.settings.max_evaluations,
-            budget_exhausted: self.calls.load(Ordering::Relaxed) >= self.settings.max_evaluations,
             pending: self.pending.as_ref().map(|p| PendingStatus {
                 service: p.service,
                 observed_at_ms: p.evidence.observed_at_ms,
@@ -270,10 +264,7 @@ impl Driver {
         })
     }
     pub fn dispatch(&mut self, simulation: &LiveSimulation) -> Result<(), Error> {
-        if self.pending.is_some()
-            || simulation.policy() != PolicyKind::Jev
-            || self.calls.load(Ordering::Relaxed) >= self.settings.max_evaluations
-        {
+        if self.pending.is_some() || simulation.policy() != PolicyKind::Jev {
             return Ok(());
         }
         let interval = if self.datadog() {

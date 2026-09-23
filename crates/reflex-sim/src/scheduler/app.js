@@ -20,17 +20,21 @@ function showError(message){$('error').hidden=!message;$('error').textContent=me
 function clients(force=false){
  if(selected.kind==='client'&&!state.clients.some(c=>c.id===selected.id))selected={kind:'client',id:state.clients[0].id};
  const ids=state.clients.map(c=>c.id).join(',')+':'+selected.id;
- if(ids!==clientIds||force){clientIds=ids;$('clients').innerHTML=state.clients.filter(c=>c.id===selected.id).map(c=>`<div class="client ${c.config.enabled?'':'disabled'}" data-client="${c.id}" style="--client:${color(c.id)}"><div class="client-head"><i class="client-dot"></i><strong>${esc(c.name)}</strong><button data-toggle="${c.id}" aria-label="${c.config.enabled?'Pause':'Resume'} ${esc(c.name)}">${c.config.enabled?'Pause':'Resume'}</button><button class="remove" data-remove="${c.id}" aria-label="Remove ${esc(c.name)}" title="Existing jobs keep running">×</button></div><label class="priority-control">Live priority<select aria-label="${esc(c.name)} priority" data-priority="${c.id}">${['normal','high','critical'].map(p=>`<option value="${p}" ${c.priority===p?'selected':''}>${priorityName(p)}</option>`).join('')}</select></label><p class="helper">Applies immediately to queued and future requests. Running jobs continue.</p><div class="client-stats" data-stats="${c.id}"></div><form data-form="${c.id}"><div class="client-grid"><label>Jobs / sec<input aria-label="${esc(c.name)} jobs per second" name="rate" type="number" min="0" step="any" value="${c.config.rate}" required></label><label>CPU / job<input aria-label="${esc(c.name)} CPU per job" name="cpu" type="number" min="1" max="32" step="1" value="${c.config.cpu}" required></label><label>GiB / job<input aria-label="${esc(c.name)} memory per job" name="memory_gib" type="number" min="1" max="64" step="1" value="${c.config.memory_gib}" required></label><label>Duration (s)<input aria-label="${esc(c.name)} duration in seconds" name="seconds" type="number" min="1" max="30" step="1" value="${c.config.duration_ms/1000}" required></label></div><div class="client-foot"><span class="client-summary">${c.config.enabled&&c.config.rate>0?'Sending '+num(c.config.rate,2)+' jobs/s':'Source paused'}</span><button type="submit">Apply changes</button></div></form></div>`).join('');}
+ if(ids!==clientIds||force){clientIds=ids;$('clients').innerHTML=state.clients.filter(c=>c.id===selected.id).map(c=>`<div class="client ${c.config.enabled?'':'disabled'}" data-client="${c.id}" style="--client:${color(c.id)}"><div class="client-head"><i class="client-dot"></i><strong>${esc(c.name)}</strong><button class="remove" data-remove="${c.id}" aria-label="Remove ${esc(c.name)}" title="Existing jobs keep running">×</button></div><label class="priority-control">Live priority<select aria-label="${esc(c.name)} priority" data-priority="${c.id}">${['normal','high','critical'].map(p=>`<option value="${p}" ${c.priority===p?'selected':''}>${priorityName(p)}</option>`).join('')}</select></label><p class="helper">Applies immediately to queued and future requests. Running jobs continue.</p><div class="client-stats" data-stats="${c.id}"></div><form data-form="${c.id}"><div class="client-grid"><label>Jobs / sec<input aria-label="${esc(c.name)} jobs per second" name="rate" type="number" min="0" step="1" value="${c.config.rate}" required></label><label>CPU / job<input aria-label="${esc(c.name)} CPU per job" name="cpu" type="number" min="1" max="32" step="1" value="${c.config.cpu}" required></label><label>GiB / job<input aria-label="${esc(c.name)} memory per job" name="memory_gib" type="number" min="1" max="64" step="1" value="${c.config.memory_gib}" required></label><label>Duration (s)<input aria-label="${esc(c.name)} duration in seconds" name="seconds" type="number" min="1" max="30" step="1" value="${c.config.duration_ms/1000}" required></label></div><div class="client-foot"><span class="client-summary">${c.config.enabled&&c.config.rate>0?'Sending '+num(c.config.rate)+' jobs/s':'Source paused'}</span><button type="submit">Apply changes</button></div></form></div>`).join('');}
  $('client-count').textContent=`${state.clients.length} / 8`;
  $('add-client').disabled=busy||!connected||state.clients.length>=8;
  document.querySelectorAll('.client button').forEach(b=>b.disabled=busy||!connected||(b.hasAttribute('data-remove')&&state.clients.length===1));
  document.querySelectorAll('[data-priority]').forEach(el=>{const c=state.clients.find(c=>c.id===Number(el.dataset.priority));el.value=c.priority;el.disabled=busy||!connected;});
  document.querySelectorAll('[data-stats]').forEach(el=>{const s=state.client_stats.find(s=>s.client===Number(el.dataset.stats));el.innerHTML=s?`<span><b>${s.queued}</b> queued</span><span><b>${s.completed}</b> completed · ${num(s.completed_per_second,2)}/s</span><span><b>${s.mean_wait_ms==null?'—':num(s.mean_wait_ms/1000,1)+'s'}</b> mean wait</span><span><b>${s.p95_wait_ms==null?'—':num(s.p95_wait_ms/1000,1)+'s'}</b> p95 wait</span><small>Waits: ${s.started} started jobs · oldest queued ${num(s.oldest_wait_ms/1000,1)}s · completion rate since run start</small>`:'';});
+ document.querySelectorAll('.client[data-client]').forEach(el=>{const c=state.clients.find(c=>c.id===Number(el.dataset.client));if(!c)return;el.classList.toggle('disabled',!c.config.enabled);el.querySelector('.client-summary').textContent=c.config.enabled&&c.config.rate>0?'Sending '+num(c.config.rate)+' jobs/s':'Source paused';});
  // Do not replace editable forms on polling; unsubmitted user input stays intact.
 }
 function render(){
+ $('connection').textContent=connected?'● Engine connected':'Engine disconnected';
+ $('connection').dataset.connected=String(connected);
+
  if(!state)return;
- renderForecast(state.forecast, "Placement pressure", state.policy, busy || !connected);
+
  $('scenario').value=state.scenario;$('scenario').disabled=busy||!connected;
  $('scenario-description').textContent=state.scenario_description;
  $('run-scenario').disabled=busy||!connected||state.scenario==='sandbox';
@@ -42,14 +46,14 @@ function render(){
  $('policy').value=state.policy;$('policy').disabled=busy||!connected||state.evidence_source==='datadog';$('policy').querySelector('[value="jev"]').disabled=!state.available;
  $('policy').title='Changing policy resets jobs and keeps client settings';
  document.querySelectorAll('[data-speed]').forEach(b=>{b.setAttribute('aria-pressed',Number(b.dataset.speed)===state.speed);b.disabled=busy||!connected||(state.evidence_source==='datadog'&&Number(b.dataset.speed)!==1);});
- $('status').textContent=state.paused&&state.pending_job?'Paused · pending judgment applies on resume':state.status;if(state.evidence_source==='datadog')$('status').textContent+=' · '+state.telemetry_status;$('calls').textContent=state.policy==='jev'?`${state.calls} / ${state.call_limit} evaluations`:'Deterministic policy · no inference';
+ $('status').textContent=state.paused&&state.pending_job?'Paused · pending judgment applies on resume':state.status;if(state.evidence_source==='datadog')$('status').textContent+=' · '+state.telemetry_status;$('calls').textContent=state.policy==='jev'?`${state.calls} evaluations`:'Deterministic policy · no inference';
  for(const key of ['completed','running','queued','rejected'])$(key).textContent=num(state[key]);
  $('wait').textContent=num(state.mean_wait_ms/1000,1)+'s';
  const c=state.cost,partial=c.missing_usage_calls+c.unpriced_calls;
  $('cost').textContent=c.priced_calls===0&&partial?'—':`$${num(c.estimated_usd,6)}${partial?'*':''}`;
  $('cost-details').textContent=`${num(c.calls)} evaluations · ${num(c.input_tokens)} input tokens · ${num(c.output_tokens)} output tokens. ${c.priced_calls} priced responses; ${c.missing_usage_calls} calls without usage; ${c.unpriced_calls} responses with an unknown rate. ${partial?'The displayed estimate is partial.':''}`;
  clients();renderTopology();renderQueue();renderNodes();renderInspector();renderDecisions();renderTrend();renderClientLag();
- $('connection').textContent=connected?'● ENGINE CONNECTED':'ENGINE DISCONNECTED';
+
 }
 function renderQueue(){
  const queue=state.jobs.filter(j=>j.phase==='queued');$('queue-count').textContent=`${state.queued} waiting`;
@@ -58,11 +62,8 @@ function renderQueue(){
  $('queue-more').textContent=queue.length>8?`+ ${queue.length-8} more jobs waiting`:'';
 }
 function renderNodes(){
- $('node-details').innerHTML=state.nodes.flatMap((n,i)=>selected.kind==='node'&&selected.id===i?[{n,i}]:[]).map(({n,i})=>{
-  const jobs=state.jobs.filter(j=>j.phase==='running'&&j.node===i);
-  const bars=field=>jobs.map(j=>`<span style="width:${100*j[field]/n[field]}%;--client:${color(j.client)}" title="Job #${j.id}: ${j[field]} ${field==='cpu'?'CPU':'GiB'}"></span>`).join('');
-  return `<div class="node"><div class="node-heading"><h3>${esc(n.name)}</h3><span>${jobs.length} running</span></div><div class="resource"><div class="resource-label"><span>CPU</span><strong>${n.used_cpu} / ${n.cpu}</strong></div><div class="bar" aria-label="${esc(n.name)} CPU: ${n.used_cpu} of ${n.cpu} reserved">${bars('cpu')}</div></div><div class="resource"><div class="resource-label"><span>Memory</span><strong>${n.used_memory_gib} / ${n.memory_gib} GiB</strong></div><div class="bar memory" aria-label="${esc(n.name)} memory: ${n.used_memory_gib} of ${n.memory_gib} GiB reserved">${bars('memory_gib')}</div></div><div class="running-jobs">${jobs.length?jobs.map(j=>`<div class="running-job" style="--client:${color(j.client)}" title="Client ${j.client+1} · ${j.cpu} CPU · ${j.memory_gib} GiB"><strong>#${j.id}</strong><small>${num((state.at_ms-j.started_at)/1000,1)}s / ~${num(j.duration_ms/1000)}s</small></div>`).join(''):'<span class="helper">Available for new work</span>'}</div></div>`;
- }).join('');
+ const jobs=selected.kind==='node'?state.jobs.filter(j=>j.phase==='running'&&j.node===selected.id):[];
+ $('node-details').innerHTML=jobs.length?`<div class="running-jobs">${jobs.map(j=>`<div class="running-job" style="--client:${color(j.client)}" title="Client ${j.client+1} · ${j.cpu} CPU · ${j.memory_gib} GiB"><strong>#${j.id}</strong><small>${num((state.at_ms-j.started_at)/1000,1)}s / ~${num(j.duration_ms/1000)}s</small></div>`).join('')}</div>`:'';
 }
 function serverArt(){return `<svg class="server-art" viewBox="0 0 150 120" aria-hidden="true"><ellipse cx="77" cy="103" rx="56" ry="10" fill="#42633b" opacity=".06"/><path class="platform" d="M6 83 L70 48 L144 87 L78 120 Z" fill="#dbe5cf"/><path d="M31 29 L72 6 L118 32 L75 57 Z" fill="#c6d7b1"/><path d="M31 29 L75 57 V99 L31 73 Z" fill="#94ad7d"/><path d="M75 57 L118 32 V75 L75 99 Z" fill="#708d60"/><path d="M40 48 L64 62 V69 L40 55 Z M40 64 L64 78 V85 L40 71 Z" fill="#e3edcf"/><path d="M85 63 L107 51 V58 L85 71 Z M85 78 L107 66 V72 L85 85 Z" fill="#b1c896"/><circle cx="105" cy="44" r="2" fill="#e5efa5"/></svg>`;}
 function clientArt(){return `<svg class="source-art" viewBox="0 0 120 90" aria-hidden="true"><path d="M6 58 L54 33 L112 64 L63 89 Z" fill="#dce5d3"/><path d="M24 20 L62 7 L96 27 L58 44 Z" fill="#cdddbd"/><path d="M24 20 L58 40 V67 L24 47 Z" fill="#91aa7d"/><path d="M58 40 L96 21 V49 L58 67 Z" fill="#718f62"/><path d="M31 29 L50 40 V51 L31 40 Z" fill="var(--client)"/><circle cx="82" cy="43" r="2" fill="#e8f2d6"/></svg>`;}
@@ -70,12 +71,11 @@ function renderTopology(){
  const ids=state.clients.map(c=>c.id).join(',');
  if(ids!==mapIds){mapIds=ids;
   $('map-clients').innerHTML=state.clients.map((c,i)=>`<button class="map-source" data-select-client="${c.id}" style="left:14%;top:${sourceY(i,state.clients.length)/6.6}%;--client:${color(c.id)}" aria-label="Configure ${esc(c.name)}">${clientArt()}<strong>${esc(c.name)}</strong><span class="source-rate"></span><span class="priority-badge source-priority"></span></button>`).join('');
-  $('client-picker').innerHTML=state.clients.map(c=>`<button data-select-client="${c.id}" style="--client:${color(c.id)}" aria-label="Select ${esc(c.name)}"><i></i>${c.id+1}</button>`).join('');
   $('flow-paths').innerHTML=[...state.clients.map((c,i)=>`M140 ${sourceY(i,state.clients.length)} C240 ${sourceY(i,state.clients.length)} 260 330 320 330`),'M320 330 H500',...nodeYs.map(y=>`M500 330 C635 330 655 ${y} 815 ${y}`)].map(d=>`<path d="${d}" class="track-shadow"/><path d="${d}" class="track"/><path d="${d}" class="track-center"/>`).join('');
  }
  $('topology').classList.toggle('many-clients',state.clients.length>5);
  if(!$('map-nodes').children.length)$('map-nodes').innerHTML=state.nodes.map((n,i)=>`<button class="map-node" data-select-node="${i}" style="left:81.5%;top:${nodeYs[i]/6.6}%" aria-label="Inspect ${esc(n.name)}"><span class="node-pile" aria-hidden="true"></span>${serverArt()}<strong>${esc(n.name)}</strong><span class="map-node-count"></span><span class="mini-resource"><span>CPU</span><i><b class="cpu-fill"></b></i><small class="cpu-text"></small></span><span class="mini-resource"><span>MEM</span><i><b class="mem-fill"></b></i><small class="mem-text"></small></span></button>`).join('');
- state.clients.forEach(c=>{const b=document.querySelector(`#map-clients [data-select-client="${c.id}"]`);b.querySelector('.source-rate').textContent=c.config.enabled&&c.config.rate>0?`${num(c.config.rate,2)} jobs/s · ${c.config.cpu} CPU`:'Paused';b.querySelector('.source-priority').textContent=priorityName(c.priority);b.querySelector('.source-priority').className='priority-badge source-priority '+c.priority;b.classList.toggle('source-paused',!c.config.enabled||!c.config.rate);});
+ state.clients.forEach(c=>{const b=document.querySelector(`#map-clients [data-select-client="${c.id}"]`);b.querySelector('.source-rate').textContent=c.config.enabled&&c.config.rate>0?`${num(c.config.rate)} jobs/s · ${c.config.cpu} CPU`:'Paused';b.querySelector('.source-priority').textContent=priorityName(c.priority);b.querySelector('.source-priority').className='priority-badge source-priority '+c.priority;b.classList.toggle('source-paused',!c.config.enabled||!c.config.rate);});
  document.querySelectorAll('[data-select-client]').forEach(b=>b.setAttribute('aria-pressed',selected.kind==='client'&&selected.id===Number(b.dataset.selectClient)));
  state.nodes.forEach((n,i)=>{const b=document.querySelector(`[data-select-node="${i}"]`),jobs=state.jobs.filter(j=>j.phase==='running'&&j.node===i);b.setAttribute('aria-pressed',selected.kind==='node'&&selected.id===i);b.querySelector('.map-node-count').textContent=`${jobs.length} running`;b.querySelector('.cpu-fill').style.width=`${n.used_cpu/n.cpu*100}%`;b.querySelector('.mem-fill').style.width=`${n.used_memory_gib/n.memory_gib*100}%`;b.querySelector('.cpu-text').textContent=`${n.used_cpu}/${n.cpu}`;b.querySelector('.mem-text').textContent=`${n.used_memory_gib}/${n.memory_gib}`;b.querySelector('.node-pile').innerHTML=jobs.slice(0,16).map(j=>`<i style="background:${color(j.client)}"></i>`).join('');});
  $('queue-stack').innerHTML=state.jobs.filter(j=>j.phase==='queued').slice(0,24).map(j=>`<i style="background:${color(j.client)}"></i>`).join('')||'<span class="empty-queue">···</span>';
@@ -138,24 +138,6 @@ function renderClientLag(){
  if(signature!==lagLegendSignature){lagLegendSignature=signature;$('lag-legend').innerHTML=ids.map(id=>`<button data-lag-client="${id}" aria-pressed="${!hiddenLagClients.has(id)}" style="--client:${color(id)}"><i></i>Client ${id+1} <span class="priority-badge ${state.client_priorities[id]||'normal'}">${priorityName(state.client_priorities[id])}</span></button>`).join('');}
  const changes=(state.priority_changes||[]).filter(e=>!hiddenLagClients.has(e.client)&&e.at_ms>=left);
  $('lag-events').textContent=changes.length?changes.map(e=>`${time(e.at_ms)} · Client ${e.client+1} → ${priorityName(e.priority)}`).join('  |  '):'Change a client’s live priority to mark it on this timeline.';
- function plot(target,key){
-  const values=samples.flatMap(p=>(p.clients||[]).filter(c=>!hiddenLagClients.has(c.client)).map(c=>c[key]).filter(v=>v!=null));
-  const max=Math.max(1,...values.map(v=>v/1000))*1.15;
-  const x=t=>52+550*(t-left)/(right-left),y=v=>205-175*v/max;
-  let svg='<text x="52" y="15">Seconds · lower is better</text>';
-  for(let i=0;i<=4;i++){const v=max*i/4;svg+=`<line x1="52" x2="602" y1="${y(v)}" y2="${y(v)}" stroke="#e2e9d8"/><text x="44" y="${y(v)+4}" text-anchor="end">${num(v,1)}</text>`;}
-  for(let i=0;i<=4;i++){const t=left+(right-left)*i/4;svg+=`<text x="${x(t)}" y="229" text-anchor="middle">${num(t/1000)}s</text>`;}
-  changes.forEach(e=>{svg+=`<line x1="${x(e.at_ms)}" x2="${x(e.at_ms)}" y1="25" y2="205" stroke="${color(e.client)}" stroke-dasharray="3 5" opacity=".6"><title>Client ${e.client+1} → ${priorityName(e.priority)} at ${time(e.at_ms)}</title></line>`;});
-  ids.filter(id=>!hiddenLagClients.has(id)).forEach(id=>{
-   let d='',pen=false,last=null;
-   samples.forEach(p=>{const c=(p.clients||[]).find(c=>c.client===id),v=c?.[key];if(v==null){pen=false;return;}d+=`${pen?'L':'M'}${x(p.at_ms)},${y(v/1000)} `;pen=true;last={t:p.at_ms,v};});
-   if(d)svg+=`<path d="${d}" fill="none" stroke="${color(id)}" stroke-width="2.7"><title>Client ${id+1}</title></path>`;
-   if(last)svg+=`<circle cx="${x(last.t)}" cy="${y(last.v/1000)}" r="3.5" fill="${color(id)}"><title>Client ${id+1}: ${num(last.v/1000,2)}s at ${num(last.t/1000,1)}s</title></circle>`;
-  });
-  if(!values.length)svg+=`<text x="327" y="105" text-anchor="middle">${key==='oldest_wait_ms'?'Select a client to see queue lag':'No starts in the last 10s'}</text>`;
-  $(target).innerHTML=svg;
- }
- plot('client-oldest-lag','oldest_wait_ms');plot('client-start-lag','recent_mean_start_lag_ms');
  $('lag-values').innerHTML=live.filter(c=>!hiddenLagClients.has(c.client)).map(c=>`<tr><td><i style="background:${color(c.client)}"></i>Client ${c.client+1}</td><td>${priorityName(c.priority)}</td><td>${c.queued}</td><td>${num(c.oldest_wait_ms/1000,1)}s</td><td>${c.recent_mean_start_lag_ms==null?'—':num(c.recent_mean_start_lag_ms/1000,1)+'s'}</td><td>${c.recent_starts}</td></tr>`).join('');
 }
 function ingest(next){const sig=JSON.stringify(next);if(sig===signature&&connected)return;signature=sig;collectParticles(next);state=next;connected=true;showError(next.error);render();}
@@ -168,22 +150,21 @@ $('play').addEventListener('click',()=>send({type:state.paused?'play':'pause'}))
 document.querySelectorAll('[data-speed]').forEach(b=>b.addEventListener('click',()=>send({type:'speed',value:Number(b.dataset.speed)})));
 $('add-client').addEventListener('click',()=>send({type:'add_client'},true));
 $('clients').addEventListener('submit',e=>{e.preventDefault();const f=e.target,id=Number(f.dataset.form),c=state.clients.find(c=>c.id===id);const data=new FormData(f);send({type:'client',id,config:{rate:Number(data.get('rate')),cpu:Number(data.get('cpu')),memory_gib:Number(data.get('memory_gib')),duration_ms:Number(data.get('seconds'))*1000,enabled:c.config.enabled}},true);});
-$('clients').addEventListener('click',e=>{const remove=e.target.closest('[data-remove]'),toggle=e.target.closest('[data-toggle]');if(remove)send({type:'remove_client',id:Number(remove.dataset.remove)},true);if(toggle){const id=Number(toggle.dataset.toggle),c=state.clients.find(c=>c.id===id);send({type:'client',id,config:{...c.config,enabled:!c.config.enabled}},true);}});
+$('clients').addEventListener('click',e=>{const remove=e.target.closest('[data-remove]');if(remove)send({type:'remove_client',id:Number(remove.dataset.remove)},true);});
 $('inspect-latest').addEventListener('click',()=>inspect(state.decisions[0]));$('decisions').addEventListener('click',e=>{const b=e.target.closest('[data-inspect]');if(b)inspect(state.decisions.find(d=>`${d.job}:${d.at_ms}`===b.dataset.inspect));});
-$('about').addEventListener('click',()=>$('about-dialog').showModal());$('cost-info').addEventListener('click',()=>$('cost-dialog').showModal());document.querySelectorAll('.close').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
+$('cost-info').addEventListener('click',()=>$('cost-dialog').showModal());document.querySelectorAll('.close').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
 document.querySelectorAll('a[href="/"],a[href="/recovery"]').forEach(a=>a.addEventListener('click',async e=>{e.preventDefault();if(await send({type:'pause'}))location.href=a.getAttribute('href');}));
-document.querySelectorAll('#map-clients,#client-picker').forEach(el=>el.addEventListener('click',e=>{const b=e.target.closest('[data-select-client]');if(b){selected={kind:'client',id:Number(b.dataset.selectClient)};clients(true);render();}}));
+document.querySelectorAll('#map-clients').forEach(el=>el.addEventListener('click',e=>{const b=e.target.closest('[data-select-client]');if(b){selected={kind:'client',id:Number(b.dataset.selectClient)};clients(true);render();}}));
 $('map-nodes').addEventListener('click',e=>{const b=e.target.closest('[data-select-node]');if(b){selected={kind:'node',id:Number(b.dataset.selectNode)};render();}});
 $('queue-hub').addEventListener('click',()=>{selected={kind:'queue',id:0};render();});
 const renderLegacyScenario=render;
-render=function(){renderLegacyScenario();if(state)window.renderScenarioUI?.({state,busy,connected:connected,selected:selected,send,onSelect:selection=>{selected=selection;clients(true); render();}});};
+render=function(){renderLegacyScenario();if(state)window.renderScenarioUI?.({state,busy,connected:connected,selected:selected,send,hiddenLagClients:[...hiddenLagClients],onSelect:selection=>{selected=selection;clients(true); render();}});};
 poll();requestAnimationFrame(animate);
 
-$('forecast-panel').addEventListener('change', e => { if(e.target.id === 'forecast-toggle') send({type:'forecast',enabled:e.target.checked}); });
 
 $('scenario').addEventListener('change',e=>send({type:'scenario',scenario:e.target.value}));
 $('run-scenario').addEventListener('click',async()=>{const scenario=state.scenario;if(await send({type:'scenario',scenario}))await send({type:'play'});});
 
 $('clients').addEventListener('change', e=>{if(e.target.matches('[data-priority]'))send({type:'priority',id:Number(e.target.dataset.priority),priority:e.target.value});});
 
-$('lag-legend').addEventListener('click',e=>{const b=e.target.closest('[data-lag-client]');if(!b)return;const id=Number(b.dataset.lagClient);hiddenLagClients.has(id)?hiddenLagClients.delete(id):hiddenLagClients.add(id);renderClientLag();});
+$('lag-legend').addEventListener('click',e=>{const b=e.target.closest('[data-lag-client]');if(!b)return;const id=Number(b.dataset.lagClient);hiddenLagClients.has(id)?hiddenLagClients.delete(id):hiddenLagClients.add(id);render();});

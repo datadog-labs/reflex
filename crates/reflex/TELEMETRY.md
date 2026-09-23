@@ -65,7 +65,7 @@ sum:reflex.transitions{service:reflex,env:local} by {status}.as_count()
 With `DD_API_KEY`, `TYPESAFE_API_KEY`, `DD_SERVICE=reflex`, and `DD_ENV=local` in the process environment:
 
 ```sh
-cargo run -p reflex-sim --example datadog_playground -- --port 8743 --duration-secs 120 --max-evaluations 60
+cargo run -p reflex-sim --example datadog_playground -- --port 8743 --duration-secs 120
 ```
 
 Open `http://127.0.0.1:8743/`, press Play, inject faults, then repair the services. The runner starts paused, uses the live Jev policy, and exports the SDK's metrics, traces, and logs directly through the shared Datadog exporter. It installs providers before constructing any clients or state machines. The call limit applies per incident; resetting starts a new incident. The wall-clock limit stops the server and flushes telemetry. Allow that timer to finish for a confirmed final flush.

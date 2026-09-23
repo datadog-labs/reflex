@@ -67,7 +67,7 @@ Set `DD_API_KEY` and `TYPESAFE_API_KEY` in the process environment. Optional set
 
 ```sh
 cargo run -p reflex-sim --example datadog_playground -- \
-  --port 8743 --duration-secs 120 --max-evaluations 60
+  --port 8743 --duration-secs 120
 ```
 
 Open `http://127.0.0.1:8743/recovery`, select a scenario, then press Play. Tabs start paused; only run the simulations you want to inspect. Each has its own inference-call budget. The runner flushes metrics, traces and logs on timed shutdown.

@@ -735,7 +735,6 @@ pub(crate) mod tests {
         let inputs = Arc::new(Mutex::new(vec![]));
         let settings = crate::playground::inference::JevSettings {
             dispatch_interval: Duration::ZERO,
-            max_evaluations: 1000,
             ..Default::default()
         };
         let mut scheduler = crate::scheduler::Session::new(

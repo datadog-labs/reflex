@@ -105,10 +105,10 @@ async fn scheduling_presets_are_repeatable_and_restore_original_client_profiles_
                 .iter()
                 .any(|j| j.client == 2 && j.memory_gib == 24));
         } else {
-            assert!(a.view().clients.iter().all(|c| c.config.rate == 0.1));
+            assert!(a.view().clients.iter().all(|c| c.config.rate == 1.));
         }
         a.command(scheduler::Command::Reset).await.unwrap();
-        assert!(a.view().clients.iter().all(|c| c.config.rate == 0.15));
+        assert!(a.view().clients.iter().all(|c| c.config.rate == 2.));
         assert_eq!(a.view().scenario, scenario);
     }
 }

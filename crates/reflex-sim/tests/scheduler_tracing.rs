@@ -67,7 +67,10 @@ fn jev_trace_and_placement_outcomes_survive_background_handoff() {
             let server = tokio::spawn(async move { axum::serve(listener, app).await.unwrap(); });
             let client = typesafe_ai::TypeSafeClient::builder().api_key("test-key").endpoint(endpoint).max_retries(0).build().unwrap();
             let judge = Arc::new(reflex_sim::scheduler::judge::LiveEvaluator::new(client, "jev-test".into()));
-            let mut s = Session::with_meter(42, Some(judge), JevSettings { max_evaluations: 1, dispatch_interval: Duration::ZERO, ..Default::default() }, capture.provider.meter("scheduler")).unwrap();
+            let mut s = Session::with_meter(42, Some(judge), JevSettings { dispatch_interval: Duration::from_secs(60), ..Default::default() }, capture.provider.meter("scheduler")).unwrap();
+            // Keep the mock's node-only response valid by offering one client head.
+            set(&mut s, 1, config(0.0, 1, 1000)).await;
+            set(&mut s, 2, config(0.0, 1, 1000)).await;
             set(&mut s, 0, config(1.0, cpu, 1000)).await;
             steps(&mut s, 1).await;
             tokio::time::timeout(Duration::from_secs(3), async {

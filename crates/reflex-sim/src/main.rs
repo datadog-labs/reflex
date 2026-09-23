@@ -21,15 +21,12 @@ struct Args {
     /// Launch the interactive incident playground instead of generating a report.
     #[arg(long, conflicts_with_all = ["scenario", "scenario_file", "algorithms", "output", "list_scenarios"])]
     playground: bool,
-    /// Initial playground policy. Switching policy starts a fresh incident.
-    #[arg(long, value_enum, default_value_t = reflex_sim::jev::PolicyKind::Threshold, requires = "playground")]
-    policy: reflex_sim::jev::PolicyKind,
+    /// Circuit-breaker playground policy (Jev + Reflex only).
+    #[arg(long, default_value = "jev", value_parser = ["jev"], requires = "playground")]
+    policy: String,
     /// TypeSafe model used by the Jev policy.
     #[arg(long, default_value = "jev-1.13.0", requires = "playground")]
     jev_model: String,
-    /// Maximum live evaluations per incident (replay makes no API calls).
-    #[arg(long, default_value_t = 180, value_parser = clap::value_parser!(u16).range(1..=1000), requires = "playground")]
-    jev_max_evaluations: u16,
     /// Loopback port for the playground (0 chooses an available port).
     #[arg(long, default_value_t = 8742, requires = "playground")]
     port: u16,
@@ -66,7 +63,6 @@ async fn run(args: Args) -> Result<(), Error> {
     if args.playground {
         let settings = reflex_sim::playground::inference::JevSettings {
             model: args.jev_model.clone(),
-            max_evaluations: args.jev_max_evaluations as usize,
             ..Default::default()
         };
         let mut recovery_evaluator: Option<
@@ -110,7 +106,7 @@ async fn run(args: Args) -> Result<(), Error> {
             args.seed,
             args.port,
             !args.no_open,
-            args.policy,
+            reflex_sim::jev::PolicyKind::Jev,
             evaluator,
             settings,
             scheduler_evaluator,

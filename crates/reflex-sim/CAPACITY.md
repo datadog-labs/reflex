@@ -46,7 +46,7 @@ Before committing a proposal, Reflex rechecks evidence age (10 seconds), capacit
 
 ## Async behavior and fallback
 
-Toto dispatches no faster than every ten simulated seconds and every five wall-clock seconds, with one request in flight, an eight-second deadline, and a 60-call run limit. Jev dispatches no faster than every ten simulated seconds and every wall-clock second, with one request in flight and a two-second deadline. `--jev-max-evaluations` bounds its calls per run.
+Toto dispatches no faster than every ten simulated seconds and every five wall-clock seconds, with one request in flight, an eight-second deadline, and a 60-call run limit. Jev dispatches no faster than every ten simulated seconds and every wall-clock second, with one request in flight and a two-second deadline. Jev evaluations continue until the simulation ends, without an evaluation-count cap.
 
 Traffic continues while inference runs. At high playback speeds, a response can already be stale when received. Missing/stale forecasts, missing Jev credentials, exhausted Jev budgets and evaluation failures produce labeled reactive fallback. Invalid forecasts never replace the last valid forecast. Guard rejection keeps actual capacity unchanged and appears in the journal.
 

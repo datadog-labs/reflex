@@ -88,7 +88,6 @@ pub struct View {
     pub pending: bool,
     pub response_ready: bool,
     pub calls: usize,
-    pub call_limit: usize,
     pub cost: CostStatus,
     pub evidence: Evidence,
     pub decisions: Vec<Decision>,
@@ -271,8 +270,6 @@ impl Session {
             "Paused · edit clients or inject a failure, then resume"
         } else if self.pending.is_some() {
             "Evaluating observed health · reads and recovery continue"
-        } else if self.policy == Policy::Jev && self.calls >= self.settings.max_evaluations {
-            "Evaluation budget exhausted · current plan continues"
         } else if d.intervention {
             "Operator intervention requested · inspect the decision journal"
         } else {
@@ -290,7 +287,6 @@ impl Session {
             pending: self.pending.is_some(),
             response_ready: self.pending.as_ref().is_some_and(|p| p.task.is_finished()),
             calls: self.calls,
-            call_limit: self.settings.max_evaluations,
             cost: self.cost.lock().unwrap().clone(),
             evidence: e,
             decisions: self.decisions.iter().rev().take(30).cloned().collect(),
@@ -678,7 +674,6 @@ impl Session {
             .await?;
         }
         if self.pending.is_some()
-            || self.calls >= self.settings.max_evaluations
             || self.data().at_ms >= self.horizon()
             || self
                 .last_dispatch

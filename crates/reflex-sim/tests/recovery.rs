@@ -323,7 +323,6 @@ impl Evaluator for Fake {
 #[tokio::test]
 async fn inference_is_nonblocking_paused_results_wait_and_reset_keeps_cost() {
     let settings = JevSettings {
-        max_evaluations: 1,
         dispatch_interval: Duration::ZERO,
         ..Default::default()
     };
@@ -340,7 +339,7 @@ async fn inference_is_nonblocking_paused_results_wait_and_reset_keeps_cost() {
     assert_eq!(s.view().cost.priced_calls, 1);
     s.command(Command::Step).await.unwrap();
     assert!(s.data().retries_enabled);
-    assert_eq!(s.view().calls, 1);
+    assert_eq!(s.view().calls, 2);
     let cost = s.view().cost.estimated_usd;
     s.command(Command::Reset).await.unwrap();
     assert_eq!(s.view().cost.estimated_usd, cost);
@@ -443,7 +442,6 @@ async fn evaluation_failure_retains_the_plan_and_is_visible() {
         1,
         Some(Arc::new(FailedEvaluator)),
         JevSettings {
-            max_evaluations: 1,
             ..Default::default()
         },
     )
@@ -458,4 +456,35 @@ async fn evaluation_failure_retains_the_plan_and_is_visible() {
     assert!(!v.data.essential_only);
     assert!(!v.data.retries_enabled);
     assert!(v.data.recovery.is_none());
+}
+
+
+#[tokio::test]
+async fn evaluations_continue_past_180_calls_but_stop_at_simulation_timeout() {
+    let mut s = Session::new(
+        42,
+        Some(Arc::new(FailedEvaluator)),
+        JevSettings {
+            dispatch_interval: Duration::ZERO,
+            ..Default::default()
+        },
+    ).unwrap();
+    s.command(Command::Play).await.unwrap();
+    for _ in 0..400 {
+        s.tick(50).await.unwrap();
+        tokio::task::yield_now().await;
+    }
+    assert!(s.view().calls > 180);
+    s.command(Command::Pause).await.unwrap();
+    let calls = s.view().calls;
+    s.tick(1000).await.unwrap();
+    assert_eq!(s.view().calls, calls);
+    s.command(Command::Play).await.unwrap();
+    let horizon = s.view().horizon_ms;
+    s.tick(horizon).await.unwrap();
+    assert_eq!(s.data().at_ms, horizon);
+    assert!(s.view().paused);
+    assert_eq!(s.view().calls, calls);
+    s.command(Command::Step).await.unwrap();
+    assert_eq!(s.view().calls, calls);
 }

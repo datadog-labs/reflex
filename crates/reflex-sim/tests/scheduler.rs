@@ -192,6 +192,10 @@ fn config(rate: f64, cpu: u32) -> ClientConfig {
 #[tokio::test]
 async fn client_controls_only_affect_future_jobs_and_removal_keeps_existing_work() {
     let mut s = Session::new(42, None, JevSettings::default()).unwrap();
+    // Isolate this client's arrivals from the playground defaults.
+    for id in 1..3 {
+        s.command(Command::Client { id, config: config(0., 1) }).await.unwrap();
+    }
     s.command(Command::Client {
         id: 0,
         config: config(2., 1),
@@ -250,6 +254,12 @@ async fn baseline_runs_are_seeded_step_size_independent_and_conserve_resources()
 #[tokio::test]
 async fn controls_validate_bounds_and_support_eight_independent_clients() {
     let mut s = Session::new(1, None, JevSettings::default()).unwrap();
+    let original = s.view().clients[0].config.rate;
+    for rate in [0.3, 1.5] {
+        assert!(s.command(Command::Client { id: 0, config: config(rate, 1) }).await.is_err());
+        assert_eq!(s.view().clients[0].config.rate, original);
+    }
+    assert!(s.view().clients.iter().all(|c| c.config.rate.fract() == 0.));
     assert!(s
         .command(Command::Client {
             id: 0,
@@ -311,6 +321,10 @@ async fn slow_jev_does_not_block_arrivals_and_reset_cancels_pending_placement() 
         delay: Duration::from_secs(20),
     });
     let mut s = Session::new(42, Some(mock.clone()), JevSettings::default()).unwrap();
+    // Only this client produces the six arrivals while inference is pending.
+    for id in 1..3 {
+        s.command(Command::Client { id, config: config(0., 1) }).await.unwrap();
+    }
     s.command(Command::Client {
         id: 0,
         config: config(2., 1),
@@ -333,13 +347,12 @@ async fn slow_jev_does_not_block_arrivals_and_reset_cancels_pending_placement() 
     assert!(s.data().jobs.is_empty());
 }
 #[tokio::test]
-async fn jev_scores_cost_budget_and_pause_semantics_are_preserved() {
+async fn jev_scores_cost_and_pause_semantics_are_preserved() {
     let mock = Arc::new(Mock {
         calls: AtomicUsize::new(0),
         delay: Duration::from_millis(1),
     });
     let settings = JevSettings {
-        max_evaluations: 1,
         dispatch_interval: Duration::ZERO,
         ..JevSettings::default()
     };
@@ -362,11 +375,13 @@ async fn jev_scores_cost_budget_and_pause_semantics_are_preserved() {
     );
     for _ in 0..5 {
         s.command(Command::Step).await.unwrap();
+        tokio::time::sleep(Duration::from_millis(15)).await;
     }
-    assert_eq!(mock.calls.load(Ordering::SeqCst), 1);
+    assert!(mock.calls.load(Ordering::SeqCst) > 1);
+    let priced_calls = s.view().cost.priced_calls;
     s.command(Command::Reset).await.unwrap();
     assert_eq!(s.view().calls, 0);
-    assert_eq!(s.view().cost.priced_calls, 1);
+    assert_eq!(s.view().cost.priced_calls, priced_calls);
 }
 
 #[tokio::test]
@@ -583,7 +598,6 @@ async fn jev_can_select_another_client_and_records_selected_request() {
         42,
         Some(Arc::new(PickOther)),
         JevSettings {
-            max_evaluations: 1,
             ..Default::default()
         },
     )
@@ -614,16 +628,15 @@ async fn jev_can_select_another_client_and_records_selected_request() {
 }
 
 #[tokio::test]
-async fn sole_aged_placement_uses_guards_without_calling_jev() {
+async fn sole_aged_placement_uses_guards_without_another_jev_call() {
     let mock = Arc::new(Mock {
         calls: AtomicUsize::new(0),
-        delay: Duration::ZERO,
+        delay: Duration::from_secs(20),
     });
     let mut s = Session::new(
         42,
         Some(mock.clone()),
         JevSettings {
-            max_evaluations: 0,
             ..Default::default()
         },
     )
@@ -639,8 +652,13 @@ async fn sole_aged_placement_uses_guards_without_calling_jev() {
     for _ in 0..31 {
         s.command(Command::Step).await.unwrap();
     }
-    assert_eq!(mock.calls.load(Ordering::SeqCst), 0);
-    assert_eq!(s.view().calls, 0);
+    assert_eq!(s.view().calls, 1);
+    s.command(Command::Priority {
+        id: 0,
+        priority: reflex_sim::scheduler::Priority::Critical,
+    }).await.unwrap();
+    s.command(Command::Step).await.unwrap();
+    assert_eq!(s.view().calls, 1);
     assert_eq!(s.data().jobs[0].phase, JobPhase::Running);
     assert_eq!(s.data().jobs[0].node, Some(3));
     assert_eq!(s.view().decisions[0].status, "placed");
@@ -742,4 +760,137 @@ async fn lag_history_and_priority_timeline_preserve_prior_values_and_reset() {
     s.command(Command::Reset).await.unwrap();
     assert!(s.view().history.is_empty());
     assert!(s.view().priority_changes.is_empty());
+}
+
+#[tokio::test]
+async fn resource_history_preserves_reservations_after_jobs_finish_and_clears_on_reset() {
+    let mut s = Session::new(42, None, JevSettings::default()).unwrap();
+    for id in 0..3 {
+        s.command(Command::Client {
+            id,
+            config: ClientConfig {
+                rate: if id == 0 { 1. } else { 0. },
+                cpu: 1,
+                memory_gib: 2,
+                duration_ms: 1000,
+                enabled: true,
+            },
+        })
+        .await
+        .unwrap();
+    }
+    s.command(Command::Step).await.unwrap();
+    let first = s.view().history[0].nodes.clone();
+    assert_eq!(first.iter().map(|n| n.used_cpu).sum::<u32>(), 1);
+    assert_eq!(first.iter().map(|n| n.used_memory_gib).sum::<u32>(), 2);
+    s.command(Command::Client {
+        id: 0,
+        config: config(0., 1),
+    })
+    .await
+    .unwrap();
+    for _ in 0..3 {
+        s.command(Command::Step).await.unwrap();
+    }
+    let view = s.view();
+    assert!(view
+        .nodes
+        .iter()
+        .all(|n| n.used_cpu == 0 && n.used_memory_gib == 0));
+    assert_eq!(
+        serde_json::to_value(&view.history[0].nodes).unwrap(),
+        serde_json::to_value(&first).unwrap()
+    );
+    assert!(view
+        .history
+        .last()
+        .unwrap()
+        .nodes
+        .iter()
+        .all(|n| n.used_cpu == 0 && n.used_memory_gib == 0));
+    assert!(view
+        .history
+        .iter()
+        .flat_map(|p| &p.nodes)
+        .all(|n| n.used_cpu <= n.cpu && n.used_memory_gib <= n.memory_gib));
+    s.command(Command::Reset).await.unwrap();
+    assert!(s.view().history.is_empty());
+}
+
+
+struct DeferAll;
+impl Evaluator for DeferAll {
+    fn evaluate(&self, _: Evidence) -> Evaluation<'_> {
+        Box::pin(async {
+            let mut result = Inference::failed("");
+            result.error = None;
+            result.choice = Some(Choice::Defer);
+            result
+        })
+    }
+}
+#[tokio::test]
+async fn evaluations_continue_past_180_calls_but_stop_at_simulation_timeout() {
+    let mut s = Session::new(
+        42,
+        Some(Arc::new(DeferAll)),
+        JevSettings {
+            dispatch_interval: Duration::ZERO,
+            ..Default::default()
+        },
+    ).unwrap();
+    s.command(Command::Client { id: 0, config: config(1., 1) }).await.unwrap();
+    s.command(Command::Play).await.unwrap();
+    for _ in 0..400 {
+        s.tick(50).await.unwrap();
+        tokio::task::yield_now().await;
+    }
+    assert!(s.view().calls > 180);
+    s.command(Command::Pause).await.unwrap();
+    let calls = s.view().calls;
+    s.tick(1000).await.unwrap();
+    assert_eq!(s.view().calls, calls);
+    s.command(Command::Play).await.unwrap();
+    let horizon = s.view().horizon_ms;
+    s.tick(horizon).await.unwrap();
+    assert_eq!(s.data().at_ms, horizon);
+    assert!(s.view().paused);
+    assert_eq!(s.view().calls, calls);
+    s.command(Command::Step).await.unwrap();
+    assert_eq!(s.view().calls, calls);
+}
+
+#[tokio::test]
+async fn live_defaults_have_capacity_headroom_until_the_user_increases_load() {
+    for policy in [Policy::FirstFit, Policy::BestFit] {
+        let mut s = Session::new(42, None, JevSettings::default()).unwrap();
+        s.command(Command::Policy { policy }).await.unwrap();
+        s.command(Command::Play).await.unwrap();
+        let mut peak_cpu = 0;
+        for _ in 0..120 {
+            s.tick(1000).await.unwrap();
+            let d = s.data();
+            peak_cpu = peak_cpu.max(d.nodes.iter().map(|n| n.used_cpu).sum::<u32>());
+            assert!(d.jobs.iter().all(|j| j.phase != JobPhase::Rejected));
+            assert_eq!(
+                s.view().queued,
+                0,
+                "default arrivals should drain without a backlog"
+            );
+        }
+        assert!(
+            peak_cpu > 0 && peak_cpu <= 18,
+            "default work should leave at least half the pool free"
+        );
+        let mut config = s.view().clients[2].config.clone();
+        config.rate = 12.;
+        s.command(Command::Client { id: 2, config }).await.unwrap();
+        for _ in 0..10 {
+            s.tick(1000).await.unwrap();
+        }
+        assert!(
+            s.view().queued > 0,
+            "raising traffic should create visible contention"
+        );
+    }
 }

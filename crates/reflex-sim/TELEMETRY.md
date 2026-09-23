@@ -58,7 +58,7 @@ The runtime carries both span and subscriber context through the pending-result 
 Set `DD_API_KEY`, `TYPESAFE_API_KEY`, `DD_SITE` (default `datadoghq.com`), `DD_SERVICE=reflex`, and `DD_ENV=local` in the process environment, then run:
 
 ```sh
-cargo run -p reflex-sim --locked --example datadog_playground -- --port 8743 --duration-secs 120 --max-evaluations 60
+cargo run -p reflex-sim --locked --example datadog_playground -- --port 8743 --duration-secs 120
 ```
 
 Open `http://127.0.0.1:8743/`, press Play, inject faults, and repair the services. The server starts paused and stops after the wall-clock limit, then flushes metrics, traces, and logs. The Jev limit applies per incident. The runner does not load an env file automatically.
@@ -83,7 +83,7 @@ Start the instrumented runner with `--datadog-evidence` to query Datadog instead
 ```sh
 # Supply DD_API_KEY, DD_APP_KEY, TYPESAFE_API_KEY, DD_SITE and DD_ENV in the environment.
 cargo run -p reflex-sim --locked --example datadog_playground -- \
-  --datadog-evidence --port 8743 --duration-secs 600 --max-evaluations 60
+  --datadog-evidence --port 8743 --duration-secs 600
 ```
 
 `DD_APP_KEY` must permit `timeseries_query`. Credentials stay on the server; they never enter the browser, evidence, logs or recordings. The runner reads the process environment, not an env file automatically. The flag enables Datadog evidence for circuit breaking, [resource scheduling](SCHEDULER_TELEMETRY.md), and [retry/recovery](RECOVERY_TELEMETRY.md). Without the flag, circuit breaking continues to use local evidence.

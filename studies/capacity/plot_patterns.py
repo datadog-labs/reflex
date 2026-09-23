@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# Unless explicitly stated otherwise all files in this repository are licensed under the Apache-2.0 License.
+# This product includes software developed at Datadog (https://www.datadoghq.com/).
+# Copyright 2026-present Datadog, Inc.
+
 """Plot the configured workload shapes; these are rates, not sampled arrivals."""
 from pathlib import Path
 import numpy as np

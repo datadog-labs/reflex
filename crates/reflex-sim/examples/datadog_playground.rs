@@ -1,3 +1,7 @@
+// Unless explicitly stated otherwise all files in this repository are licensed under the Apache-2.0 License.
+// This product includes software developed at Datadog (https://www.datadoghq.com/).
+// Copyright 2026-present Datadog, Inc.
+
 //! Time-bounded circuit-breaker, scheduler and recovery playgrounds with direct Datadog export.
 //! Requires DD_API_KEY and TYPESAFE_API_KEY; accepts DD_SITE, DD_SERVICE, DD_ENV.
 // Share the application exporter used by the standalone client example and its wire tests.

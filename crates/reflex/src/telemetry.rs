@@ -1,3 +1,7 @@
+// Unless explicitly stated otherwise all files in this repository are licensed under the Apache-2.0 License.
+// This product includes software developed at Datadog (https://www.datadoghq.com/).
+// Copyright 2026-present Datadog, Inc.
+
 //! Two outcome counters and trace/log details. Payloads and free-form messages stay private.
 use crate::{
     EvaluationError, ExecutionOutcome, ExecutorError, ProposedDecision, TransitionReceipt,

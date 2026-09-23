@@ -1,5 +1,5 @@
 error: an effect requires a payload-producing update
- --> tests/ui/missing_payload.rs:7:51
-  |
-7 |         transitions: [Phase::Idle + action(()) => Phase::Idle { effect: |()| async {} }],
-  |                                                   ^^^^^^^^^^^
+  --> tests/ui/missing_payload.rs:11:51
+   |
+11 |         transitions: [Phase::Idle + action(()) => Phase::Idle { effect: |()| async {} }],
+   |                                                   ^^^^^^^^^^^

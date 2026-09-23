@@ -1,3 +1,7 @@
+// Unless explicitly stated otherwise all files in this repository are licensed under the Apache-2.0 License.
+// This product includes software developed at Datadog (https://www.datadoghq.com/).
+// Copyright 2026-present Datadog, Inc.
+
 'use strict';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),num=(n,d=0)=>Number(n||0).toFixed(d),time=ms=>`${String(Math.floor(ms/60000)).padStart(2,'0')}:${String(Math.floor(ms/1000)%60).padStart(2,'0')}`,colors=['#7293ae','#b8995c','#a47a9d','#6e9c7b','#b47660','#7388aa','#a1a254','#91a3a0'],color=id=>colors[id%8];
 let state=null,lane=2,selected={kind:'client',id:0},busy=false,polling=false,revision=0,controlKey='',decisionRows=[],particles=[],lastFrame=0,lastTime=-1,seenJobs=new Set();

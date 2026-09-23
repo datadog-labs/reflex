@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# Unless explicitly stated otherwise all files in this repository are licensed under the Apache-2.0 License.
+# This product includes software developed at Datadog (https://www.datadoghq.com/).
+# Copyright 2026-present Datadog, Inc.
+
 """Run tuning and paired studies. Credentials remain only in child environments."""
 import argparse, concurrent.futures, json, os, pathlib, subprocess, sys, time
 ROOT = pathlib.Path(__file__).resolve().parents[2]

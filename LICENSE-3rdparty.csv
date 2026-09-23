@@ -169,8 +169,11 @@ cargo:opentelemetry-appender-tracing@0.32.0,https://crates.io/crates/opentelemet
 cargo:opentelemetry-http@0.32.0,https://crates.io/crates/opentelemetry-http/0.32.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:opentelemetry-otlp@0.32.0,https://crates.io/crates/opentelemetry-otlp/0.32.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:opentelemetry-proto@0.32.0,https://crates.io/crates/opentelemetry-proto/0.32.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry-proto@0.33.0,https://crates.io/crates/opentelemetry-proto/0.33.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:opentelemetry@0.32.0,https://crates.io/crates/opentelemetry/0.32.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry@0.33.0,https://crates.io/crates/opentelemetry/0.33.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:opentelemetry_sdk@0.32.1,https://crates.io/crates/opentelemetry_sdk/0.32.1,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
+cargo:opentelemetry_sdk@0.33.0,https://crates.io/crates/opentelemetry_sdk/0.33.0,Apache-2.0,NOASSERTION — no copyright notice identified in supplied files
 cargo:percent-encoding@2.3.2,https://crates.io/crates/percent-encoding/2.3.2,MIT OR Apache-2.0,Copyright (c) 2013-2025 The rust-url developers
 cargo:pin-project-lite@0.2.17,https://crates.io/crates/pin-project-lite/0.2.17,Apache-2.0 OR MIT,NOASSERTION — no copyright notice identified in supplied files
 cargo:pkg-config@0.3.34,https://crates.io/crates/pkg-config/0.3.34,MIT OR Apache-2.0,Copyright (c) 2014 Alex Crichton
@@ -312,32 +315,32 @@ npm:@dnd-kit/core@6.0.6,https://www.npmjs.com/package/@dnd-kit/core/v/6.0.6,MIT,
 npm:@dnd-kit/modifiers@6.0.1,https://www.npmjs.com/package/@dnd-kit/modifiers/v/6.0.1,MIT,Claudéric Demers (https://github.com/clauderic/dnd-kit)
 npm:@dnd-kit/sortable@7.0.1,https://www.npmjs.com/package/@dnd-kit/sortable/v/7.0.1,MIT,Claudéric Demers (https://github.com/clauderic/dnd-kit)
 npm:@dnd-kit/utilities@3.2.1,https://www.npmjs.com/package/@dnd-kit/utilities/v/3.2.1,MIT,Claudéric Demers (https://github.com/clauderic/dnd-kit)
-npm:@esbuild/aix-ppc64@0.25.12,https://registry.npmjs.org/@esbuild/aix-ppc64/-/aix-ppc64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/android-arm64@0.25.12,https://registry.npmjs.org/@esbuild/android-arm64/-/android-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/android-arm@0.25.12,https://registry.npmjs.org/@esbuild/android-arm/-/android-arm-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/android-x64@0.25.12,https://registry.npmjs.org/@esbuild/android-x64/-/android-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/darwin-arm64@0.25.12,https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/darwin-x64@0.25.12,https://registry.npmjs.org/@esbuild/darwin-x64/-/darwin-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/freebsd-arm64@0.25.12,https://registry.npmjs.org/@esbuild/freebsd-arm64/-/freebsd-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/freebsd-x64@0.25.12,https://registry.npmjs.org/@esbuild/freebsd-x64/-/freebsd-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/linux-arm64@0.25.12,https://registry.npmjs.org/@esbuild/linux-arm64/-/linux-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/linux-arm@0.25.12,https://registry.npmjs.org/@esbuild/linux-arm/-/linux-arm-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/linux-ia32@0.25.12,https://registry.npmjs.org/@esbuild/linux-ia32/-/linux-ia32-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/linux-loong64@0.25.12,https://registry.npmjs.org/@esbuild/linux-loong64/-/linux-loong64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/linux-mips64el@0.25.12,https://registry.npmjs.org/@esbuild/linux-mips64el/-/linux-mips64el-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/linux-ppc64@0.25.12,https://registry.npmjs.org/@esbuild/linux-ppc64/-/linux-ppc64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/linux-riscv64@0.25.12,https://registry.npmjs.org/@esbuild/linux-riscv64/-/linux-riscv64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/linux-s390x@0.25.12,https://registry.npmjs.org/@esbuild/linux-s390x/-/linux-s390x-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/linux-x64@0.25.12,https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/netbsd-arm64@0.25.12,https://registry.npmjs.org/@esbuild/netbsd-arm64/-/netbsd-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/netbsd-x64@0.25.12,https://registry.npmjs.org/@esbuild/netbsd-x64/-/netbsd-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/openbsd-arm64@0.25.12,https://registry.npmjs.org/@esbuild/openbsd-arm64/-/openbsd-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/openbsd-x64@0.25.12,https://registry.npmjs.org/@esbuild/openbsd-x64/-/openbsd-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/openharmony-arm64@0.25.12,https://registry.npmjs.org/@esbuild/openharmony-arm64/-/openharmony-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/sunos-x64@0.25.12,https://registry.npmjs.org/@esbuild/sunos-x64/-/sunos-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/win32-arm64@0.25.12,https://registry.npmjs.org/@esbuild/win32-arm64/-/win32-arm64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/win32-ia32@0.25.12,https://registry.npmjs.org/@esbuild/win32-ia32/-/win32-ia32-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
-npm:@esbuild/win32-x64@0.25.12,https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/aix-ppc64@0.28.2,https://registry.npmjs.org/@esbuild/aix-ppc64/-/aix-ppc64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/android-arm64@0.28.2,https://registry.npmjs.org/@esbuild/android-arm64/-/android-arm64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/android-arm@0.28.2,https://registry.npmjs.org/@esbuild/android-arm/-/android-arm-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/android-x64@0.28.2,https://registry.npmjs.org/@esbuild/android-x64/-/android-x64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/darwin-arm64@0.28.2,https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/darwin-x64@0.28.2,https://registry.npmjs.org/@esbuild/darwin-x64/-/darwin-x64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/freebsd-arm64@0.28.2,https://registry.npmjs.org/@esbuild/freebsd-arm64/-/freebsd-arm64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/freebsd-x64@0.28.2,https://registry.npmjs.org/@esbuild/freebsd-x64/-/freebsd-x64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-arm64@0.28.2,https://registry.npmjs.org/@esbuild/linux-arm64/-/linux-arm64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-arm@0.28.2,https://registry.npmjs.org/@esbuild/linux-arm/-/linux-arm-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-ia32@0.28.2,https://registry.npmjs.org/@esbuild/linux-ia32/-/linux-ia32-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-loong64@0.28.2,https://registry.npmjs.org/@esbuild/linux-loong64/-/linux-loong64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-mips64el@0.28.2,https://registry.npmjs.org/@esbuild/linux-mips64el/-/linux-mips64el-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-ppc64@0.28.2,https://registry.npmjs.org/@esbuild/linux-ppc64/-/linux-ppc64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-riscv64@0.28.2,https://registry.npmjs.org/@esbuild/linux-riscv64/-/linux-riscv64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-s390x@0.28.2,https://registry.npmjs.org/@esbuild/linux-s390x/-/linux-s390x-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/linux-x64@0.28.2,https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/netbsd-arm64@0.28.2,https://registry.npmjs.org/@esbuild/netbsd-arm64/-/netbsd-arm64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/netbsd-x64@0.28.2,https://registry.npmjs.org/@esbuild/netbsd-x64/-/netbsd-x64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/openbsd-arm64@0.28.2,https://registry.npmjs.org/@esbuild/openbsd-arm64/-/openbsd-arm64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/openbsd-x64@0.28.2,https://registry.npmjs.org/@esbuild/openbsd-x64/-/openbsd-x64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/openharmony-arm64@0.28.2,https://registry.npmjs.org/@esbuild/openharmony-arm64/-/openharmony-arm64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/sunos-x64@0.28.2,https://registry.npmjs.org/@esbuild/sunos-x64/-/sunos-x64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/win32-arm64@0.28.2,https://registry.npmjs.org/@esbuild/win32-arm64/-/win32-arm64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/win32-ia32@0.28.2,https://registry.npmjs.org/@esbuild/win32-ia32/-/win32-ia32-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:@esbuild/win32-x64@0.28.2,https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
 npm:@fastify/busboy@2.1.1,https://www.npmjs.com/package/@fastify/busboy/v/2.1.1,MIT,Brian White (https://github.com/fastify/busboy)
 npm:@figma/code-connect@1.3.3,https://www.npmjs.com/package/@figma/code-connect/v/1.3.3,MIT,Figma (https://github.com/figma/code-connect#readme)
 npm:@formatjs/ecma402-abstract@2.3.4,https://www.npmjs.com/package/@formatjs/ecma402-abstract/v/2.3.4,MIT,Long Ho (https://github.com/formatjs/formatjs)
@@ -460,7 +463,7 @@ npm:emoji-regex@8.0.0,https://www.npmjs.com/package/emoji-regex/v/8.0.0,MIT,Math
 npm:emoji-regex@9.2.2,https://www.npmjs.com/package/emoji-regex/v/9.2.2,MIT,Mathias Bynens (https://mathiasbynens.be/)
 npm:entities@4.3.1,https://www.npmjs.com/package/entities/v/4.3.1,BSD-2-Clause,Felix Boehm (https://github.com/fb55/entities)
 npm:entities@4.5.0,https://www.npmjs.com/package/entities/v/4.5.0,BSD-2-Clause,Felix Boehm (https://github.com/fb55/entities)
-npm:esbuild@0.25.12,https://registry.npmjs.org/esbuild/-/esbuild-0.25.12.tgz,MIT,Copyright (c) 2020 Evan Wallace
+npm:esbuild@0.28.2,https://registry.npmjs.org/esbuild/-/esbuild-0.28.2.tgz,MIT,Copyright (c) 2020 Evan Wallace
 npm:escalade@3.1.1,https://www.npmjs.com/package/escalade/v/3.1.1,MIT,Luke Edwards (https://lukeed.com)
 npm:escape-string-regexp@1.0.5,https://www.npmjs.com/package/escape-string-regexp/v/1.0.5,MIT,Sindre Sorhus (sindresorhus.com)
 npm:escape-string-regexp@5.0.0,https://www.npmjs.com/package/escape-string-regexp/v/5.0.0,MIT,Sindre Sorhus (https://sindresorhus.com)
@@ -820,7 +823,7 @@ npm:zod-validation-error@3.4.0,https://www.npmjs.com/package/zod-validation-erro
 npm:zod@3.23.8,https://www.npmjs.com/package/zod/v/3.23.8,MIT,Colin McDonnell (https://zod.dev)
 npm:zwitch@2.0.2,https://www.npmjs.com/package/zwitch/v/2.0.2,MIT,Titus Wormer (https://wooorm.com)
 npm:zwitch@2.0.4,https://www.npmjs.com/package/zwitch/v/2.0.4,MIT,Titus Wormer (https://wooorm.com)
-pypi:Markdown@3.8.2,https://pypi.org/project/Markdown/3.8.2/,BSD-3-Clause,"Copyright 2007, 2008 The Python Markdown Project (v. 1.7 and later) | Copyright 2004, 2005, 2006 Yuri Takhteyev (v. 0.2-1.6b) | Copyright 2004 Manfred Stienstra (the original version)"
+pypi:Markdown@3.10.3,https://pypi.org/project/Markdown/3.10.3/,BSD-3-Clause,"Copyright 2007, 2008 The Python Markdown Project (v. 1.7 and later) | Copyright 2004, 2005, 2006 Yuri Takhteyev (v. 0.2-1.6b) | Copyright 2004 Manfred Stienstra (the original version)"
 pypi:contourpy@1.4.0,https://pypi.org/project/contourpy/1.4.0/,BSD-3-Clause,"Copyright (c) 2021-2026, ContourPy Developers."
 pypi:cycler@0.12.1,https://pypi.org/project/cycler/0.12.1/,BSD-3-Clause,"Copyright (c) 2015, matplotlib project"
 pypi:fonttools@4.65.0,https://pypi.org/project/fonttools/4.65.0/,MIT,"Copyright (c) 2017 Just van Rossum | Copyright (c) 2010, Pablo Impallari (www.impallari.com|impallari@gmail.com), with Reserved Font Name Lobster. | Copyright (c) 2001-2010 by the STI Pub Companies, consisting of the American | Portions copyright (c) 1998-2003 by MicroPress, Inc. | Portions copyright (c) 1990 by Elsevier, Inc. | Copyright (c) 2015-2020 Belleve Invis (belleve@typeof.net). | FontTools includes cu2qu, which is Copyright 2016 Google Inc. All Rights Reserved. | Copyright (c) 2017-2021 The PyFilesystem2 contributors | Copyright (c) 2016-2019 Will McGugan"

@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# Unless explicitly stated otherwise all files in this repository are licensed under the Apache-2.0 License.
+# This product includes software developed at Datadog (https://www.datadoghq.com/).
+# Copyright 2026-present Datadog, Inc.
+
 """Run the frozen performance-feedback follow-up on the original paired traces."""
 import argparse,concurrent.futures,hashlib,json,pathlib,shutil,subprocess,datetime,os,shlex
 ROOT=pathlib.Path(__file__).resolve().parents[2]

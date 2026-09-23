@@ -1,3 +1,7 @@
+// Unless explicitly stated otherwise all files in this repository are licensed under the Apache-2.0 License.
+// This product includes software developed at Datadog (https://www.datadoghq.com/).
+// Copyright 2026-present Datadog, Inc.
+
 'use strict';
 function serverArt(){return `<svg class="server-art" viewBox="0 0 150 120" aria-hidden="true"><ellipse cx="77" cy="103" rx="56" ry="10" fill="#42633b" opacity=".06"/><path class="platform" d="M6 83 L70 48 L144 87 L78 120 Z" fill="#dbe5cf"/><path d="M31 29 L72 6 L118 32 L75 57 Z" fill="#c6d7b1"/><path d="M31 29 L75 57 V99 L31 73 Z" fill="#94ad7d"/><path d="M75 57 L118 32 V75 L75 99 Z" fill="#708d60"/><path d="M40 48 L64 62 V69 L40 55 Z M40 64 L64 78 V85 L40 71 Z" fill="#e3edcf"/><path d="M85 63 L107 51 V58 L85 71 Z M85 78 L107 66 V72 L85 85 Z" fill="#b1c896"/><circle cx="105" cy="44" r="2" fill="#e5efa5"/></svg>`;}
 function clientArt(){return `<svg class="source-art" viewBox="0 0 120 90" aria-hidden="true"><path d="M6 58 L54 33 L112 64 L63 89 Z" fill="#dce5d3"/><path d="M24 20 L62 7 L96 27 L58 44 Z" fill="#cdddbd"/><path d="M24 20 L58 40 V67 L24 47 Z" fill="#91aa7d"/><path d="M58 40 L96 21 V49 L58 67 Z" fill="#718f62"/><path d="M31 29 L50 40 V51 L31 40 Z" fill="var(--client)"/><circle cx="82" cy="43" r="2" fill="#e8f2d6"/></svg>`;}

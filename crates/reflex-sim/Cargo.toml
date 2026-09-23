@@ -17,7 +17,7 @@ serde.workspace = true
 serde_json = { workspace = true, features = ["float_roundtrip"] }
 thiserror.workspace = true
 clap = { version = "4", features = ["derive"] }
-opentelemetry = { version = "0.32", default-features = false, features = ["metrics"] }
+opentelemetry = { version = "0.33", default-features = false, features = ["metrics"] }
 tracing = "0.1"
 pin-project-lite = "0.2"
 
@@ -27,8 +27,8 @@ axum = { version = "0.8", default-features = false, features = ["http1", "json",
 # Match the HTTP client used by the OpenTelemetry exporters.
 reqwest-otel = { package = "reqwest", version = "0.13", default-features = false, features = ["blocking", "rustls"] }
 
-opentelemetry_sdk = { version = "0.32.1", features = ["testing"] }
-opentelemetry-otlp = { version = "0.32", default-features = false, features = ["http-proto", "reqwest-blocking-client", "reqwest-rustls", "metrics", "trace", "logs"] }
+opentelemetry_sdk = { version = "0.33", features = ["testing"] }
+opentelemetry-otlp = { version = "0.33", default-features = false, features = ["http-proto", "reqwest-blocking-client", "reqwest-rustls", "metrics", "trace", "logs"] }
 opentelemetry-appender-tracing = "0.33"
-tracing-opentelemetry = "0.33"
+tracing-opentelemetry = "0.34"
 tracing-subscriber = { version = "0.3", features = ["registry"] }

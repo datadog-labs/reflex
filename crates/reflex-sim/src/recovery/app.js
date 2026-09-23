@@ -19,6 +19,7 @@ function render(){
  $('connection').textContent=connected?'● Engine connected':'Engine disconnected';
  $('connection').dataset.connected=String(connected);
 if(!state)return;
+ renderForecast(state.forecast, "Recovery pressure", state.policy, busy || !connected);
  const ended=state.at_ms>=state.horizon_ms;
  $('evidence-source').hidden=state.evidence_source!=='datadog';$('evidence-source').textContent=`Jev evidence: Datadog · Run: ${state.simulation_run||'—'} · Live charts below show simulation state`;
  $('clock').textContent=time(state.at_ms);if($('duration'))$('duration').textContent=`/ ${String(Math.floor(state.horizon_ms/60000)).padStart(2,'0')}:00`;$('run-status').textContent=ended?'COMPLETE':state.paused?'PAUSED':'RUNNING';$('play').textContent=state.paused?(state.at_ms?'▶ Resume traffic':'▶ Start traffic'):'Ⅱ Pause traffic';
@@ -78,3 +79,5 @@ poll();requestAnimationFrame(animate);
 
 
 $('run-scenario').addEventListener('click',async()=>{const scenario=state.scenario;if(await send({type:'scenario',scenario},true))await send({type:'play'});});
+
+$('forecast-panel').addEventListener('change', e => { if(e.target.id === 'forecast-toggle') send({type:'forecast',enabled:e.target.checked}); });

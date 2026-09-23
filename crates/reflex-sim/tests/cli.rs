@@ -140,8 +140,14 @@ fn datadog_configuration_fails_before_starting_the_playground() {
         (vec!["--datadog"], "--playground"),
         (vec!["--playground", "--datadog-evidence"], "--datadog"),
         (
-            vec!["--playground", "--datadog", "--datadog-evidence"],
-            "--policy jev",
+            vec![
+                "--playground",
+                "--datadog",
+                "--datadog-evidence",
+                "--policy",
+                "threshold",
+            ],
+            "invalid value",
         ),
     ];
     for (args, expected) in cases {
@@ -188,4 +194,20 @@ fn datadog_state_requires_credentials_before_exporters_start() {
         .unwrap();
     assert!(!result.status.success());
     assert!(String::from_utf8_lossy(&result.stderr).contains("DD_APP_KEY"));
+}
+
+#[test]
+fn toto_requires_playground_and_a_loopback_url() {
+    for args in [
+        vec!["--toto-url", "http://localhost:8765"],
+        vec!["--playground", "--toto-url", "https://example.com"],
+    ] {
+        let result = cli()
+            .args(args)
+            .env_remove("TYPESAFE_API_KEY")
+            .output()
+            .unwrap();
+        assert!(!result.status.success());
+        assert!(String::from_utf8_lossy(&result.stderr).contains("--toto-url"));
+    }
 }

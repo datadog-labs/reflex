@@ -306,3 +306,11 @@ Each playground has a Scenario selector and a **Run scenario** button. Selecting
 Recovery also retains the existing second-failure scenario. Scheduler presets restore three known client profiles, and recovery presets restore the default clients and 12 MB/s recovery budget. Sandbox mode retains custom client settings on reset. Manual controls remain available during presets; later scheduled changes still apply. Circuit-breaker replay records the actual fault edits, including scheduled changes.
 
 For Datadog-backed circuit breaking and scheduling, incident preset times are multiplied by three (the repeating demand cycle remains 60 seconds), allowing remote history to warm up before the first change. Their descriptions display the actual times. Recovery's existing incident scripts keep their original timing.
+
+## Local Toto forecasts
+
+Run the optional [Python Toto service](../../integrations/toto/README.md), then add
+`--toto-url http://127.0.0.1:8765` to the playground command. The same provider
+serves Circuit Breaker, Resource Scheduler, and Recovery using local observations
+or queried Datadog history. Forecast switches and comparison charts are available
+in each simulation.

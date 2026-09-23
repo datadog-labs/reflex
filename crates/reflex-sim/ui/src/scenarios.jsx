@@ -76,7 +76,7 @@ if($('evidence-source'))$('evidence-source').style.display='none';
 if(recoveryBudget)overview.append(recoveryBudget);
 main.querySelectorAll('.status-line:not(#evidence-source)').forEach(el=>el.hidden=true);
 for(const selector of ['.metrics','#intervention']){const el=main.querySelector(selector);if(el)overview.append(el);}
-for(const selector of ['.bottom-grid','.pulse','.client-lag-panel']){const el=main.querySelector(selector);if(el)trends.append(el);}
+for(const selector of ['.bottom-grid','.pulse','.client-lag-panel','.forecast-panel']){const el=main.querySelector(selector);if(el)trends.append(el);}
 const journal=main.querySelector('.journal');if(journal)activity.append(journal);
 const legacyChart=$('trend')||$('chart');
 const chartHost=document.createElement('div');legacyChart.before(chartHost);legacyChart.style.display='none';

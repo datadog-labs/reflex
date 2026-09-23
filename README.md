@@ -126,7 +126,7 @@ That example evaluates a recommendation; the circuit-breaker example above demon
 
 ## Explore the interactive systems
 
-The repository includes a local playground for circuit breaking, resource scheduling, and retry/recovery. Start it without an API key to use deterministic policies:
+The repository includes a local playground for circuit breaking, resource scheduling, and retry/recovery. Set `TYPESAFE_API_KEY` to enable Jev, then build and start the playground:
 
 ```sh
 npm ci --prefix crates/reflex-sim/ui
@@ -134,7 +134,7 @@ npm run build --prefix crates/reflex-sim/ui
 cargo run -p reflex-sim --locked -- --playground
 ```
 
-With `TYPESAFE_API_KEY` set, enable live Jev recommendations:
+The circuit-breaker playground uses Jev + Reflex by default. You can also select it explicitly:
 
 ```sh
 cargo run -p reflex-sim --locked -- --playground --policy jev
@@ -142,7 +142,7 @@ cargo run -p reflex-sim --locked -- --playground --policy jev
 
 Inject failures, change client traffic, adjust scheduling priorities, and inspect decisions and guard outcomes. The scheduler includes per-client lag charts so you can see how waiting times change during a run.
 
-The simulations can query **Datadog** for observed state. An application-supplied forecasting provider can add forecasts to Jev’s evidence; no live forecasting adapter is bundled. These integrations belong to the application layer, outside the core SDK.
+The simulations can query **Datadog** for observed state and run **Toto** locally to forecast demand or resource pressure. Jev receives the observations and optional forecasts; Reflex checks its recommendation against current guards. Datadog and Toto integrations belong to the playground, outside the core SDK.
 
 - [Playground setup, scenarios, and simulation model](crates/reflex-sim/README.md)
 - [Forecasting interface](crates/reflex-sim/FORECASTING.md)
@@ -181,7 +181,57 @@ Click **Start traffic**. The Datadog panel shows the query status and run ID. Me
 
 Reflex rechecks each recommendation against current control state before applying it. Missing or stale telemetry prevents a model evaluation; it is not silently replaced with local measurements. The topology and live charts still show the simulator so you can compare current behavior with delayed observations. Datadog state mode uses continuous **1×** playback.
 
-To publish metrics, traces, and logs while keeping local state, use `--datadog` without `--datadog-evidence`. Only an API key is required for publishing; a deterministic policy does not need a TypeSafe key. Press **Ctrl+C** to stop and flush telemetry. See the [Datadog walkthrough](crates/reflex-sim/DATADOG.md) for metrics, warmup, and troubleshooting.
+To publish metrics, traces, and logs while keeping local state, use `--datadog` without `--datadog-evidence`. Only an API key is required for publishing; TypeSafe credentials are needed when using Jev. Press **Ctrl+C** to stop and flush telemetry. See the [Datadog walkthrough](crates/reflex-sim/DATADOG.md) for metrics, warmup, and troubleshooting.
+
+## Local Toto forecasts
+
+The playground includes a Python service that runs [open-source Toto](https://github.com/DataDog/toto)
+on your machine. It forecasts observed demand or resource pressure for circuit
+breaking, scheduling, and recovery. Jev receives the forecast alongside current
+state; Reflex guards still determine whether an action can execute.
+
+From the repository root, start the service in one terminal using
+[uv](https://docs.astral.sh/uv/):
+
+```sh
+uv sync --project integrations/toto --python 3.12 --locked
+uv run --project integrations/toto --locked reflex-toto
+```
+
+Wait for `Ready: http://127.0.0.1:8765`. The first start downloads a pinned
+**Toto-2.0-22m** checkpoint. The model stays loaded and runs on CPU by default;
+Toto needs no API key. Python and Toto are optional simulator dependencies.
+
+In another terminal, with `TYPESAFE_API_KEY` set and the UI built as above,
+start the playground using local observations:
+
+```sh
+cargo run -p reflex-sim --locked -- \
+  --playground --policy jev --toto-url http://127.0.0.1:8765
+```
+
+To publish metrics and forecast **queried Datadog telemetry**, load the Datadog
+credentials described above and run:
+
+```sh
+cargo run -p reflex-sim --features datadog --locked -- \
+  --playground --policy jev --datadog --datadog-evidence \
+  --toto-url http://127.0.0.1:8765
+```
+
+Each simulation has a forecasting toggle and actual-versus-forecast charts.
+Forecasts cover the next 120 seconds. Ordinary local scenarios need 64 seconds
+of observed history; Datadog mode needs 320 seconds plus ingestion delay. Missing
+or stale forecasts leave Jev using valid observed state; missing Datadog state
+still prevents evaluation.
+
+For a first example, select **Resource Scheduler → Repeating demand waves · Toto
+example** and click **Run scenario**. With local observations, use 4× playback;
+the first forecast appears after three cycles (180 simulated seconds). In Circuit
+Breaker, select a service to inspect its forecast.
+
+See [local Toto setup](integrations/toto/README.md) for the API contract, model
+selection, tests, and offline operation.
 
 ## Further reading
 

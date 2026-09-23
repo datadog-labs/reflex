@@ -1,0 +1,18 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "reflex-toto"
+version = "0.1.0"
+description = "Local Toto forecasting service for the Reflex systems playground"
+requires-python = ">=3.12,<3.14"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+dependencies = ["toto-models==1.0.0", "toto-2==2.0.0"]
+
+[project.scripts]
+reflex-toto = "reflex_toto.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/reflex_toto"]

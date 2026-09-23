@@ -23,6 +23,9 @@ use std::path::PathBuf;
     about = "Run reproducible circuit-breaking experiments and open an offline HTML report"
 )]
 struct Args {
+    /// Enable local Toto forecasts (start integrations/toto first).
+    #[arg(long, requires = "playground")]
+    toto_url: Option<String>,
     /// Publish metrics, traces, and logs directly to Datadog (requires --features datadog).
     #[arg(long, requires = "playground")]
     datadog: bool,
@@ -71,7 +74,7 @@ fn main() {
     }
 }
 fn start(args: Args) -> Result<(), Error> {
-    if args.datadog_evidence && args.policy != reflex_sim::jev::PolicyKind::Jev {
+    if args.datadog_evidence && args.policy != "jev" {
         return Err(Error::Invalid(
             "--datadog-evidence requires --policy jev".into(),
         ));
@@ -148,6 +151,23 @@ fn start(args: Args) -> Result<(), Error> {
 }
 async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 3]>) -> Result<(), Error> {
     if args.playground {
+        let forecaster = args
+            .toto_url
+            .as_deref()
+            .map(|url| {
+                reflex_sim::toto::LocalToto::new(url)
+                    .map(|f| {
+                        std::sync::Arc::new(f)
+                            as std::sync::Arc<dyn reflex_sim::capacity::forecast::Forecaster>
+                    })
+                    .map_err(Error::Invalid)
+            })
+            .transpose()?;
+        if forecaster.is_some() {
+            println!(
+                "Local Toto forecasting enabled for circuit breaker, scheduler, and recovery."
+            );
+        }
         let settings = reflex_sim::playground::inference::JevSettings {
             model: args.jev_model.clone(),
             ..Default::default()
@@ -219,7 +239,7 @@ async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 3]>) -> R
             settings,
             scheduler_evaluator,
             recovery_evaluator,
-            None,
+            forecaster,
         )
         .await;
     }

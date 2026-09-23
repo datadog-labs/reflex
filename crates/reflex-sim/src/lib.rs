@@ -43,3 +43,5 @@ pub mod datadog;
 mod metric_capture;
 
 pub mod forecasting;
+
+pub mod toto;

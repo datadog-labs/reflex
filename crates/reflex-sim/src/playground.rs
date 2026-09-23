@@ -603,9 +603,33 @@ fn router(shared: Shared) -> Router {
                 )
             }),
         )
-        .route("/scenario-ui.js", get(|| async { ([(header::CONTENT_TYPE, "text/javascript")], include_str!("playground/scenario-ui.js")) }))
-        .route("/scenario-ui.css", get(|| async { ([(header::CONTENT_TYPE, "text/css")], include_str!("playground/scenario-ui.css")) }))
-        .route("/scenario.css", get(|| async { ([(header::CONTENT_TYPE, "text/css")], include_str!("playground/scenario.css")) }))
+        .route(
+            "/scenario-ui.js",
+            get(|| async {
+                (
+                    [(header::CONTENT_TYPE, "text/javascript")],
+                    include_str!("playground/scenario-ui.js"),
+                )
+            }),
+        )
+        .route(
+            "/scenario-ui.css",
+            get(|| async {
+                (
+                    [(header::CONTENT_TYPE, "text/css")],
+                    include_str!("playground/scenario-ui.css"),
+                )
+            }),
+        )
+        .route(
+            "/scenario.css",
+            get(|| async {
+                (
+                    [(header::CONTENT_TYPE, "text/css")],
+                    include_str!("playground/scenario.css"),
+                )
+            }),
+        )
         .route(
             "/forecast.js",
             get(|| async {

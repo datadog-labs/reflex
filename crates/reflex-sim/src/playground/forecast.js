@@ -12,6 +12,8 @@
     latestArgs = [view,title,policy,disabled];
     const panel = document.getElementById('forecast-panel');
     if (!panel) return;
+    panel.hidden = !view?.configured;
+    if (!view?.configured) return;
     const runs = view?.comparisons || [];
     if (!runs.some(r => r.origin_ms === selected.get(title))) selected.set(title,runs[0]?.origin_ms);
     const c = runs.find(r => r.origin_ms === selected.get(title));

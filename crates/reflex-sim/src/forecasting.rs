@@ -228,21 +228,21 @@ impl Driver {
         {
             return;
         }
-        if dd.is_none() && self.rows.len() < self.local_min_samples {
+        let minimum = self.local_min_samples.max(provider.minimum_samples(1000));
+        if dd.is_none() && self.rows.len() < minimum {
             self.status = format!(
                 "Collecting history: {} / {} seconds",
                 self.rows.len(),
-                self.local_min_samples
+                minimum
             );
             return;
         }
+        let remote_seconds = provider.minimum_samples(10000).max(16) as u64 * 10;
         if let Some((_, _, floor, _)) = &dd {
             if crate::datadog::unix_ms().saturating_sub(20_000) / 10_000 * 10_000
-                < floor.div_ceil(10_000) * 10_000 + 160_000
+                < floor.div_ceil(10_000) * 10_000 + remote_seconds * 1000
             {
-                self.status =
-                    "Collecting at least 160 seconds of Datadog history, plus ingestion delay"
-                        .into();
+                self.status = format!("Collecting at least {remote_seconds} seconds of Datadog history, plus ingestion delay");
                 return;
             }
         }
@@ -410,9 +410,17 @@ impl Driver {
         };
         View {
             minimum_history_seconds: if self.datadog {
-                160
+                self.provider
+                    .as_ref()
+                    .map_or(16, |p| p.minimum_samples(10000))
+                    .max(16)
+                    * 10
             } else {
-                self.local_min_samples
+                self.local_min_samples.max(
+                    self.provider
+                        .as_ref()
+                        .map_or(64, |p| p.minimum_samples(1000)),
+                )
             },
             now_ms: self.now(sim),
             source: self.source.clone(),
@@ -691,6 +699,29 @@ pub(crate) mod tests {
         assert!(mock.0.lock().unwrap().is_empty());
         assert!(driver.evidence(1000).is_none());
     }
+    #[tokio::test]
+    async fn local_toto_waits_for_a_full_datadog_patch_without_spending_budget() {
+        let provider = Arc::new(crate::toto::LocalToto::new("http://127.0.0.1:1").unwrap());
+        let mut driver = Driver::new(Some(provider));
+        let source = Arc::new(crate::datadog::Source::for_test("http://127.0.0.1:1"));
+        // Enough for the generic provider's 160s minimum, but not Toto's 320s.
+        driver
+            .poll(
+                0,
+                Some((
+                    source,
+                    "run".into(),
+                    crate::datadog::unix_ms() - 250_000,
+                    "scheduler",
+                )),
+            )
+            .await;
+        assert_eq!(driver.calls, 0);
+        assert!(driver.pending.is_none());
+        assert_eq!(driver.view(0).minimum_history_seconds, 320);
+        assert!(driver.status.contains("320 seconds"));
+    }
+
     #[test]
     fn malformed_forecasts_are_rejected() {
         let (v, from, to) = dd_fixture();

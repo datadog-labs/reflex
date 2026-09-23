@@ -34,6 +34,7 @@ function render(){
  $('connection').dataset.connected=String(connected);
 
  if(!state)return;
+ renderForecast(state.forecast, "Placement pressure", state.policy, busy || !connected);
 
  $('scenario').value=state.scenario;$('scenario').disabled=busy||!connected;
  $('scenario-description').textContent=state.scenario_description;
@@ -168,3 +169,5 @@ $('run-scenario').addEventListener('click',async()=>{const scenario=state.scenar
 $('clients').addEventListener('change', e=>{if(e.target.matches('[data-priority]'))send({type:'priority',id:Number(e.target.dataset.priority),priority:e.target.value});});
 
 $('lag-legend').addEventListener('click',e=>{const b=e.target.closest('[data-lag-client]');if(!b)return;const id=Number(b.dataset.lagClient);hiddenLagClients.has(id)?hiddenLagClients.delete(id):hiddenLagClients.add(id);render();});
+
+$('forecast-panel').addEventListener('change', e => { if(e.target.id === 'forecast-toggle') send({type:'forecast',enabled:e.target.checked}); });

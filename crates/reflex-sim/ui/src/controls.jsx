@@ -3,7 +3,7 @@
 // Copyright 2026-present Datadog, Inc.
 
 import '@datadog/druids/styles.css';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { renderHeader } from './header.jsx';
 import { DruidsEnvironment } from '@datadog/druids/layout/DruidsEnvironment';
@@ -51,6 +51,17 @@ function Section({ title, children, action, description }) {
 function ScenarioPreset({state,disabled,send}) {
   const options=[{value:'sandbox',label:'Live'},{value:'slowdown_surge',label:'Slowdown + traffic surge'},{value:'error_waves',label:'Recurring error storms'}];
   return <ScenarioControls state={state} disabled={disabled} send={send} options={options} description={state.scenario_description}/>;
+}
+function ForecastPanel({state,focus,disabled,send}) {
+  const host=useRef(null);
+  useEffect(()=>{
+    window.renderForecast?.(state.forecasts?.[focus],state.services[focus].definition.name,state.policy,disabled||state.replaying);
+    const element=host.current;
+    const change=e=>{if(e.target.id==='forecast-toggle')send({type:'forecast',enabled:e.target.checked});};
+    element.addEventListener('change',change);
+    return()=>element.removeEventListener('change',change);
+  },[state,focus,disabled,send]);
+  return <section ref={host} id="forecast-panel" className="forecast-panel inspector-section" aria-label="Toto forecast"/>;
 }
 function Phase({phase}) {return <StatusPill isSoft level={phaseLevel(phase)}>{phaseName(phase)}</StatusPill>;}
 function Entity({name, gateway=false, color}) {
@@ -148,6 +159,7 @@ function Inspector({state,focus,onFocus,disabled,send,onRequest,onDecision}) {
             {service.timed_out_work>0&&<MessageBox level="warning"><Text size="sm">{service.timed_out_work} timed-out requests still consume downstream capacity.</Text></MessageBox>}
           </Section>:<ServiceTable state={state} onFocus={onFocus}/>}
           {service&&<Trend state={state} focus={focus}/>}
+          {service&&state.forecasts?.[focus]?.configured&&<ForecastPanel state={state} focus={focus} disabled={disabled} send={send}/>}
           {state.policy==='jev'&&<Inference state={state}/>}
 
 </>}

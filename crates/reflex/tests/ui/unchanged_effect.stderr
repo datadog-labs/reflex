@@ -1,5 +1,5 @@
 error: unchanged rows cannot update data or dispatch effects
- --> tests/ui/unchanged_effect.rs:7:51
-  |
-7 |         transitions: [Phase::Idle + action(()) => unchanged { effect: |()| async {} }],
-  |                                                   ^^^^^^^^^
+  --> tests/ui/unchanged_effect.rs:11:51
+   |
+11 |         transitions: [Phase::Idle + action(()) => unchanged { effect: |()| async {} }],
+   |                                                   ^^^^^^^^^

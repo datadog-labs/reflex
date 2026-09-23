@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# Unless explicitly stated otherwise all files in this repository are licensed under the Apache-2.0 License.
+# This product includes software developed at Datadog (https://www.datadoghq.com/).
+# Copyright 2026-present Datadog, Inc.
+
 """Independent outcome and cost-accounting checks against stored job records."""
 import argparse,collections,json,pathlib,math
 p=argparse.ArgumentParser();p.add_argument('root',type=pathlib.Path);p.add_argument('--expected-traces',type=int,default=120);a=p.parse_args()

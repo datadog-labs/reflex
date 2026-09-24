@@ -91,9 +91,9 @@ The `valid_phase` invariant checks that the phase, cooldown, and probe reservati
 
 ## Running the simulation
 
-![The circuit-breaker simulator during the Cyclical load · Toto scenario](docs/images/circuit-breaker-simulator.png)
+![The circuit-breaker simulator opening, probing, and closing the Payments circuit during the Cyclical load · Toto scenario](docs/images/circuit-breaker-simulator.gif)
 
-Seven minutes into the scenario, Jev has opened the Payments circuit during a traffic surge. The panel on the right compares a Toto forecast of Payments request rate with the Datadog observations that followed; observations stop where Datadog has not yet caught up.
+During a traffic surge, Jev opens the Payments circuit. After the cooldown, it probes, and the circuit closes once traffic recovers and five probes succeed. The panel on the right compares a Toto forecast of Payments request rate with the Datadog observations that followed.
 
 **Where the state comes from.** The simulated services publish metrics to Datadog. The simulator queries them back to build each service's state, such as its error rate, latency, and queue depth.
 

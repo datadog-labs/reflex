@@ -14,9 +14,18 @@ Verified state transition
 Optional effects perform external work
 ```
 
-The repository includes a simulator that runs Reflex against simulated services. The sections below walk through its circuit breaker, starting with the state machine and then the running simulation.
+## When to use it
+
+Reflex fits control loops where the right action depends on changing conditions, but execution must obey fixed constraints.
+
+- **Circuit breaking.** Open, probe, or close based on service health, while enforcing cooldowns and probe limits.
+- **Scheduling.** Choose which request gets capacity next, while enforcing resource limits.
+- **Autoscaling.** Add or remove capacity based on demand and forecasts, while enforcing capacity bounds.
+- **Retries.** Decide whether to retry a failed request and how long to back off, while enforcing retry budgets and a maximum backoff.
 
 ## A circuit breaker
+
+The repository includes a simulator that runs Reflex against simulated services. The sections below walk through its circuit breaker, starting with the state machine and then the running simulation.
 
 A gateway routes client traffic to three services, Catalog, Payments, and Search, each behind its own circuit. Jev decides when a circuit should open or probe. Reflex decides whether that decision may take effect.
 

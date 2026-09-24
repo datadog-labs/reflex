@@ -14,9 +14,18 @@ Verified state transition
 Optional effects perform external work
 ```
 
-The repository includes a simulator that runs Reflex against simulated services. The sections below walk through its circuit breaker, starting with the state machine and then the running simulation.
+## When to use it
+
+Reflex fits control loops where the right action depends on changing conditions, but execution must obey fixed constraints.
+
+- **Circuit breaking.** Open, probe, or close based on service health, while enforcing cooldowns and probe limits.
+- **Scheduling.** Choose which request gets capacity next, while enforcing resource limits.
+- **Autoscaling.** Add or remove capacity based on demand and forecasts, while enforcing capacity bounds.
+- **Retries.** Decide whether to retry a failed request and how long to back off, while enforcing retry budgets and a maximum backoff.
 
 ## A circuit breaker
+
+The repository includes a simulator that runs Reflex against simulated services. The sections below walk through its circuit breaker, starting with the state machine and then the running simulation.
 
 A gateway routes client traffic to three services, Catalog, Payments, and Search, each behind its own circuit. Jev decides when a circuit should open or probe. Reflex decides whether that decision may take effect.
 
@@ -82,9 +91,9 @@ The `valid_phase` invariant checks that the phase, cooldown, and probe reservati
 
 ## Running the simulation
 
-![The circuit-breaker simulator during the Cyclical load · Toto scenario](docs/images/circuit-breaker-simulator.png)
+![The circuit-breaker simulator opening, probing, and closing the Payments circuit during the Cyclical load · Toto scenario](docs/images/circuit-breaker-simulator.gif)
 
-Seven minutes into the scenario, Jev has opened the Payments circuit during a traffic surge. The panel on the right compares a Toto forecast of Payments request rate with the Datadog observations that followed; observations stop where Datadog has not yet caught up.
+During a traffic surge, Jev opens the Payments circuit. After the cooldown, it probes, and the circuit closes once traffic recovers and five probes succeed. The panel on the right compares a Toto forecast of Payments request rate with the Datadog observations that followed.
 
 **Where the state comes from.** The simulated services publish metrics to Datadog. The simulator queries them back to build each service's state, such as its error rate, latency, and queue depth.
 

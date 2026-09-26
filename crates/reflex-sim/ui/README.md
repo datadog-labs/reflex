@@ -64,6 +64,6 @@ forms. Below 700px the canvas stacks above the inspector and the page scrolls.
 
 The graph uses fixed 208px cards at 1× zoom, with pan, zoom and fit controls.
 Circuit clients are informational; scheduler clients remain selectable for
-editing their workloads. The scenario picker starts collapsed; each preset row runs its existing
+editing their workloads. The scenario picker starts expanded; each preset row runs its existing
 reset-and-play commands. Help and export are in the header. All counters, policies, faults and
 playback state still come from the existing Rust APIs.

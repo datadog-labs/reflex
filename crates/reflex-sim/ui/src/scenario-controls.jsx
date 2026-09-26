@@ -8,7 +8,7 @@ import {Button} from '@datadog/druids/form/Button';
 import {Text} from '@datadog/druids/typography/Text';
 
 export function ScenarioControls({state,disabled,send,options,description}) {
-  const [open,setOpen]=useState(false);
+  const [open,setOpen]=useState(true);
   const descriptions={
     sandbox:'Adjust the simulation yourself. No scheduled changes.',
     slowdown_surge:'Payments slows down and traffic surges. The circuit opens, probes, recovers.',

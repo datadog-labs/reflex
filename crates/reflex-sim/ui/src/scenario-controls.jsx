@@ -2,13 +2,21 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/).
 // Copyright 2026-present Datadog, Inc.
 
-import React, {useState} from 'react';
+import React, {useEffect,useState} from 'react';
 import {PanelLeftShrinkIcon} from '@datadog/druids/icons/PanelLeftShrink';
 import {Button} from '@datadog/druids/form/Button';
 import {Text} from '@datadog/druids/typography/Text';
 
 export function ScenarioControls({state,disabled,send,options,description}) {
-  const [open,setOpen]=useState(true);
+  const [open,setOpen]=useState(()=>{
+    // Screen switches load a new document; only an explicit reload resets the picker.
+    try {
+      return performance.getEntriesByType('navigation')[0]?.type==='reload'||sessionStorage.getItem('reflex-scenarios-open')!=='false';
+    } catch {return true;}
+  });
+  useEffect(()=>{
+    try {sessionStorage.setItem('reflex-scenarios-open',String(open));} catch {}
+  },[open]);
   const descriptions={
     sandbox:'Adjust the simulation yourself. No scheduled changes.',
     slowdown_surge:'Payments slows down and traffic surges. The circuit opens, probes, recovers.',

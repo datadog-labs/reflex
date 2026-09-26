@@ -3,12 +3,18 @@
 // Copyright 2026-present Datadog, Inc.
 
 import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { DruidsEnvironment } from '@datadog/druids/layout/DruidsEnvironment';
-import { ProminentTabList } from '@datadog/druids/nav/ProminentTabList';
-import { Text } from '@datadog/druids/typography/Text';
+import {createRoot} from 'react-dom/client';
+import {SoftToggle} from '@datadog/druids/form/SoftToggle';
+import {Button} from '@datadog/druids/form/Button';
+import {NetworkIcon} from '@datadog/druids/icons/Network';
+import {ContainerImageIcon} from '@datadog/druids/icons/ContainerImage';
+import {ConnectionIcon} from '@datadog/druids/icons/Connection';
+import {SunIcon} from '@datadog/druids/icons/Sun';
+import {MoonIcon} from '@datadog/druids/icons/Moon';
+import {HelpIcon} from '@datadog/druids/icons/Help';
+import {DownloadIcon} from '@datadog/druids/icons/Download';
+import {ReflexEnvironment,useTheme,toggleTheme} from './theme.jsx';
 import './shared.css';
-import { NetworkIcon } from '@datadog/druids/icons/Network';
 
 // Do not paint the legacy shell, intermediate React mounts, or fallback-font
 // tab widths. The static HTML reserves header space while the page initializes.
@@ -22,30 +28,23 @@ function revealLayout(){
     })));
   });
 }
-const root = createRoot(document.getElementById('product-header'));
-const SCENARIOS = [
-  { value: '/', label: 'Circuit Breaker' },
-  { value: '/scheduler', label: 'Resource Scheduler' },
-];
-
-function Header({ disabled, navigate }) {
-  const tabs = React.useMemo(() => SCENARIOS.map(tab => ({
-    ...tab,
-    isDisabled: disabled,
-    dataAttrs: { 'data-scenario': tab.value, 'data-selected': tab.value === location.pathname },
-  })), [disabled]);
-  const onTabChange = React.useCallback(path => {
-    if (path !== location.pathname) navigate?.(path);
-  }, [navigate]);
-  return <DruidsEnvironment defaultThemePreference="light">
-    <header className="reflex-product-header">
-      <div className="reflex-brand"><NetworkIcon/><Text weight="bold" size="xl">Reflex</Text></div>
-      <nav className="reflex-product-tabs" aria-label="Simulation scenarios"><ProminentTabList impact="low" hasBorder={false} hasRoundedTabs={false} tabs={tabs} selectedTab={location.pathname} onTabChange={onTabChange}/></nav>
-    </header>
-  </DruidsEnvironment>;
+const root=createRoot(document.getElementById('product-header'));
+function Header({disabled,connected,navigate,onHelp}){
+ const theme=useTheme();
+ return <ReflexEnvironment><header className="reflex-product-header">
+  <div className="reflex-brand"><NetworkIcon/><span>Reflex</span></div>
+  <nav className="reflex-product-tabs" aria-label="Simulation scenarios"><SoftToggle ariaLabel="Simulation screen" value={location.pathname} options={[
+   {value:'/',label:'Circuit breaker',icon:ConnectionIcon,isDisabled:disabled},
+   {value:'/scheduler',label:'Resource scheduler',icon:ContainerImageIcon,isDisabled:disabled},
+  ]} onChange={path=>{if(path!==location.pathname)navigate?.(path);}}/></nav>
+  <div className="product-header-actions">
+   <span className="engine-status" data-connected={connected} role="status">{connected?'Engine connected':'Engine disconnected'}</span>
+   <Button isBorderless icon={theme==='dark'?SunIcon:MoonIcon} ariaLabel={`Switch to ${theme==='dark'?'light':'dark'} theme`} onClick={toggleTheme}/>
+   <Button className="help-action" isBorderless icon={HelpIcon} label="How it works" isTitleCased={false} onClick={onHelp}/>
+   <Button isPrimary icon={DownloadIcon} label="Export run" isTitleCased={false} isDisabled={!connected} onClick={()=>{const a=document.createElement('a');a.href=location.pathname==='/scheduler'?'/api/scheduler/export':'/api/export';a.download='reflex-run.json';a.click();}}/>
+  </div>
+ </header></ReflexEnvironment>;
 }
-
-export function renderHeader({ disabled = true, navigate } = {}) {
-  root.render(<Header disabled={disabled} navigate={navigate} />);
-  revealLayout();
+export function renderHeader({disabled=true,connected=false,navigate,onHelp}={}){
+ root.render(<Header {...{disabled,connected,navigate,onHelp}}/>);revealLayout();
 }

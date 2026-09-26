@@ -12,7 +12,7 @@ const choice=c=>c?.place?`Node ${String.fromCharCode(65+c.place.node)}`:({node_a
 const priorityName=p=>({normal:'Normal',high:'High',critical:'Critical'}[p]||'Normal');
 const jobPriority=j=>state.client_priorities[j.client]||'normal';
 const policyName=p=>({jev:'Jev',first_fit:'First Fit',best_fit:'Best Fit'}[p]);
-let state=null,busy=false,connected=false,polling=false,revision=0,signature='',clientIds='',selected={kind:'client',id:0},mapIds='',particles=[],seenJobs=null,lastFrame=0;
+let state=null,busy=false,connected=false,polling=false,revision=0,signature='',clientIds='',selected={kind:'hub',id:0},mapIds='',particles=[],seenJobs=null,lastFrame=0;
 const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const nodeYs=[100,250,400,550];
 const sourceY=(i,n)=>n===1?330:100+i*450/(n-1);
@@ -88,7 +88,7 @@ function renderTopology(){
 function renderInspector(){
  $('clients').hidden=selected.kind!=='client';$('node-details').hidden=selected.kind!=='node';$('queue-details').hidden=selected.kind!=='queue';
  const c=state.clients.find(c=>c.id===selected.id);
- $('inspector-title').textContent=selected.kind==='client'?c.name:selected.kind==='node'?state.nodes[selected.id].name:'Shared queue';
+ $('inspector-title').textContent=selected.kind==='client'?c.name:selected.kind==='node'?state.nodes[selected.id].name:selected.kind==='hub'?'Placement':'Shared queue';
  $('inspector-help').textContent=selected.kind==='client'?'Change priority live for queued and future jobs; workload edits affect future arrivals.':selected.kind==='node'?'Live reservations and running jobs. Completed work releases its capacity.':'FIFO within each client. Jev chooses among fitting client heads; after 30s the oldest fitting head takes precedence. The graph shows each client’s oldest queued job.';
 }
 function collectParticles(next){
@@ -118,7 +118,7 @@ function renderDecisions(){
  const picked=latest&&state.jobs.find(j=>j.id===latest.job),bypassed=picked&&state.jobs.some(j=>j.phase==='queued'&&j.arrived_at<picked.arrived_at);
  $('decision-title').textContent=latest?`Job #${latest.job} → ${choice(latest.choice)}`:'Waiting for work';
  $('decision-body').textContent=latest?`${time(latest.at_ms)} · ${latest.status}. ${latest.result?.error||latest.reason}${latest.status==='placed'&&bypassed?' · Selected ahead of older requests from another client.':''}`:'Start the clients to generate the first jobs.';
- $('decisions').innerHTML=state.decisions.length?state.decisions.map(d=>`<tr><td>${time(d.at_ms)}</td><td>#${d.job}</td><td>${policyName(d.policy)}</td><td>${choice(d.choice)}</td><td class="${d.status==='rejected'||d.status==='evaluation_error'?'error':''}">${esc(d.status)}</td><td>${d.result?.confidence==null?'—':num(d.result.confidence*100,1)+'%'}</td><td><button data-inspect="${d.job}:${d.at_ms}" aria-label="Inspect job ${d.job} decision">Inspect ↗</button></td></tr>`).join(''):'<tr><td colspan="7" class="empty">No placement decisions yet.</td></tr>';
+ $('decisions').innerHTML=state.decisions.length?state.decisions.map(d=>`<tr><td><span class="table-main">#${d.job}</span><span class="table-secondary">${time(d.at_ms)}</span></td><td><span class="table-main">${choice(d.choice)}</span><span class="table-secondary">${policyName(d.policy)}</span><span class="table-secondary">Confidence: ${d.result?.confidence==null?'—':num(d.result.confidence*100,1)+'%'}</span></td><td><span class="table-main ${d.status==='rejected'||d.status==='evaluation_error'?'error':''}">${esc(d.status.replaceAll('_',' '))}</span><button data-inspect="${d.job}:${d.at_ms}" aria-label="Inspect job ${d.job} decision">Inspect ↗</button></td></tr>`).join(''):'<tr><td colspan="3" class="empty">No placement decisions yet.</td></tr>';
 }
 function inspect(d){if(!d)return;$('inspection').textContent=JSON.stringify(d,null,2);$('inspect-dialog').showModal();}
 function renderTrend(){
@@ -139,7 +139,7 @@ function renderClientLag(){
  if(signature!==lagLegendSignature){lagLegendSignature=signature;$('lag-legend').innerHTML=ids.map(id=>`<button data-lag-client="${id}" aria-pressed="${!hiddenLagClients.has(id)}" style="--client:${color(id)}"><i></i>Client ${id+1} <span class="priority-badge ${state.client_priorities[id]||'normal'}">${priorityName(state.client_priorities[id])}</span></button>`).join('');}
  const changes=(state.priority_changes||[]).filter(e=>!hiddenLagClients.has(e.client)&&e.at_ms>=left);
  $('lag-events').textContent=changes.length?changes.map(e=>`${time(e.at_ms)} · Client ${e.client+1} → ${priorityName(e.priority)}`).join('  |  '):'Change a client’s live priority to mark it on this timeline.';
- $('lag-values').innerHTML=live.filter(c=>!hiddenLagClients.has(c.client)).map(c=>`<tr><td><i style="background:${color(c.client)}"></i>Client ${c.client+1}</td><td>${priorityName(c.priority)}</td><td>${c.queued}</td><td>${num(c.oldest_wait_ms/1000,1)}s</td><td>${c.recent_mean_start_lag_ms==null?'—':num(c.recent_mean_start_lag_ms/1000,1)+'s'}</td><td>${c.recent_starts}</td></tr>`).join('');
+ $('lag-values').innerHTML=live.filter(c=>!hiddenLagClients.has(c.client)).map(c=>`<tr><td><span class="table-main"><i style="background:${color(c.client)}"></i>Client ${c.client+1}</span><span class="table-secondary">${priorityName(c.priority)} priority</span></td><td><span class="table-main">${c.queued}</span><span class="table-secondary">Oldest: ${num(c.oldest_wait_ms/1000,1)}s</span></td><td><span class="table-main">${c.recent_starts}</span><span class="table-secondary">Wait: ${c.recent_mean_start_lag_ms==null?'—':num(c.recent_mean_start_lag_ms/1000,1)+'s'}</span></td></tr>`).join('');
 }
 function ingest(next){const sig=JSON.stringify(next);if(sig===signature&&connected)return;signature=sig;collectParticles(next);state=next;connected=true;showError(next.error);render();}
 async function send(cmd,refreshClients=false){

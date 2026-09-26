@@ -32,7 +32,7 @@ table, select, tooltip, and dialog interactions when updating this stack.
 
 ## Components and behavior
 
-- `header.jsx` composes the public ProminentTabList, Text, Button, and icons into
+- `header.jsx` composes the public SoftToggle, Button, and icons into
   the compact application header. Navigation pauses the current simulation.
 - `controls.jsx` owns the Circuit Breaker inspector and playback controls. The
   existing API controller and Rust simulation remain authoritative.
@@ -53,3 +53,18 @@ Check all simulator pages, desktop/mobile layouts, header navigation, map select
 pan/zoom, pause/start/step/reset, fault and form controls, chart hover/keyboard
 values, policy selection, and remote-evidence control restrictions. Live model
 inference requires separate server credentials; local policies work without them.
+
+## Canvas layout
+
+Both playgrounds share a full-height topology canvas, a collapsible scenario
+picker, a bottom playback dock, and a fixed inspector. Dark is the default;
+the header theme button persists the light/dark preference in local storage.
+The shared token layer styles public DRUIDS components and the native scheduler
+forms. Below 700px the canvas stacks above the inspector and the page scrolls.
+
+The graph uses fixed 208px cards at 1× zoom, with pan, zoom and fit controls.
+Circuit clients are informational; scheduler clients remain selectable for
+editing their workloads. The scenario picker starts expanded, preserves its open/closed state across screen
+switches in the same browser tab, and opens again on a full page reload. Each preset row runs its existing
+reset-and-play commands. Help and export are in the header. All counters, policies, faults and
+playback state still come from the existing Rust APIs.

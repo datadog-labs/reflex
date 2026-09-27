@@ -4,7 +4,7 @@
 
 import React, {useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {DruidsEnvironment} from '@datadog/druids/layout/DruidsEnvironment';
+import {ReflexEnvironment} from './theme.jsx';
 import {Text} from '@datadog/druids/typography/Text';
 import {HorizontalSeparator} from '@datadog/druids/layout/HorizontalSeparator';
 import {TimeChart, simulationTime} from './time-chart.jsx';
@@ -60,5 +60,5 @@ if(typeof window!=='undefined')window.renderForecast=(view,title,policy,disabled
   panel.hidden=!view?.configured;
   if(!view?.configured)return;
   if(!roots.has(panel))roots.set(panel,createRoot(panel));
-  roots.get(panel).render(<DruidsEnvironment defaultThemePreference="light"><ForecastPanel view={view} title={title} policy={policy} disabled={disabled}/></DruidsEnvironment>);
+  roots.get(panel).render(<ReflexEnvironment><ForecastPanel view={view} title={title} policy={policy} disabled={disabled}/></ReflexEnvironment>);
 };

@@ -5,7 +5,7 @@
 import React, {useEffect, useId, useMemo, useRef, useState} from 'react';
 import {Text} from '@datadog/druids/typography/Text';
 
-const palette={purple:'#744dd6',orange:'#fe9b23',blue:'#2d61d2'};
+const palette={purple:'var(--r-ai)',orange:'var(--r-warn)',blue:'var(--r-ai)'};
 const color=s=>palette[s.color]||s.color||palette.purple;
 const fmt=value=>Number(value).toLocaleString('en-US',{maximumFractionDigits:2});
 const axisFmt=value=>Math.abs(value)>=1000?`${fmt(value/1000)}k`:fmt(value);
@@ -62,18 +62,18 @@ export function TimeChart({series,bands=[],markers=[],start,end,leftLabel,rightL
           const lower=points.slice().reverse().map(([t,lo])=>`L${x(t)},${y(lo,!!band.right)}`).join(' ');
           return <path key={i} d={`${upper} ${lower} Z`} fill={color(band)} fillOpacity=".15"><title>{band.name}</title></path>;
         })}</g>;
-      })}{markers.filter(m=>m.at>=start&&m.at<=end).map((m,i)=><line key={`marker-${i}`} x1={x(m.at)} x2={x(m.at)} y1={top} y2={bottom} stroke={m.color||'#626c76'} strokeDasharray="3 5" opacity=".6"><title>{m.label}</title></line>)}{series.map(s=>{
+      })}{markers.filter(m=>m.at>=start&&m.at<=end).map((m,i)=><line key={`marker-${i}`} x1={x(m.at)} x2={x(m.at)} y1={top} y2={bottom} stroke={m.color||'var(--r-ink-3)'} strokeDasharray="3 5" opacity=".6"><title>{m.label}</title></line>)}{series.map(s=>{
         let move=true;
         const d=s.points.map(([t,v])=>{if(!Number.isFinite(v)){move=true;return '';}const command=move?`M${x(t)},${y(v,!!s.right)}`:s.step?`H${x(t)}V${y(v,!!s.right)}`:`L${x(t)},${y(v,!!s.right)}`;move=false;return command;}).join(' ');
         const finitePoints=s.points.filter(([,v])=>Number.isFinite(v));
         return <g key={s.name} opacity={highlighted&&highlighted.name!==s.name?0.3:1}><path d={d} fill="none" stroke={color(s)} strokeWidth="2" strokeLinejoin="round" strokeDasharray={s.dashed?'5 4':undefined}/>{finitePoints.length===1&&<circle cx={x(finitePoints[0][0])} cy={y(finitePoints[0][1],!!s.right)} r="3" fill={color(s)}/>}</g>;
       })}
-      {active!=null&&<g><line x1={activeX} x2={activeX} y1={top} y2={bottom} stroke="#000" strokeWidth="1"/>{highlighted&&<circle cx={activeX} cy={y(highlighted.value,!!highlighted.right)} r="3" fill="#000"/>}</g>}
+      {active!=null&&<g><line x1={activeX} x2={activeX} y1={top} y2={bottom} stroke="var(--r-ink)" strokeWidth="1"/>{highlighted&&<circle cx={activeX} cy={y(highlighted.value,!!highlighted.right)} r="3" fill="var(--r-ink)"/>}</g>}
       </g>
     </svg>
     {active!=null&&<>
       {highlighted&&<div className={`reflex-chart-tooltip${onLeft?' reflex-chart-tooltip-left':''}`} role="status" style={{left:tooltipLeft,top:tooltipTop,width:tooltipWidth}}>
-        <span className="reflex-chart-series-name" style={{background:color(highlighted),color:highlighted.color==='orange'?'#1c2b34':'#fff'}}>{highlighted.name}</span>
+        <span className="reflex-chart-series-name" style={{background:color(highlighted),color:'var(--r-on-accent)'}}>{highlighted.name}</span>
         <span className="reflex-chart-value">{fmt(highlighted.value)}{highlighted.unit?` ${highlighted.unit}`:''}</span>
       </div>}
       <span className="reflex-chart-time" aria-label={`Time ${timeFormat(active)}`} style={{left:Math.max(32,Math.min(width-32,activeX)),top:bottom+7}}>{timeFormat(active)}</span>

@@ -25,10 +25,12 @@ pub(crate) struct Telemetry {
     tokens: Counter<u64>,
     // A gauge works with direct Datadog intake, which does not accept cumulative sums.
     _in_flight: ObservableGauge<u64>,
+    name: Option<&'static str>,
 }
 impl Telemetry {
-    pub(crate) fn new(meter: Meter) -> Self {
+    pub(crate) fn new(meter: Meter, name: Option<&'static str>) -> Self {
         Self {
+            name,
             requests: meter
                 .u64_counter("typesafe.client.requests")
                 .with_description(
@@ -80,6 +82,13 @@ impl Telemetry {
                 })
                 .build(),
         }
+    }
+    // A named client labels its request, call, backoff and token metrics.
+    fn labelled(&self, mut attrs: Vec<KeyValue>) -> Vec<KeyValue> {
+        if let Some(name) = self.name {
+            attrs.push(KeyValue::new("client", name));
+        }
+        attrs
     }
     pub(crate) fn start(&self, model: &str, timeout: Duration, retries: u32) -> Call {
         let span = tracing::info_span!("typesafe.system_one",
@@ -183,6 +192,7 @@ impl Call {
                     attempt.span.record("otel.status_code", "ERROR");
                 }
             }
+            let attrs = self.telemetry.labelled(attrs);
             self.telemetry.requests.add(1, &attrs);
             self.telemetry
                 .request_duration
@@ -200,10 +210,10 @@ impl Call {
         if let Some(started) = self.backoff.take() {
             self.telemetry.backoff_duration.record(
                 started.elapsed().as_secs_f64(),
-                &[
+                &self.telemetry.labelled(vec![
                     KeyValue::new("model", self.model.clone()),
                     KeyValue::new("status", status),
-                ],
+                ]),
             );
         }
     }
@@ -214,10 +224,10 @@ impl Call {
         for (direction, count) in [("input", input), ("output", output)] {
             self.telemetry.tokens.add(
                 count,
-                &[
+                &self.telemetry.labelled(vec![
                     KeyValue::new("model", model.to_owned()),
                     KeyValue::new("direction", direction),
-                ],
+                ]),
             );
         }
     }
@@ -270,9 +280,10 @@ impl Call {
                 http_status = self.http_status, retries_exhausted = self.retries_exhausted,
                 "TypeSafe call did not complete successfully");
         }
-        self.telemetry
-            .call_duration
-            .record(self.started.elapsed().as_secs_f64(), &attrs);
+        self.telemetry.call_duration.record(
+            self.started.elapsed().as_secs_f64(),
+            &self.telemetry.labelled(attrs),
+        );
         ACTIVE_CALLS.fetch_sub(1, Ordering::Relaxed);
         self.finished = true;
     }

@@ -29,7 +29,7 @@ struct Args {
     /// Publish metrics, traces, and logs directly to Datadog (requires --features datadog).
     #[arg(long, requires = "playground")]
     datadog: bool,
-    /// Use queried Datadog telemetry as Jev evidence for both playgrounds.
+    /// Use queried Datadog telemetry as Jev evidence for all three playgrounds.
     /// Requires --datadog, --policy jev, and DD_APP_KEY.
     #[arg(long, requires = "datadog")]
     datadog_evidence: bool,
@@ -98,6 +98,7 @@ fn start(args: Args) -> Result<(), Error> {
         Some([
             reflex_sim::datadog::Source::from_env()?,
             reflex_sim::datadog::Source::from_env()?,
+            reflex_sim::datadog::Source::from_env()?,
         ])
     } else {
         None
@@ -148,7 +149,7 @@ fn start(args: Args) -> Result<(), Error> {
     }
     result
 }
-async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 2]>) -> Result<(), Error> {
+async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 3]>) -> Result<(), Error> {
     if args.playground {
         let forecaster = args
             .toto_url
@@ -163,7 +164,9 @@ async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 2]>) -> R
             })
             .transpose()?;
         if forecaster.is_some() {
-            println!("Local Toto forecasting enabled for circuit breaker and scheduler.");
+            println!(
+                "Local Toto forecasting enabled for circuit breaker, scheduler and cluster autoscaler."
+            );
         }
         let settings = reflex_sim::playground::inference::JevSettings {
             model: args.jev_model.clone(),
@@ -172,33 +175,53 @@ async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 2]>) -> R
         let mut scheduler_evaluator: Option<
             std::sync::Arc<dyn reflex_sim::scheduler::judge::Evaluator>,
         > = None;
+        let mut autoscaler_evaluator: Option<
+            std::sync::Arc<dyn reflex_sim::autoscaler::judge::Evaluator>,
+        > = None;
         let mut evaluator: Option<std::sync::Arc<dyn reflex_sim::jev::Evaluator>> =
             match std::env::var("TYPESAFE_API_KEY")
                 .ok()
                 .filter(|key| !key.trim().is_empty())
             {
                 Some(key) => {
-                    let client = typesafe_ai::TypeSafeClient::builder()
-                        .api_key(key)
-                        .meter(opentelemetry::global::meter("typesafe-ai"))
-                        .timeout(std::time::Duration::from_secs(2))
-                        .max_retries(0)
-                        .build()
-                        .map_err(|e| Error::Invalid(e.to_string()))?;
+                    // One client per simulation: the same settings, named so that each
+                    // simulation's request metrics can be told apart from the others'.
+                    let client = |name| {
+                        typesafe_ai::TypeSafeClient::builder()
+                            .api_key(key.clone())
+                            .name(name)
+                            .meter(opentelemetry::global::meter("typesafe-ai"))
+                            .timeout(std::time::Duration::from_secs(2))
+                            .max_retries(0)
+                            .build()
+                            .map_err(|e| Error::Invalid(e.to_string()))
+                    };
+                    autoscaler_evaluator = Some(std::sync::Arc::new(
+                        reflex_sim::autoscaler::judge::LiveEvaluator::new(
+                            client("cluster_autoscaler")?,
+                            args.jev_model.clone(),
+                        ),
+                    ));
                     scheduler_evaluator = Some(std::sync::Arc::new(
                         reflex_sim::scheduler::judge::LiveEvaluator::new(
-                            client.clone(),
+                            client("resource_scheduler")?,
                             args.jev_model.clone(),
                         ),
                     ));
                     Some(std::sync::Arc::new(reflex_sim::jev::LiveEvaluator::new(
-                        client,
+                        client("circuit_breaker")?,
                         args.jev_model,
                     )))
                 }
                 None => None,
             };
-        if let Some([breaker_source, scheduler_source]) = sources {
+        if let Some([breaker_source, scheduler_source, autoscaler_source]) = sources {
+            autoscaler_evaluator = autoscaler_evaluator.map(|inner| {
+                std::sync::Arc::new(reflex_sim::autoscaler::datadog::DatadogEvaluator::new(
+                    inner,
+                    autoscaler_source,
+                )) as std::sync::Arc<dyn reflex_sim::autoscaler::judge::Evaluator>
+            });
             evaluator = evaluator.map(|inner| {
                 std::sync::Arc::new(reflex_sim::datadog::DatadogEvaluator::new(
                     inner,
@@ -212,7 +235,7 @@ async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 2]>) -> R
                 )) as std::sync::Arc<dyn reflex_sim::scheduler::judge::Evaluator>
             });
         }
-        return reflex_sim::playground::serve_with_forecasts(
+        return reflex_sim::playground::serve_with_autoscaler(
             args.seed,
             args.port,
             !args.no_open,
@@ -221,6 +244,7 @@ async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 2]>) -> R
             settings,
             scheduler_evaluator,
             forecaster,
+            autoscaler_evaluator,
         )
         .await;
     }

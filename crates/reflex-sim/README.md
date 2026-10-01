@@ -207,9 +207,56 @@ Click a client and change **Live priority** to Normal, High or Critical. This is
 
 The topology and queued cards show priority badges. The client inspector reports queued count, completions, completed jobs per simulated second since run start, mean/p95 wait for started jobs, and oldest current queue wait. Priorities remain attached to queued work from removed clients. Sandbox resets retain priority settings; selecting/resetting a canned scenario restores its default clients at Normal priority. Priorities are live controls, not part of a canned schedule.
 
+## Cluster Autoscaler playground
+
+Open the **Cluster autoscaler** tab, or visit `/autoscaler`. It is a single run of a Kubernetes-style cluster, modelled on the circuit-breaker playground: Jev is the only policy and there is no replay. With `--datadog` it publishes its own `autoscaler.*` metrics, decision traces and logs, tagged with the run's `simulation_run`; with `--datadog-evidence` it also queries them back as delayed context for Jev and as Toto's history (see [Datadog mode](#autoscaler-datadog-mode) below). Without those flags nothing is exported and no Datadog credentials are needed. The run lasts 600 simulated seconds, starts paused, and plays at 1×, 2× or 4×.
+
+Three deployments run as pods: `web` (2 CPU / 5 GiB, 4 replicas), `api` (3 CPU / 6 GiB, 2 replicas) and `batch` (4 CPU / 8 GiB, 1 replica). Three node groups supply capacity: small general (4 CPU / 8 GiB, 1–4 nodes), large general (8 CPU / 16 GiB, 1–5 nodes) and memory-heavy (8 CPU / 64 GiB, 0–3 nodes), within a cluster budget of ten nodes. The run starts with two small and two large nodes, fully packed. Placement is automatic, deterministic best fit: a pod goes to the ready node left with the least spare share, and a pod that fits no ready node waits as **Pending**. Nodes move through Provisioning → Ready → Draining → Removed. Provisioning takes about 30 seconds (25–35, drawn from the seed); a drain takes 10 seconds, and evicted pods restart on their new node for 5 seconds before they count as available. Hourly node prices are illustrative.
+
+Load controls play the role of the breaker's fault toggles. **Replica surge** triples a workload's replicas. **Memory-heavy pods** gives its pods four times the memory, so only the memory-heavy group can hold them. **Stockout** makes new nodes of a group fail ten seconds after they are requested. Presets schedule the same controls: **Surge and recovery** (web surges at 45s and api at 90s; they end at 240s and 300s), **Memory-heavy burst** (api from 45s and batch from 150s, until 330s and 390s) and **Cyclical load · Toto** (web and api ramp for 40 seconds every two minutes, with a seeded peak height). **Live** has no schedule.
+
+Every five simulated seconds, and at once when a node becomes ready, fails or finishes draining, Jev is asked for one action from the legal list: scale up a named group by one or two nodes, remove a named node, or no change. The legal list is structural (phase, group limits, node budget); whether a scale-up is justified or a removal is safe is Jev's judgment, and Reflex re-checks it. A call is made only when more than one action is legal, runs outside the session lock with a two-second deadline and no retries, is applied on the next tick, waits while paused, and is cancelled by Reset or a scenario change.
+
+Jev's evidence is the observed cluster only: pending pods with their waits and the groups whose shape fits them, per-group counts, limits and provisioning failures, free CPU/memory and pods per ready node, provisioning nodes with a nominal time remaining, time since the last change and since the last finished scale-up, the cluster revision, a few derived signals (pending pods not covered by provisioning nodes, spare capacity, utilisation, idle nodes, cooldown remaining, actions Reflex refused in the last minute) and the legal actions. With a fresh Toto forecast it also receives the forecast, the extra demand expected within a minute (`forecast_headroom`) and the part of it that spare capacity does not cover. It never receives the scenario name, the schedule, stock levels, or a node's drawn provisioning time.
+
+One Reflex state machine owns the whole cluster, so nodes, pod placements and resource accounting commit together:
+
+| From | Input | To | Guards |
+| --- | --- | --- | --- |
+| Stable or Scaling up | Jev: scale up | Scaling up | `fresh`, `within_limits`, `justified_scale_up` |
+| Scaling up | Node ready or provisioning failed | Scaling up, or Stable for the last node | the node belongs to the current operation |
+| Stable | Jev: remove node | Scaling down | `fresh`, `scale_down_cooldown`, `drainable`, `disruption_budget` |
+| Scaling down | Node drained | Stable | the node belongs to the current operation |
+| Any | Jev: no change | unchanged | `fresh` |
+| Any | Evaluation error | unchanged | none |
+| Any | Clock tick, load or control change | same phase | none |
+
+| Guard | Rejects when |
+| --- | --- |
+| `fresh` | The cluster revision changed while Jev was deciding, or the evidence is more than 5 simulated seconds old |
+| `within_limits` | The group would exceed its maximum, or the cluster its node budget |
+| `justified_scale_up` | Ready and provisioning nodes already cover the pending pods and the forecast headroom, which is capped at three large nodes |
+| `scale_down_cooldown` | A scale-up finished in the last 30 seconds, pods are pending, or the group is at its minimum |
+| `drainable` | The node's pods do not all fit on other ready nodes at execution time |
+| `disruption_budget` | Evicting would leave a workload with fewer than half of its desired replicas available |
+
+Invariants hold on every committed state: no node is overcommitted, pods sit only on ready nodes, each group and the node budget stay within limits, node reservations equal the pods placed on them, and the phase agrees with whether any node is provisioning or draining. A forecast can justify provisioning but never counts as usable capacity, and Jev's confidence bypasses no guard. An action that is legal in another phase (a removal while scaling up, for example) is rejected as an undefined transition.
+
+The canvas shows workloads, the pending queue, the autoscaler with its phase, node groups and nodes; select a workload, group or node to focus the inspector. **Overview** has the load controls, pending time, node count and cost, a demand and capacity chart, the forecast comparison and Jev's cost. **Pods** lists every pod with its node or wait. **Activity** lists transitions, control changes and refused recommendations, and a table of Jev decisions; select one to see the exact evidence sent, Jev's reply and the guard result. **Export run** downloads the full state, decisions, timeline and per-second history. Tests in `tests/autoscaler.rs`, `tests/autoscaler_telemetry.rs`, `tests/autoscaler_tracing.rs` and the `autoscaler` modules use fake evaluators and loopback servers; they need no TypeSafe or Datadog key.
+
+### Autoscaler Datadog mode
+
+The autoscaler follows the scheduler's model, not the breaker's. The cluster's own state (nodes, pod placements, pending pods, legal actions, revision) is always sent to Jev. Valid Datadog observations are attached as `telemetry` with `source: "datadog"`, the observation time and its age; missing, stale or incomplete telemetry is left out and never delays an evaluation or stands in for the live state. Guards keep checking the live cluster at execution time, so a delayed observation cannot authorise an unsafe change.
+
+Toto's history in this mode is the run's requested CPU, requested memory and pending pods queried back from Datadog in ten-second buckets. `forecast_headroom`, which the `justified_scale_up` guard uses, comes from that forecast, and the evidence says so in `forecast_basis` (source, time domain, age and the age limit). A Datadog-sourced forecast justifies a scale-up until the last bucket it saw is 60 seconds old; a local one for 30 simulated seconds. If the forecast passes that age while Jev is deciding, the guard ignores it at execution.
+
+Operating limits match the other simulations: 1× playback in real time, no stepping, a fresh `simulation_run` on every reset, a warm-up before the first usable window, and cached evidence cleared on pause and resume. Because evidence is tens of seconds old and Toto needs 320 seconds of queried history, a Datadog-mode run lasts 15 minutes instead of 10; the Surge and Memory-heavy presets apply their changes at twice their local times, and the Cyclical preset keeps its two-minute cycle and repeats it for longer. The page shows telemetry readiness and age, hides the speed control and disables +1s.
+
+The executor, the controller and a TypeSafe client named `cluster_autoscaler` all use the application's meter provider, so with `--datadog` the autoscaler's `reflex.evaluations`, `reflex.transitions` and `typesafe.client.*` metrics are exported and labelled as its own, and without it none of them are. The [telemetry contract](AUTOSCALER_TELEMETRY.md) lists every metric, tag, trace and query; [dashboards/cluster-autoscaler.json](../../dashboards/cluster-autoscaler.json) charts them.
+
 ## Forecasting
 
-Toto forecasting is integrated into circuit breaking and scheduling. See the [forecasting guide](FORECASTING.md) for setup, observation series, history windows, uncertainty, and fallback behavior. The standalone capacity tab is retired; its underlying module remains available for research and recorded study replay.
+Toto forecasting is integrated into circuit breaking, scheduling and cluster autoscaling. See the [forecasting guide](FORECASTING.md) for setup, observation series, history windows, uncertainty, and fallback behavior. The standalone capacity tab is retired; its underlying module remains available for research and recorded study replay.
 
 
 ## Canned incident runs
@@ -222,15 +269,18 @@ Each playground has a Scenario selector and a **Run scenario** button. Selecting
 | Circuit breaker | Recurring error storms | Search receives an 85% injected error probability during 75–100s and 125–150s. |
 | Scheduler | Traffic burst | Three clients start at 2 jobs/s each, rise to 6 jobs/s at 75s, then ease to 1 job/s at 115s. |
 | Scheduler | CPU / memory mix shift | At 75s Client 2 changes to 8 CPU / 2 GiB jobs and Client 3 to 2 CPU / 24 GiB jobs. Original sizes return at 125s; rates stay fixed. |
+| Cluster autoscaler | Surge and recovery | web triples its replicas at 45s and api at 90s; the surges end at 240s and 300s. |
+| Cluster autoscaler | Memory-heavy burst | api pods need four times the memory from 45s and batch pods from 150s, until 330s and 390s. |
+| Cluster autoscaler | Cyclical load · Toto | Every 120s web rises from 4 to 9–11 replicas and api from 2 to 4, from +40s to +80s. |
 
 Scheduler presets restore three known client profiles. Sandbox mode retains custom client settings on reset. Manual controls remain available during presets; later scheduled changes still apply. Circuit-breaker replay records the actual fault edits, including scheduled changes.
 
-For Datadog-backed circuit breaking and scheduling, incident preset times are multiplied by three (the repeating demand cycle remains 60 seconds), allowing remote history to warm up before the first change. Their descriptions display the actual times.
+For Datadog-backed circuit breaking and scheduling, incident preset times are multiplied by three (the repeating demand cycle remains 60 seconds), allowing remote history to warm up before the first change. For the Datadog-backed autoscaler they are multiplied by two and the run lasts 15 minutes; its cycle remains 120 seconds. Their descriptions display the actual times.
 
 ## Local Toto forecasts
 
 Run the optional [Python Toto service](../../integrations/toto/README.md), then add
 `--toto-url http://127.0.0.1:8765` to the playground command. The same provider
-serves Circuit Breaker and Resource Scheduler using local observations
-or queried Datadog history. Forecast switches and comparison charts are available
+serves Circuit Breaker, Resource Scheduler and Cluster Autoscaler using local
+observations or queried Datadog history. Forecast switches and comparison charts are available
 in each simulation.

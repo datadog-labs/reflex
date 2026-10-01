@@ -15,8 +15,8 @@ cargo run -p reflex-sim --locked -- --playground --port 8742 --no-open
 ```
 
 Run the npm build before Cargo builds/tests, including on a fresh CI checkout.
-The build generates `controls.js/css`, `scenario-ui.js/css`, and `typography.css`
-under `src/`. These outputs are ignored by Git and embedded into the Rust binary.
+The build generates `controls.js/css`, `scenario-ui.js/css`, `autoscaler-ui.js/css`,
+and `typography.css` under `src/`. These outputs are ignored by Git and embedded into the Rust binary.
 Rebuild the browser assets and restart Rust after UI changes. No Node server or
 CDN is required at runtime; exported reports retain their embedded fonts.
 
@@ -38,6 +38,8 @@ table, select, tooltip, and dialog interactions when updating this stack.
   existing API controller and Rust simulation remain authoritative.
 - `scenarios.jsx` supplies the shell for Scheduler,
   retaining the existing forms, validation, dialogs, and API controllers.
+- `autoscaler.jsx` owns the Cluster Autoscaler page: the cluster map, load
+  controls, pods, activity, and the decision detail. It polls `/api/autoscaler`.
 - `flow-map.jsx` is a Reflex-owned SVG map with explicit horizontal columns,
   public DRUIDS node content, pan/zoom/fit, keyboard-accessible node buttons,
   and traffic animation. It respects reduced motion and paused/blocked flows.
@@ -56,7 +58,7 @@ inference requires separate server credentials; local policies work without them
 
 ## Canvas layout
 
-Both playgrounds share a full-height topology canvas, a collapsible scenario
+All three playgrounds share a full-height topology canvas, a collapsible scenario
 picker, a bottom playback dock, and a fixed inspector. Dark is the default;
 the header theme button persists the light/dark preference in local storage.
 The shared token layer styles public DRUIDS components and the native scheduler

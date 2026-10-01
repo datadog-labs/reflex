@@ -30,7 +30,7 @@ A late HTTP 200 can increment the server success counter after the client alread
 
 ## Clock and incident lifecycle
 
-Durations use simulated seconds. Metrics are exported with real collection timestamps. Datadog rates derived from the completion counters therefore describe completions per wall-clock second and reflect playback speed. API latency in `typesafe.client.*` continues to use real time.
+Durations use simulated seconds. Metrics are exported with real collection timestamps. Datadog rates derived from the completion counters therefore describe completions per wall-clock second and reflect playback speed. API latency in `typesafe.client.*` continues to use real time. The playground gives the circuit breaker its own TypeSafe client, so its request, duration, backoff and token metrics carry `client:circuit_breaker`; the scheduler's and autoscaler's carry `client:resource_scheduler` and `client:cluster_autoscaler`. The breaker's `reflex.evaluations` carry `controller:circuit_breaker` and its `reflex.transitions` carry `machine:circuit_breaker`. Every service's state machine uses that name, under both the threshold and the Jev policy; these counters have no `upstream` or `policy` tag.
 
 Gauges are observed at export time from the latest simulation snapshot, including while paused. Ending or replacing an incident releases its gauge observations. Counters remain cumulative across resets within the process. One current incident per policy should use a given meter/tag combination.
 

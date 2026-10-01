@@ -76,6 +76,81 @@ async fn typed_round_trip_preserves_metadata_and_sends_exact_wire_contract() {
     server.finish().await;
 }
 #[tokio::test]
+async fn a_named_client_labels_its_metrics_and_an_unnamed_one_does_not() {
+    use opentelemetry::metrics::MeterProvider;
+    use opentelemetry_sdk::metrics::{
+        data::{AggregatedMetrics, MetricData},
+        InMemoryMetricExporter, PeriodicReader, SdkMeterProvider,
+    };
+    for name in [Some("cluster_autoscaler"), None] {
+        let exporter = InMemoryMetricExporter::default();
+        let provider = SdkMeterProvider::builder()
+            .with_reader(PeriodicReader::builder(exporter.clone()).build())
+            .build();
+        let server = Server::start(vec![Reply::json(200, response())]).await;
+        let mut builder = TypeSafeClient::builder()
+            .api_key("test-key")
+            .endpoint(&server.endpoint)
+            .meter(provider.meter("typesafe-ai"));
+        if let Some(name) = name {
+            builder = builder.name(name);
+        }
+        let client = builder.build().unwrap();
+        client
+            .system_one(&task!(), &json!({"load":42}))
+            .await
+            .unwrap();
+        provider.force_flush().unwrap();
+        let metrics = exporter.get_finished_metrics().unwrap();
+        let mut labels = Vec::new();
+        for metric in metrics
+            .iter()
+            .flat_map(|rm| rm.scope_metrics())
+            .flat_map(|sm| sm.metrics())
+        {
+            let client: Vec<Vec<String>> = match metric.data() {
+                AggregatedMetrics::U64(MetricData::Sum(sum)) => sum
+                    .data_points()
+                    .map(|p| p.attributes().map(|kv| kv.to_owned()).collect::<Vec<_>>())
+                    .map(|a| {
+                        a.iter()
+                            .filter(|kv| kv.key.as_str() == "client")
+                            .map(|kv| kv.value.to_string())
+                            .collect()
+                    })
+                    .collect(),
+                AggregatedMetrics::F64(MetricData::Histogram(h)) => h
+                    .data_points()
+                    .map(|p| p.attributes().map(|kv| kv.to_owned()).collect::<Vec<_>>())
+                    .map(|a| {
+                        a.iter()
+                            .filter(|kv| kv.key.as_str() == "client")
+                            .map(|kv| kv.value.to_string())
+                            .collect()
+                    })
+                    .collect(),
+                // The in-flight gauge is process-wide and never labelled.
+                _ => continue,
+            };
+            labels.push((metric.name().to_owned(), client));
+        }
+        for expected in [
+            "typesafe.client.requests",
+            "typesafe.client.request.duration",
+            "typesafe.client.call.duration",
+            "typesafe.client.tokens",
+        ] {
+            let (_, points) = labels.iter().find(|(n, _)| n == expected).unwrap();
+            assert!(!points.is_empty(), "{expected}");
+            for point in points {
+                let wanted: Vec<String> = name.iter().map(|n| n.to_string()).collect();
+                assert_eq!(point, &wanted, "{expected}");
+            }
+        }
+        provider.shutdown().unwrap();
+    }
+}
+#[tokio::test]
 async fn retries_retryable_status_with_same_request() {
     let mut retry = Reply::json(429, json!({}));
     retry.headers = "Retry-After: 0\r\n".into();

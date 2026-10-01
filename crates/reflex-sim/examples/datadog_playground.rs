@@ -40,21 +40,27 @@ fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let runtime = tokio::runtime::Runtime::new()?;
     let result = runtime.block_on(async {
         let model = std::env::var("TYPESAFE_MODEL").unwrap_or_else(|_| "jev-1.13.0".into());
-        let client = typesafe_ai::TypeSafeClient::builder()
-            .api_key(key)
-            .meter(telemetry.meter())
-            .timeout(Duration::from_secs(2))
-            .max_retries(0)
-            .build()?;
+        // One named client per simulation, so their request metrics can be told apart.
+        let client = |name| {
+            typesafe_ai::TypeSafeClient::builder()
+                .api_key(key.clone())
+                .name(name)
+                .meter(telemetry.meter())
+                .timeout(Duration::from_secs(2))
+                .max_retries(0)
+                .build()
+        };
         let settings = JevSettings {
             model: model.clone(),
             ..Default::default()
         };
-        let mut scheduler: Arc<dyn reflex_sim::scheduler::judge::Evaluator> = Arc::new(
-            reflex_sim::scheduler::judge::LiveEvaluator::new(client.clone(), model.clone()),
-        );
+        let mut scheduler: Arc<dyn reflex_sim::scheduler::judge::Evaluator> =
+            Arc::new(reflex_sim::scheduler::judge::LiveEvaluator::new(
+                client("resource_scheduler")?,
+                model.clone(),
+            ));
         let mut breaker: Arc<dyn reflex_sim::jev::Evaluator> =
-            Arc::new(LiveEvaluator::new(client, model));
+            Arc::new(LiveEvaluator::new(client("circuit_breaker")?, model));
         if args.datadog_evidence {
             scheduler = Arc::new(reflex_sim::scheduler::datadog::DatadogEvaluator::new(
                 scheduler,

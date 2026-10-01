@@ -165,6 +165,7 @@ impl Evaluator for LiveEvaluator {
             // A fresh adapter per evaluation makes diagnostics belong to this response.
             let judge = TypeSafeJudge::new(self.client.clone(), task).select_answer(|a| a.action);
             let controller = Controller::builder()
+                .name("circuit_breaker")
                 .judge(judge)
                 .inference_timeout(Duration::from_secs(2))
                 .build()
@@ -449,6 +450,7 @@ impl JevPolicy {
             ],
         };
         let machine = StateMachineExecutor::builder(definition)
+            .name("circuit_breaker")
             .store(InMemory::new(
                 CircuitPhase::Closed,
                 Data {

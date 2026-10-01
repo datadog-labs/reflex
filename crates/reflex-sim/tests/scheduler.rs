@@ -194,7 +194,12 @@ async fn client_controls_only_affect_future_jobs_and_removal_keeps_existing_work
     let mut s = Session::new(42, None, JevSettings::default()).unwrap();
     // Isolate this client's arrivals from the playground defaults.
     for id in 1..3 {
-        s.command(Command::Client { id, config: config(0., 1) }).await.unwrap();
+        s.command(Command::Client {
+            id,
+            config: config(0., 1),
+        })
+        .await
+        .unwrap();
     }
     s.command(Command::Client {
         id: 0,
@@ -256,7 +261,13 @@ async fn controls_validate_bounds_and_support_eight_independent_clients() {
     let mut s = Session::new(1, None, JevSettings::default()).unwrap();
     let original = s.view().clients[0].config.rate;
     for rate in [0.3, 1.5] {
-        assert!(s.command(Command::Client { id: 0, config: config(rate, 1) }).await.is_err());
+        assert!(s
+            .command(Command::Client {
+                id: 0,
+                config: config(rate, 1)
+            })
+            .await
+            .is_err());
         assert_eq!(s.view().clients[0].config.rate, original);
     }
     assert!(s.view().clients.iter().all(|c| c.config.rate.fract() == 0.));
@@ -323,7 +334,12 @@ async fn slow_jev_does_not_block_arrivals_and_reset_cancels_pending_placement() 
     let mut s = Session::new(42, Some(mock.clone()), JevSettings::default()).unwrap();
     // Only this client produces the six arrivals while inference is pending.
     for id in 1..3 {
-        s.command(Command::Client { id, config: config(0., 1) }).await.unwrap();
+        s.command(Command::Client {
+            id,
+            config: config(0., 1),
+        })
+        .await
+        .unwrap();
     }
     s.command(Command::Client {
         id: 0,
@@ -656,7 +672,9 @@ async fn sole_aged_placement_uses_guards_without_another_jev_call() {
     s.command(Command::Priority {
         id: 0,
         priority: reflex_sim::scheduler::Priority::Critical,
-    }).await.unwrap();
+    })
+    .await
+    .unwrap();
     s.command(Command::Step).await.unwrap();
     assert_eq!(s.view().calls, 1);
     assert_eq!(s.data().jobs[0].phase, JobPhase::Running);
@@ -817,7 +835,6 @@ async fn resource_history_preserves_reservations_after_jobs_finish_and_clears_on
     assert!(s.view().history.is_empty());
 }
 
-
 struct DeferAll;
 impl Evaluator for DeferAll {
     fn evaluate(&self, _: Evidence) -> Evaluation<'_> {
@@ -838,8 +855,14 @@ async fn evaluations_continue_past_180_calls_but_stop_at_simulation_timeout() {
             dispatch_interval: Duration::ZERO,
             ..Default::default()
         },
-    ).unwrap();
-    s.command(Command::Client { id: 0, config: config(1., 1) }).await.unwrap();
+    )
+    .unwrap();
+    s.command(Command::Client {
+        id: 0,
+        config: config(1., 1),
+    })
+    .await
+    .unwrap();
     s.command(Command::Play).await.unwrap();
     for _ in 0..400 {
         s.tick(50).await.unwrap();

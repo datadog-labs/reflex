@@ -9,6 +9,7 @@ import {Button} from '@datadog/druids/form/Button';
 import {NetworkIcon} from '@datadog/druids/icons/Network';
 import {ContainerImageIcon} from '@datadog/druids/icons/ContainerImage';
 import {ConnectionIcon} from '@datadog/druids/icons/Connection';
+import {KubernetesAutoscalingIcon} from '@datadog/druids/icons/KubernetesAutoscaling';
 import {SunIcon} from '@datadog/druids/icons/Sun';
 import {MoonIcon} from '@datadog/druids/icons/Moon';
 import {HelpIcon} from '@datadog/druids/icons/Help';
@@ -36,12 +37,13 @@ function Header({disabled,connected,navigate,onHelp}){
   <nav className="reflex-product-tabs" aria-label="Simulation scenarios"><SoftToggle ariaLabel="Simulation screen" value={location.pathname} options={[
    {value:'/',label:'Circuit breaker',icon:ConnectionIcon,isDisabled:disabled},
    {value:'/scheduler',label:'Resource scheduler',icon:ContainerImageIcon,isDisabled:disabled},
+   {value:'/autoscaler',label:'Cluster autoscaler',icon:KubernetesAutoscalingIcon,isDisabled:disabled},
   ]} onChange={path=>{if(path!==location.pathname)navigate?.(path);}}/></nav>
   <div className="product-header-actions">
    <span className="engine-status" data-connected={connected} role="status">{connected?'Engine connected':'Engine disconnected'}</span>
    <Button isBorderless icon={theme==='dark'?SunIcon:MoonIcon} ariaLabel={`Switch to ${theme==='dark'?'light':'dark'} theme`} onClick={toggleTheme}/>
    <Button className="help-action" isBorderless icon={HelpIcon} label="How it works" isTitleCased={false} onClick={onHelp}/>
-   <Button isPrimary icon={DownloadIcon} label="Export run" isTitleCased={false} isDisabled={!connected} onClick={()=>{const a=document.createElement('a');a.href=location.pathname==='/scheduler'?'/api/scheduler/export':'/api/export';a.download='reflex-run.json';a.click();}}/>
+   <Button isPrimary icon={DownloadIcon} label="Export run" isTitleCased={false} isDisabled={!connected} onClick={()=>{const a=document.createElement('a');a.href={'/scheduler':'/api/scheduler/export','/autoscaler':'/api/autoscaler/export'}[location.pathname]||'/api/export';a.download='reflex-run.json';a.click();}}/>
   </div>
  </header></ReflexEnvironment>;
 }

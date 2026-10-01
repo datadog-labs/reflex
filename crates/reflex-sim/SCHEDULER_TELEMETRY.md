@@ -47,7 +47,7 @@ scheduler.decision
 
 One decision trace spans background Jev inference, any paused wait, and guarded placement. The shared context helper also handles reset/cancellation. Baseline policies use the same decision/application trace without a Jev evaluation. Inference failures and rejected placements retain their decision trace. Span context stays out of model evidence and exported recordings.
 
-The `reflex_sim::scheduler` target logs placement outcomes, terminal rejections, and client/playback controls. Existing `reflex.*` counters and spans carry `controller:resource_scheduler` or `machine:resource_scheduler`; existing `typesafe.client.*` telemetry covers provider requests, latency and errors. No additional inference metrics duplicate these.
+The `reflex_sim::scheduler` target logs placement outcomes, terminal rejections, and client/playback controls. Existing `reflex.*` counters and spans carry `controller:resource_scheduler` or `machine:resource_scheduler`; existing `typesafe.client.*` telemetry covers provider requests, latency and errors, and the playground's scheduler client labels it `client:resource_scheduler`. That label names the TypeSafe client; it is unrelated to the `client:client_N` tag on `scheduler.*` metrics. No additional inference metrics duplicate these.
 
 ## Datadog runner
 
@@ -91,7 +91,7 @@ telemetry
 
 The local node snapshot, local total queue length, and per-running-job remaining-time estimates are omitted from model input in this mode. Queue statistics and node measurements are the maxima within the same ten-second bucket; they are delayed operational context, not an atomic current scheduler snapshot. Memory remains in bytes. Historical duration distributions are available in the dashboard but are not queried for model input in this first implementation.
 
-All scheduler metrics in this mode include `simulation_run`. Reset rotates the tag and cancels pending queries/inference. Removed clients continue exporting zero queue gauges after their work drains so historical queue values cannot linger. Queries are scoped by `env`, `service`, `policy:jev`, and run. The global SDK metrics retain their existing application scope.
+All scheduler metrics in this mode include `simulation_run`. Reset rotates the tag and cancels pending queries/inference. Removed clients continue exporting zero queue gauges after their work drains so historical queue values cannot linger. Queries are scoped by `env`, `service`, `policy:jev`, and run. The global SDK metrics retain their existing application scope: they carry the scheduler's `controller`, `machine` and TypeSafe `client` names but no run tag.
 
 At most one asynchronous Datadog fetch is active, at least ten wall-clock seconds between starts. Queries exclude the newest twenty seconds to allow ingestion, disable interpolation, and require a complete bucket for every node and relevant client. Resume and adding a client invalidate cached observations and require buckets at least twenty seconds after that boundary. Initial warm-up is typically 50–70 seconds, depending on export and ingestion timing. While paused, pending work is cancelled; resuming warms up again. Step, accelerated playback, and deterministic policies are disabled in this mode. The three-minute simulation horizon remains unchanged.
 

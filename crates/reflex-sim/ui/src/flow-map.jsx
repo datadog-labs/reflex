@@ -85,7 +85,7 @@ export function FlowMap({nodes, edges, running, speed=1, onSelect}) {
           {n.annotation&&<span className="reflex-map-annotation">{n.annotation}</span>}<span className="reflex-map-node-heading"><span className="reflex-node-icon"><Icon/></span><span className="reflex-node-label"><Text className="reflex-node-name">{n.name}</Text>{n.subtext&&<Text size="sm" variant="secondary">{n.subtext}</Text>}</span>{n.phase&&<StatusPill className="reflex-node-phase" isSoft size="xs" level={n.status||'default'}>{n.phase}</StatusPill>}</span>
           {n.metrics?.length>0&&<span className="reflex-map-metrics">{n.metrics.map((value,i)=><span key={i} className="reflex-map-metric" data-level={n.metricLevels?.[i]||'default'}><span>{value.label}</span><strong>{value.value}</strong></span>)}</span>}
           {n.circuits?.length>0&&<span className="reflex-gateway-circuits" aria-label="Gateway circuit breakers">{n.circuits.map(circuit=><span key={circuit.name} className="reflex-gateway-circuit" data-node-status={circuit.status}><Text size="sm">{circuit.name}</Text><StatusPill className="reflex-node-phase" isSoft size="xs" level={circuit.status}>{circuit.phase}</StatusPill></span>)}</span>}
-          {Number.isFinite(n.ratio)&&<progress style={{'--progress-color':n.ratio>.65?'var(--r-bad)':n.ratio>.3?'var(--r-warn)':'var(--r-ok)'}} max="1" value={Math.max(0,Math.min(1,n.ratio))} aria-label={`${n.name} utilization`}/>}
+          {Number.isFinite(n.ratio)&&<progress style={{'--progress-color':n.ratioColor||(n.ratio>.65?'var(--r-bad)':n.ratio>.3?'var(--r-warn)':'var(--r-ok)')}} max="1" value={Math.max(0,Math.min(1,n.ratio))} aria-label={`${n.name} utilization`}/>}
         </Tag></foreignObject>;})}
       </g>
     </svg>

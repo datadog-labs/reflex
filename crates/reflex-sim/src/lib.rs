@@ -5,6 +5,7 @@
 //! Discrete-event circuit-breaking laboratory with interchangeable client policies.
 //! Simulated time is independent of wall-clock time. The same immutable traffic
 //! trace and random draws can be replayed against every policy.
+pub mod autoscaler;
 pub mod capacity;
 mod decision_trace;
 pub mod engine;

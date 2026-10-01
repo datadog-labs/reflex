@@ -1,6 +1,6 @@
 {
-  "title": "Reflex | Circuit breaker operations",
-  "description": "Client outcomes, server pressure, circuit state and the breaker's Jev telemetry. Select a simulation_run and its historical time range. HTTP and breaker widgets target Datadog-evidence mode; SDK widgets have application scope.",
+  "title": "Reflex | Cluster autoscaler operations",
+  "description": "Demand and ready capacity, pending pods, node groups and lifecycle, and guarded scaling recommendations. Select one simulation_run and its historical time range. SDK panels are scoped to the autoscaler.",
   "layout_type": "ordered",
   "reflow_type": "auto",
   "template_variables": [
@@ -9,6 +9,13 @@
       "prefix": "env",
       "defaults": [
         "local"
+      ]
+    },
+    {
+      "name": "application",
+      "prefix": "service",
+      "defaults": [
+        "reflex"
       ]
     },
     {
@@ -24,13 +31,6 @@
       "defaults": [
         "*"
       ]
-    },
-    {
-      "name": "application",
-      "prefix": "service",
-      "defaults": [
-        "reflex"
-      ]
     }
   ],
   "widgets": [
@@ -38,7 +38,7 @@
       "id": 1,
       "definition": {
         "type": "note",
-        "content": "## Circuit breaker operations\nSelect an environment, policy and **simulation run**; choose the corresponding time range. This dashboard targets run-tagged metrics from Datadog-evidence mode. Run `*` combines runs; select one run to interpret breaker state.\n**Closed** allows traffic \u00b7 **Open** blocks traffic \u00b7 **Probe** admits a recovery request. No change is a decision, not a fourth state.\nRequests are counted at their terminal outcome. Rates use wall time; HTTP durations use simulation time (aligned at 1\u00d7 playback). Missing data is not treated as healthy.",
+        "content": "## Cluster autoscaling\nSelect an environment, application, policy and **simulation run**, then the matching time range. Every autoscaler metric carries its run tag whenever `--datadog` export is on; run `*` combines runs, so select one run to read demand, capacity and node counts. A reset starts a new run.\nCPU and memory show **requests and reservations**, not measured usage. Pending pods fit no ready node. Durations and pending pod-seconds use simulated time; rates and bucket counts use wall time (aligned at 1\u00d7). Missing telemetry is not interpreted as no demand or spare capacity.",
         "background_color": "white",
         "font_size": "14",
         "text_align": "left",
@@ -46,10 +46,10 @@
       }
     },
     {
-      "id": 6,
+      "id": 8,
       "definition": {
         "type": "group",
-        "title": "Client outcomes \u2014 selected time range",
+        "title": "Outcomes \u2014 selected time range",
         "layout_type": "ordered",
         "show_title": true,
         "background_color": "blue",
@@ -58,7 +58,7 @@
             "id": 2,
             "definition": {
               "type": "query_value",
-              "title": "Completed client requests",
+              "title": "Scale-ups applied",
               "requests": [
                 {
                   "response_format": "scalar",
@@ -66,7 +66,7 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search)}.as_count()",
+                      "query": "sum:autoscaler.decisions{$env AND $application AND $policy AND $run AND action:scale_up AND outcome:applied}.as_count()",
                       "aggregator": "sum"
                     }
                   ],
@@ -85,7 +85,7 @@
             "id": 3,
             "definition": {
               "type": "query_value",
-              "title": "Successful client requests",
+              "title": "Removals applied",
               "requests": [
                 {
                   "response_format": "scalar",
@@ -93,7 +93,7 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome:success}.as_count()",
+                      "query": "sum:autoscaler.decisions{$env AND $application AND $policy AND $run AND action:remove AND outcome:applied}.as_count()",
                       "aggregator": "sum"
                     }
                   ],
@@ -112,7 +112,7 @@
             "id": 4,
             "definition": {
               "type": "query_value",
-              "title": "Client failure % \u2014 excludes blocked",
+              "title": "Recommendations rejected",
               "requests": [
                 {
                   "response_format": "scalar",
@@ -120,33 +120,26 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome IN (http_error,timeout)}.as_count()",
-                      "aggregator": "sum"
-                    },
-                    {
-                      "data_source": "metrics",
-                      "name": "q2",
-                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome IN (success,http_error,timeout)}.as_count()",
+                      "query": "sum:autoscaler.decisions{$env AND $application AND $policy AND $run AND outcome:rejected}.as_count()",
                       "aggregator": "sum"
                     }
                   ],
                   "formulas": [
                     {
-                      "formula": "100 * q1 / q2"
+                      "formula": "q1"
                     }
                   ]
                 }
               ],
-              "precision": 1,
-              "autoscale": true,
-              "custom_unit": "%"
+              "precision": 0,
+              "autoscale": true
             }
           },
           {
             "id": 5,
             "definition": {
               "type": "query_value",
-              "title": "Blocked client requests",
+              "title": "Nodes that became ready",
               "requests": [
                 {
                   "response_format": "scalar",
@@ -154,7 +147,61 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome:circuit_open}.as_count()",
+                      "query": "sum:autoscaler.node.events{$env AND $application AND $policy AND $run AND event:ready}.as_count()",
+                      "aggregator": "sum"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ]
+                }
+              ],
+              "precision": 0,
+              "autoscale": true
+            }
+          },
+          {
+            "id": 6,
+            "definition": {
+              "type": "query_value",
+              "title": "Provisioning failures",
+              "requests": [
+                {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:autoscaler.node.events{$env AND $application AND $policy AND $run AND event:failed}.as_count()",
+                      "aggregator": "sum"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ]
+                }
+              ],
+              "precision": 0,
+              "autoscale": true
+            }
+          },
+          {
+            "id": 7,
+            "definition": {
+              "type": "query_value",
+              "title": "Pending pod-seconds",
+              "requests": [
+                {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:autoscaler.pods.pending.time{$env AND $application AND $policy AND $run}.as_count()",
                       "aggregator": "sum"
                     }
                   ],
@@ -173,185 +220,19 @@
       }
     },
     {
-      "id": 12,
+      "id": 17,
       "definition": {
         "type": "group",
-        "title": "Circuit state and recovery",
+        "title": "Demand, capacity and pending pods",
         "layout_type": "ordered",
         "show_title": true,
-        "background_color": "purple",
+        "background_color": "green",
         "widgets": [
-          {
-            "id": 7,
-            "definition": {
-              "type": "timeseries",
-              "title": "catalog \u2014 breaker state (1 = current)",
-              "show_legend": true,
-              "legend_layout": "auto",
-              "requests": [
-                {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "q1",
-                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:catalog AND state:closed}"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "formula": "q1",
-                      "alias": "Closed \u2014 traffic allowed"
-                    }
-                  ],
-                  "display_type": "line",
-                  "style": {
-                    "palette": "green",
-                    "line_type": "solid",
-                    "line_width": "thick"
-                  }
-                },
-                {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "q1",
-                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:catalog AND state:probe}"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "formula": "q1",
-                      "alias": "Probe \u2014 recovery check"
-                    }
-                  ],
-                  "display_type": "line",
-                  "style": {
-                    "palette": "orange",
-                    "line_type": "solid",
-                    "line_width": "thick"
-                  }
-                },
-                {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "q1",
-                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:catalog AND state:open}"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "formula": "q1",
-                      "alias": "Open \u2014 traffic blocked"
-                    }
-                  ],
-                  "display_type": "line",
-                  "style": {
-                    "palette": "red",
-                    "line_type": "solid",
-                    "line_width": "thick"
-                  }
-                }
-              ],
-              "yaxis": {
-                "min": "0",
-                "max": "1.1",
-                "scale": "linear",
-                "include_zero": true
-              }
-            }
-          },
-          {
-            "id": 8,
-            "definition": {
-              "type": "timeseries",
-              "title": "payments \u2014 breaker state (1 = current)",
-              "show_legend": true,
-              "legend_layout": "auto",
-              "requests": [
-                {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "q1",
-                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:payments AND state:closed}"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "formula": "q1",
-                      "alias": "Closed \u2014 traffic allowed"
-                    }
-                  ],
-                  "display_type": "line",
-                  "style": {
-                    "palette": "green",
-                    "line_type": "solid",
-                    "line_width": "thick"
-                  }
-                },
-                {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "q1",
-                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:payments AND state:probe}"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "formula": "q1",
-                      "alias": "Probe \u2014 recovery check"
-                    }
-                  ],
-                  "display_type": "line",
-                  "style": {
-                    "palette": "orange",
-                    "line_type": "solid",
-                    "line_width": "thick"
-                  }
-                },
-                {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "q1",
-                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:payments AND state:open}"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "formula": "q1",
-                      "alias": "Open \u2014 traffic blocked"
-                    }
-                  ],
-                  "display_type": "line",
-                  "style": {
-                    "palette": "red",
-                    "line_type": "solid",
-                    "line_width": "thick"
-                  }
-                }
-              ],
-              "yaxis": {
-                "min": "0",
-                "max": "1.1",
-                "scale": "linear",
-                "include_zero": true
-              }
-            }
-          },
           {
             "id": 9,
             "definition": {
               "type": "timeseries",
-              "title": "search \u2014 breaker state (1 = current)",
+              "title": "Requested and ready CPU",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -361,70 +242,34 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:search AND state:closed}"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "formula": "q1",
-                      "alias": "Closed \u2014 traffic allowed"
-                    }
-                  ],
-                  "display_type": "line",
-                  "style": {
-                    "palette": "green",
-                    "line_type": "solid",
-                    "line_width": "thick"
-                  }
-                },
-                {
-                  "response_format": "timeseries",
-                  "queries": [
+                      "query": "max:autoscaler.cpu.requested{$env AND $application AND $policy AND $run}"
+                    },
                     {
                       "data_source": "metrics",
-                      "name": "q1",
-                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:search AND state:probe}"
+                      "name": "q2",
+                      "query": "max:autoscaler.cpu.ready{$env AND $application AND $policy AND $run}"
                     }
                   ],
                   "formulas": [
                     {
                       "formula": "q1",
-                      "alias": "Probe \u2014 recovery check"
+                      "alias": "Requested CPU"
+                    },
+                    {
+                      "formula": "q2",
+                      "alias": "Ready CPU"
                     }
                   ],
                   "display_type": "line",
                   "style": {
-                    "palette": "orange",
+                    "palette": "dog_classic",
                     "line_type": "solid",
-                    "line_width": "thick"
-                  }
-                },
-                {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "q1",
-                      "query": "max:circuit_breaker.state{$env AND $policy AND $run AND upstream:search AND state:open}"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "formula": "q1",
-                      "alias": "Open \u2014 traffic blocked"
-                    }
-                  ],
-                  "display_type": "line",
-                  "style": {
-                    "palette": "red",
-                    "line_type": "solid",
-                    "line_width": "thick"
+                    "line_width": "normal"
                   }
                 }
               ],
               "yaxis": {
                 "min": "0",
-                "max": "1.1",
                 "scale": "linear",
                 "include_zero": true
               }
@@ -434,7 +279,7 @@
             "id": 10,
             "definition": {
               "type": "timeseries",
-              "title": "Actual state transitions per bucket",
+              "title": "Requested and ready memory (GiB)",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -444,12 +289,22 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "sum:circuit_breaker.transitions{$env AND $policy AND $run AND upstream IN (catalog,payments,search)} by {upstream,from,to}.as_count()"
+                      "query": "max:autoscaler.memory.requested{$env AND $application AND $policy AND $run}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "q2",
+                      "query": "max:autoscaler.memory.ready{$env AND $application AND $policy AND $run}"
                     }
                   ],
                   "formulas": [
                     {
-                      "formula": "q1"
+                      "formula": "q1 / 1073741824",
+                      "alias": "Requested memory"
+                    },
+                    {
+                      "formula": "q2 / 1073741824",
+                      "alias": "Ready memory"
                     }
                   ],
                   "display_type": "line",
@@ -471,7 +326,7 @@
             "id": 11,
             "definition": {
               "type": "timeseries",
-              "title": "Recovery probe outcomes per bucket",
+              "title": "Pending pods by workload",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -481,7 +336,7 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "sum:circuit_breaker.probes{$env AND $policy AND $run AND upstream IN (catalog,payments,search)} by {upstream,outcome}.as_count()"
+                      "query": "max:autoscaler.pods.pending{$env AND $application AND $policy AND $run} by {workload}"
                     }
                   ],
                   "formulas": [
@@ -503,24 +358,12 @@
                 "include_zero": true
               }
             }
-          }
-        ]
-      }
-    },
-    {
-      "id": 19,
-      "definition": {
-        "type": "group",
-        "title": "Client experience",
-        "layout_type": "ordered",
-        "show_title": true,
-        "background_color": "blue",
-        "widgets": [
+          },
           {
-            "id": 13,
+            "id": 12,
             "definition": {
               "type": "timeseries",
-              "title": "Client completions/s by service",
+              "title": "Oldest pending pod age (seconds)",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -530,7 +373,44 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search)} by {upstream}.as_rate()"
+                      "query": "max:autoscaler.pods.pending.oldest_age{$env AND $application AND $policy AND $run} by {workload}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 13,
+            "definition": {
+              "type": "timeseries",
+              "title": "Pending pod-seconds per bucket",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:autoscaler.pods.pending.time{$env AND $application AND $policy AND $run}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -557,7 +437,7 @@
             "id": 14,
             "definition": {
               "type": "timeseries",
-              "title": "Client completions/s by outcome",
+              "title": "Pod wait before placement p95 (seconds)",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -567,7 +447,7 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search)} by {outcome}.as_rate()"
+                      "query": "p95:autoscaler.pod.pending.duration{$env AND $application AND $policy AND $run} by {workload}"
                     }
                   ],
                   "formulas": [
@@ -594,7 +474,7 @@
             "id": 15,
             "definition": {
               "type": "timeseries",
-              "title": "Client failure % by service \u2014 excludes blocked",
+              "title": "Replicas wanted by workload",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -604,50 +484,7 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome IN (http_error,timeout)} by {upstream}.as_rate()"
-                    },
-                    {
-                      "data_source": "metrics",
-                      "name": "q2",
-                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome IN (success,http_error,timeout)} by {upstream}.as_rate()"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "formula": "100 * q1 / q2"
-                    }
-                  ],
-                  "display_type": "line",
-                  "style": {
-                    "palette": "dog_classic",
-                    "line_type": "solid",
-                    "line_width": "normal"
-                  }
-                }
-              ],
-              "yaxis": {
-                "min": "0",
-                "scale": "linear",
-                "include_zero": true,
-                "max": "100"
-              }
-            }
-          },
-          {
-            "id": 16,
-            "definition": {
-              "type": "timeseries",
-              "title": "Blocked requests/s by service",
-              "show_legend": true,
-              "legend_layout": "auto",
-              "requests": [
-                {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "q1",
-                      "query": "sum:http.client.requests{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome:circuit_open} by {upstream}.as_rate()"
+                      "query": "max:autoscaler.workload.replicas.desired{$env AND $application AND $policy AND $run} by {workload}"
                     }
                   ],
                   "formulas": [
@@ -671,10 +508,10 @@
             }
           },
           {
-            "id": 17,
+            "id": 16,
             "definition": {
               "type": "timeseries",
-              "title": "Client p95 latency (ms) \u2014 excludes blocked",
+              "title": "Replicas available by workload",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -684,44 +521,7 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "p95:http.client.request.duration{$env AND $policy AND $run AND upstream IN (catalog,payments,search) AND outcome IN (success,http_error,timeout)} by {upstream}"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "formula": "1000 * q1"
-                    }
-                  ],
-                  "display_type": "line",
-                  "style": {
-                    "palette": "dog_classic",
-                    "line_type": "solid",
-                    "line_width": "normal"
-                  }
-                }
-              ],
-              "yaxis": {
-                "min": "0",
-                "scale": "linear",
-                "include_zero": true
-              }
-            }
-          },
-          {
-            "id": 18,
-            "definition": {
-              "type": "timeseries",
-              "title": "Client requests in flight",
-              "show_legend": true,
-              "legend_layout": "auto",
-              "requests": [
-                {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "q1",
-                      "query": "max:http.client.in_flight{$env AND $policy AND $run AND upstream IN (catalog,payments,search)} by {upstream}"
+                      "query": "max:autoscaler.workload.replicas.available{$env AND $application AND $policy AND $run} by {workload}"
                     }
                   ],
                   "formulas": [
@@ -751,16 +551,16 @@
       "id": 27,
       "definition": {
         "type": "group",
-        "title": "Service capacity and work",
+        "title": "Nodes and utilisation",
         "layout_type": "ordered",
         "show_title": true,
         "background_color": "orange",
         "widgets": [
           {
-            "id": 20,
+            "id": 18,
             "definition": {
               "type": "timeseries",
-              "title": "Server completions/s by service and HTTP status",
+              "title": "Nodes by group and lifecycle state",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -770,7 +570,7 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "sum:http.server.requests{$env AND $policy AND $run AND service IN (catalog,payments,search)} by {service,http.status_code}.as_rate()"
+                      "query": "max:autoscaler.nodes{$env AND $application AND $policy AND $run} by {group,state}"
                     }
                   ],
                   "formulas": [
@@ -790,6 +590,86 @@
                 "min": "0",
                 "scale": "linear",
                 "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 19,
+            "definition": {
+              "type": "timeseries",
+              "title": "Ready nodes by group",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:autoscaler.nodes{$env AND $application AND $policy AND $run AND state:ready} by {group}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 20,
+            "definition": {
+              "type": "timeseries",
+              "title": "CPU reservation % by group",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "max:autoscaler.group.cpu.reserved{$env AND $application AND $policy AND $run} by {group}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "q2",
+                      "query": "max:autoscaler.group.cpu.capacity{$env AND $application AND $policy AND $run} by {group}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "100 * q1 / q2"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true,
+                "max": "100"
               }
             }
           },
@@ -797,7 +677,7 @@
             "id": 21,
             "definition": {
               "type": "timeseries",
-              "title": "Queued requests",
+              "title": "Memory reservation % by group",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -807,12 +687,17 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "max:http.server.queue.depth{$env AND $policy AND $run AND service IN (catalog,payments,search)} by {service}"
+                      "query": "max:autoscaler.group.memory.reserved{$env AND $application AND $policy AND $run} by {group}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "q2",
+                      "query": "max:autoscaler.group.memory.capacity{$env AND $application AND $policy AND $run} by {group}"
                     }
                   ],
                   "formulas": [
                     {
-                      "formula": "q1"
+                      "formula": "100 * q1 / q2"
                     }
                   ],
                   "display_type": "line",
@@ -826,7 +711,8 @@
               "yaxis": {
                 "min": "0",
                 "scale": "linear",
-                "include_zero": true
+                "include_zero": true,
+                "max": "100"
               }
             }
           },
@@ -834,7 +720,7 @@
             "id": 22,
             "definition": {
               "type": "timeseries",
-              "title": "Active requests",
+              "title": "Unreserved CPU on ready nodes by group",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -844,12 +730,17 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "max:http.server.active{$env AND $policy AND $run AND service IN (catalog,payments,search)} by {service}"
+                      "query": "max:autoscaler.group.cpu.capacity{$env AND $application AND $policy AND $run} by {group}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "q2",
+                      "query": "max:autoscaler.group.cpu.reserved{$env AND $application AND $policy AND $run} by {group}"
                     }
                   ],
                   "formulas": [
                     {
-                      "formula": "q1"
+                      "formula": "q1 - q2"
                     }
                   ],
                   "display_type": "line",
@@ -871,7 +762,7 @@
             "id": 23,
             "definition": {
               "type": "timeseries",
-              "title": "Worker utilization (%)",
+              "title": "Node cost rate by group (USD per hour)",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -881,12 +772,12 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "max:http.server.utilization{$env AND $policy AND $run AND service IN (catalog,payments,search)} by {service}"
+                      "query": "max:autoscaler.cost.rate{$env AND $application AND $policy AND $run} by {group}"
                     }
                   ],
                   "formulas": [
                     {
-                      "formula": "100 * q1"
+                      "formula": "q1"
                     }
                   ],
                   "display_type": "line",
@@ -900,8 +791,7 @@
               "yaxis": {
                 "min": "0",
                 "scale": "linear",
-                "include_zero": true,
-                "max": "100"
+                "include_zero": true
               }
             }
           },
@@ -909,7 +799,7 @@
             "id": 24,
             "definition": {
               "type": "timeseries",
-              "title": "Active work whose client already timed out",
+              "title": "Node provisioning time p95 (seconds)",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -919,7 +809,7 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "max:http.server.timed_out_work{$env AND $policy AND $run AND service IN (catalog,payments,search)} by {service}"
+                      "query": "p95:autoscaler.node.provision.duration{$env AND $application AND $policy AND $run} by {group}"
                     }
                   ],
                   "formulas": [
@@ -946,7 +836,7 @@
             "id": 25,
             "definition": {
               "type": "timeseries",
-              "title": "Server p95 latency including queue (ms)",
+              "title": "Node lifecycle events per bucket",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -956,12 +846,12 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "p95:http.server.request.duration{$env AND $policy AND $run AND service IN (catalog,payments,search)} by {service}"
+                      "query": "sum:autoscaler.node.events{$env AND $application AND $policy AND $run} by {group,event}.as_count()"
                     }
                   ],
                   "formulas": [
                     {
-                      "formula": "1000 * q1"
+                      "formula": "q1"
                     }
                   ],
                   "display_type": "line",
@@ -983,7 +873,7 @@
             "id": 26,
             "definition": {
               "type": "timeseries",
-              "title": "Queue wait p95 (ms)",
+              "title": "Autoscaler phase",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -993,12 +883,81 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "p95:http.server.queue.wait{$env AND $policy AND $run AND service IN (catalog,payments,search)} by {service}"
+                      "query": "max:autoscaler.phase{$env AND $application AND $policy AND $run AND phase:stable}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "q2",
+                      "query": "max:autoscaler.phase{$env AND $application AND $policy AND $run AND phase:scaling_up}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "q3",
+                      "query": "max:autoscaler.phase{$env AND $application AND $policy AND $run AND phase:scaling_down}"
                     }
                   ],
                   "formulas": [
                     {
-                      "formula": "1000 * q1"
+                      "formula": "q1",
+                      "alias": "Stable"
+                    },
+                    {
+                      "formula": "q2",
+                      "alias": "Scaling up"
+                    },
+                    {
+                      "formula": "q3",
+                      "alias": "Scaling down"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true,
+                "max": "1"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 32,
+      "definition": {
+        "type": "group",
+        "title": "Recommendations and guards",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "purple",
+        "widgets": [
+          {
+            "id": 28,
+            "definition": {
+              "type": "timeseries",
+              "title": "Recommendations per bucket by action and outcome",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:autoscaler.decisions{$env AND $application AND $policy AND $run} by {action,outcome}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
                     }
                   ],
                   "display_type": "line",
@@ -1015,35 +974,12 @@
                 "include_zero": true
               }
             }
-          }
-        ]
-      }
-    },
-    {
-      "id": 34,
-      "definition": {
-        "type": "group",
-        "title": "Jev and Reflex \u2014 application scope",
-        "layout_type": "ordered",
-        "show_title": true,
-        "background_color": "green",
-        "widgets": [
-          {
-            "id": 28,
-            "definition": {
-              "type": "note",
-              "content": "This section ignores the run and policy filters. Reflex evaluations and TypeSafe attempts, latency and token usage are scoped to the circuit breaker; those panels show nothing for runs exported before the `client` and `controller` labels existed. Calls in flight is a process-wide gauge that includes **all workloads** in this application. Reflex evaluation outcomes describe proposals and evaluation errors; actual circuit changes appear in the state-transition charts above. Tokens measure usage, not dollar cost.",
-              "background_color": "white",
-              "font_size": "14",
-              "text_align": "left",
-              "show_tick": false
-            }
           },
           {
             "id": 29,
             "definition": {
               "type": "timeseries",
-              "title": "Breaker TypeSafe HTTP attempts/s by status",
+              "title": "Rejections per bucket by guard",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -1053,7 +989,7 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "sum:typesafe.client.requests{$env AND $application AND client:circuit_breaker} by {status}.as_rate()"
+                      "query": "sum:autoscaler.decisions{$env AND $application AND $policy AND $run AND outcome:rejected} by {guard}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -1080,7 +1016,7 @@
             "id": 30,
             "definition": {
               "type": "timeseries",
-              "title": "Breaker TypeSafe end-to-end call p95 (ms)",
+              "title": "Scale-ups applied per bucket by group",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -1090,7 +1026,178 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "p95:typesafe.client.call.duration{$env AND $application AND client:circuit_breaker} by {model}"
+                      "query": "sum:autoscaler.decisions{$env AND $application AND $policy AND $run AND action:scale_up AND outcome:applied} by {group}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 31,
+            "definition": {
+              "type": "timeseries",
+              "title": "Removals per bucket by group and outcome",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:autoscaler.decisions{$env AND $application AND $policy AND $run AND action:remove} by {group,outcome}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 39,
+      "definition": {
+        "type": "group",
+        "title": "Jev and Reflex \u2014 autoscaler scope",
+        "layout_type": "ordered",
+        "show_title": true,
+        "background_color": "blue",
+        "widgets": [
+          {
+            "id": 33,
+            "definition": {
+              "type": "note",
+              "content": "This section ignores the run and policy filters but is scoped to the autoscaler: Reflex counters by `controller:cluster_autoscaler` and `machine:cluster_autoscaler`, TypeSafe metrics by `client:cluster_autoscaler`. Reflex transitions include clock, load and node lifecycle events; they are not counts of scaling actions. No dollar cost is inferred from tokens.",
+              "background_color": "white",
+              "font_size": "14",
+              "text_align": "left",
+              "show_tick": false
+            }
+          },
+          {
+            "id": 34,
+            "definition": {
+              "type": "timeseries",
+              "title": "Autoscaler evaluations per bucket",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:reflex.evaluations{$env AND $application AND controller:cluster_autoscaler} by {status}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 35,
+            "definition": {
+              "type": "timeseries",
+              "title": "Autoscaler state-machine outcomes per bucket",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "sum:reflex.transitions{$env AND $application AND machine:cluster_autoscaler} by {status}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "q1"
+                    }
+                  ],
+                  "display_type": "line",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  }
+                }
+              ],
+              "yaxis": {
+                "min": "0",
+                "scale": "linear",
+                "include_zero": true
+              }
+            }
+          },
+          {
+            "id": 36,
+            "definition": {
+              "type": "timeseries",
+              "title": "Jev call p95 (ms) \u2014 autoscaler",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "q1",
+                      "query": "p95:typesafe.client.call.duration{$env AND $application AND client:cluster_autoscaler} by {model}"
                     }
                   ],
                   "formulas": [
@@ -1114,10 +1221,10 @@
             }
           },
           {
-            "id": 31,
+            "id": 37,
             "definition": {
               "type": "timeseries",
-              "title": "TypeSafe calls in flight — all workloads",
+              "title": "Jev requests per bucket by status \u2014 autoscaler",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -1127,7 +1234,7 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "max:typesafe.client.calls.in_flight{$env AND $application}"
+                      "query": "sum:typesafe.client.requests{$env AND $application AND client:cluster_autoscaler} by {status}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -1151,10 +1258,10 @@
             }
           },
           {
-            "id": 32,
+            "id": 38,
             "definition": {
               "type": "timeseries",
-              "title": "Breaker TypeSafe tokens per bucket",
+              "title": "Jev tokens per bucket \u2014 autoscaler",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -1164,44 +1271,7 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "sum:typesafe.client.tokens{$env AND $application AND client:circuit_breaker} by {direction}.as_count()"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "formula": "q1"
-                    }
-                  ],
-                  "display_type": "line",
-                  "style": {
-                    "palette": "dog_classic",
-                    "line_type": "solid",
-                    "line_width": "normal"
-                  }
-                }
-              ],
-              "yaxis": {
-                "min": "0",
-                "scale": "linear",
-                "include_zero": true
-              }
-            }
-          },
-          {
-            "id": 33,
-            "definition": {
-              "type": "timeseries",
-              "title": "Breaker evaluations per bucket",
-              "show_legend": true,
-              "legend_layout": "auto",
-              "requests": [
-                {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "q1",
-                      "query": "sum:reflex.evaluations{$env AND $application AND controller:circuit_breaker} by {status}.as_count()"
+                      "query": "sum:typesafe.client.tokens{$env AND $application AND client:cluster_autoscaler} by {direction}.as_count()"
                     }
                   ],
                   "formulas": [

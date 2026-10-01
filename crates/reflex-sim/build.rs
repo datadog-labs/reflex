@@ -10,6 +10,8 @@ fn main() {
         "src/playground/controls.css",
         "src/playground/scenario-ui.js",
         "src/playground/scenario-ui.css",
+        "src/playground/autoscaler-ui.js",
+        "src/playground/autoscaler-ui.css",
         "src/typography.css",
     ] {
         println!("cargo:rerun-if-changed={file}");

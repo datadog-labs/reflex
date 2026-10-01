@@ -778,7 +778,8 @@ impl Session {
                         } else {
                             c.next_at.map(|next| {
                                 at as f64
-                                    + ((next - at as f64).max(0.) * old_rate / c.config.rate).round()
+                                    + ((next - at as f64).max(0.) * old_rate / c.config.rate)
+                                        .round()
                             })
                         };
                     }

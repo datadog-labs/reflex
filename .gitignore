@@ -16,6 +16,8 @@ artifacts/
 /crates/reflex-sim/src/playground/controls.css
 /crates/reflex-sim/src/playground/scenario-ui.js
 /crates/reflex-sim/src/playground/scenario-ui.css
+/crates/reflex-sim/src/playground/autoscaler-ui.js
+/crates/reflex-sim/src/playground/autoscaler-ui.css
 /crates/reflex-sim/src/typography.css
 
 # Local Python forecasting environment

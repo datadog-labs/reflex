@@ -103,7 +103,7 @@ During a traffic surge, Jev opens the Payments circuit. After the cooldown, it p
 
 **The scenario shown.** In **Cyclical load · Toto**, Payments repeats a two-minute pattern for ten minutes. Traffic rises 4× at +30s, service time rises 6× at +60s, and both recover at +90s. Jev chooses when to open and probe. Reflex enforces the cooldown and the five-probe close.
 
-Reflex also emits its own OpenTelemetry counters and spans (`reflex.evaluations`, `reflex.transitions`). The simulator exports these to Datadog with the application metrics, and the supplied [dashboards](dashboards/README.md) show both. The simulator also includes a **resource scheduler** that follows the same pattern; see the [simulator guide](crates/reflex-sim/README.md).
+Reflex also emits its own OpenTelemetry counters and spans (`reflex.evaluations`, `reflex.transitions`). The simulator exports these to Datadog with the application metrics, and the supplied [dashboards](dashboards/README.md) show both. The simulator also includes a **resource scheduler** and a **cluster autoscaler** that follow the same pattern; see the [simulator guide](crates/reflex-sim/README.md). In the autoscaler, Jev recommends adding or removing nodes and Reflex rejects scale-ups that are not justified and removals that are not safe.
 
 ## Run the simulator
 

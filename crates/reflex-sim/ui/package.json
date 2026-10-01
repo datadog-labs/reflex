@@ -2,7 +2,7 @@
   "name": "reflex-playground-ui",
   "private": true,
   "scripts": {
-    "build": "npm run check:public-imports && npm run build:typography && esbuild src/controls.jsx --bundle --minify --outfile=../src/playground/controls.js --loader:.woff2=file --loader:.woff=file && esbuild src/scenarios.jsx --bundle --minify --outfile=../src/playground/scenario-ui.js --loader:.woff2=file --loader:.woff=file",
+    "build": "npm run check:public-imports && npm run build:typography && esbuild src/controls.jsx --bundle --minify --outfile=../src/playground/controls.js --loader:.woff2=file --loader:.woff=file && esbuild src/scenarios.jsx --bundle --minify --outfile=../src/playground/scenario-ui.js --loader:.woff2=file --loader:.woff=file && esbuild src/autoscaler.jsx --bundle --minify --outfile=../src/playground/autoscaler-ui.js --loader:.woff2=file --loader:.woff=file",
     "build:typography": "node scripts/build-typography.cjs",
     "check:public-imports": "node scripts/check-public-imports.cjs"
   },

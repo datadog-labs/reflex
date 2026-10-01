@@ -693,6 +693,7 @@ pub async fn serve(seed: u64, port: u16, open: bool) -> Result<(), Error> {
                 .api_key(std::env::var("TYPESAFE_API_KEY").map_err(|_| {
                     Error::Invalid("set TYPESAFE_API_KEY before starting the playground".into())
                 })?)
+                .name("circuit_breaker")
                 .timeout(std::time::Duration::from_secs(2))
                 .max_retries(0)
                 .build()
@@ -745,6 +746,31 @@ pub async fn serve_with_forecasts(
     scheduler_evaluator: Option<Arc<dyn crate::scheduler::judge::Evaluator>>,
     forecaster: Option<Arc<dyn crate::capacity::forecast::Forecaster>>,
 ) -> Result<(), Error> {
+    serve_with_autoscaler(
+        seed,
+        port,
+        open,
+        policy,
+        evaluator,
+        settings,
+        scheduler_evaluator,
+        forecaster,
+        None,
+    )
+    .await
+}
+#[allow(clippy::too_many_arguments)]
+pub async fn serve_with_autoscaler(
+    seed: u64,
+    port: u16,
+    open: bool,
+    policy: PolicyKind,
+    evaluator: Option<Arc<dyn Evaluator>>,
+    settings: JevSettings,
+    scheduler_evaluator: Option<Arc<dyn crate::scheduler::judge::Evaluator>>,
+    forecaster: Option<Arc<dyn crate::capacity::forecast::Forecaster>>,
+    autoscaler_evaluator: Option<Arc<dyn crate::autoscaler::judge::Evaluator>>,
+) -> Result<(), Error> {
     if policy != PolicyKind::Jev {
         return Err(Error::Invalid(
             "The circuit-breaker playground supports only Jev + Reflex".into(),
@@ -785,6 +811,13 @@ pub async fn serve_with_forecasts(
             }
         }
     });
+    let autoscaler = Arc::new(Mutex::new(crate::autoscaler::Session::new(
+        seed,
+        autoscaler_evaluator,
+        settings.clone(),
+    )?));
+    autoscaler.lock().await.forecast.provider = forecaster.clone();
+    let autoscaler_task = crate::autoscaler::web::start_clock(autoscaler.clone());
     let url = format!("http://{}/", listener.local_addr()?);
     let shared = Arc::new(Mutex::new(Session::configured(
         seed, policy, evaluator, settings,
@@ -813,11 +846,13 @@ pub async fn serve_with_forecasts(
     }
     let app = router(shared)
         .merge(crate::scheduler::web::router(scheduler))
+        .merge(crate::autoscaler::web::router(autoscaler))
         .layer(DefaultBodyLimit::max(16 * 1024))
         .layer(middleware::from_fn(local_only));
     let result = axum::serve(listener, app).await;
 
     scheduler_task.abort();
+    autoscaler_task.abort();
     task.abort();
     result.map_err(Error::Io)
 }

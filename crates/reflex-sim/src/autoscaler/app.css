@@ -1,0 +1,23 @@
+/*
+ * Unless explicitly stated otherwise all files in this repository are licensed under the Apache-2.0 License.
+ * This product includes software developed at Datadog (https://www.datadoghq.com/).
+ * Copyright 2026-present Datadog, Inc.
+ */
+
+/* Layout, inspector and forecast styles are shared with the circuit breaker page (/app.css, /forecast.css). */
+.autoscaler-status{margin:0;padding:8px 11px;border-radius:6px;background:var(--r-surface);color:var(--r-ink-2);font-size:12px;line-height:18px}
+.autoscaler-control-group{margin-bottom:10px}.autoscaler-control-group:last-child{margin-bottom:0}
+.autoscaler-control-title{margin-bottom:5px;font:500 11px var(--dd-font-mono);color:var(--r-ink-2)}
+.autoscaler-guard{font:500 11px var(--dd-font-mono);color:var(--r-ink-3);overflow-wrap:anywhere}
+.autoscaler-guard[data-level=success]{color:var(--r-ok)}
+.autoscaler-guard[data-level=danger]{color:var(--r-bad)}
+.autoscaler-guard[data-level=warning]{color:var(--r-warn)}
+.autoscaler-pod[data-status=Pending]{color:var(--r-warn);font-weight:600}
+.autoscaler-pod[data-status=Starting]{color:var(--r-ink-3)}
+.incident-event[data-level=danger]>div>div{color:var(--r-bad)}
+.incident-event[data-level=warning]>div>div{color:var(--r-warn)}
+.decision-detail h3{margin:14px 0 6px;font-size:13px}.decision-detail p{margin:0 0 6px;font-size:13px;line-height:1.5}
+.decision-detail pre{font:400 11px/1.5 var(--dd-font-mono)}
+.forecast-panel>span,.forecast-panel>p{display:block}
+.autoscaler-run{margin:8px 0 0;overflow-wrap:anywhere}.autoscaler-run code{font:400 11px var(--dd-font-mono);color:var(--r-ink-2)}
+.panel-heading>.circuit-telemetry{align-self:flex-start}

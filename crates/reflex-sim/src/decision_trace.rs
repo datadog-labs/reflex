@@ -37,6 +37,15 @@ impl DecisionTrace {
             kind: "scheduler",
         }
     }
+    pub fn autoscaler(id: u64, phase: &'static str, run: &str, simulation_time_ms: u64) -> Self {
+        Self {
+            span: tracing::info_span!(target: "reflex_sim::autoscaler", "autoscaler.decision",
+                decision_id = id, phase, simulation_run = run, simulation_time_ms, status = Empty, otel.status_code = Empty),
+            dispatch: tracing::dispatcher::get_default(Clone::clone),
+            finished: false,
+            kind: "autoscaler",
+        }
+    }
     pub fn scheduler_selection(&self, job: u64, client: u64) {
         tracing::dispatcher::with_default(&self.dispatch, || {
             self.span.record("job_id", job);
@@ -45,7 +54,11 @@ impl DecisionTrace {
     }
     pub fn child(&self, stage: &str) -> Span {
         tracing::dispatcher::with_default(&self.dispatch, || {
-            if self.kind == "scheduler" && stage == "evaluate" {
+            if self.kind == "autoscaler" && stage == "evaluate" {
+                tracing::info_span!(target: "reflex_sim::autoscaler", parent: &self.span, "autoscaler.evaluate")
+            } else if self.kind == "autoscaler" {
+                tracing::info_span!(target: "reflex_sim::autoscaler", parent: &self.span, "autoscaler.apply")
+            } else if self.kind == "scheduler" && stage == "evaluate" {
                 tracing::info_span!(target: "reflex_sim::scheduler", parent: &self.span, "scheduler.evaluate")
             } else if self.kind == "scheduler" {
                 tracing::info_span!(target: "reflex_sim::scheduler", parent: &self.span, "scheduler.apply")

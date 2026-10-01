@@ -450,6 +450,7 @@ impl Driver {
 fn dd_names(domain: &str) -> [&'static str; 3] {
     match domain {
         "scheduler" => ["queue_depth", "reserved_cpu", "reserved_memory_gib"],
+        "autoscaler" => ["requested_cpu", "requested_memory_gib", "pending_pods"],
         _ => ["client_requests_per_second", "queue_depth", "utilization"],
     }
 }
@@ -479,6 +480,11 @@ impl crate::datadog::Source {
                 ("scheduler.node.cpu.reserved", service.clone()),
                 ("scheduler.node.memory.reserved", service),
             ],
+            "autoscaler" => vec![
+                ("autoscaler.cpu.requested", service.clone()),
+                ("autoscaler.memory.requested", service.clone()),
+                ("autoscaler.pods.pending", service),
+            ],
             _ => vec![
                 ("http.client.requests", domain.into()),
                 ("http.server.queue.depth", domain.into()),
@@ -502,8 +508,14 @@ impl crate::datadog::Source {
         let body = serde_json::json!({"data":{"type":"timeseries_request","attributes":{"from":from,"to":to,"interval":10000,"queries":queries}}});
         let response = self.post("/api/v2/query/timeseries", body).await?;
         let mut input = parse_datadog(&response, from, to)?;
-        if domain != "scheduler" {
-            counts_to_rate(&mut input);
+        match domain {
+            "scheduler" => {}
+            // Requested memory is published in bytes; Jev's headroom is in GiB.
+            "autoscaler" => input
+                .values
+                .iter_mut()
+                .for_each(|row| row[1] /= (1u64 << 30) as f32),
+            _ => counts_to_rate(&mut input),
         }
         Ok(input)
     }

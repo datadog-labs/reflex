@@ -139,6 +139,7 @@ pub struct ClientBuilder {
     timeout: Duration,
     max_retries: u32,
     meter: Option<Meter>,
+    name: Option<&'static str>,
 }
 impl TypeSafeClient {
     pub fn builder() -> ClientBuilder {
@@ -148,6 +149,7 @@ impl TypeSafeClient {
             timeout: Duration::from_secs(10),
             max_retries: 2,
             meter: None,
+            name: None,
         }
     }
     /// Overall deadline includes connection, response body, and bounded backoff.
@@ -273,6 +275,12 @@ impl ClientBuilder {
         self.meter = Some(meter);
         self
     }
+    /// Optional stable telemetry label: this client's request, call, backoff and token
+    /// metrics carry `client:<name>`, so one application can tell its workloads apart.
+    pub fn name(mut self, name: &'static str) -> Self {
+        self.name = Some(name);
+        self
+    }
     pub fn api_key(mut self, key: impl Into<String>) -> Self {
         self.api_key = Some(key.into());
         self
@@ -335,6 +343,7 @@ impl ClientBuilder {
             telemetry: Telemetry::new(
                 self.meter
                     .unwrap_or_else(|| opentelemetry::global::meter("typesafe-ai")),
+                self.name,
             ),
         })
     }

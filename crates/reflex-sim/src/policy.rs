@@ -242,6 +242,7 @@ impl ThresholdPolicy {
             ],
         };
         let machine = StateMachineExecutor::builder(definition)
+            .name("circuit_breaker")
             .store(InMemory::new(
                 CircuitPhase::Closed,
                 Data {

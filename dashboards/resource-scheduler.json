@@ -939,7 +939,7 @@
             "id": 29,
             "definition": {
               "type": "note",
-              "content": "This section ignores the run and policy filters. Reflex evaluations/transitions are scoped to the resource scheduler, but TypeSafe latency and token usage include **all workloads** in this application. Reflex transitions include clock/arrival events; they are not placement counts. No dollar cost is inferred from tokens.",
+              "content": "This section ignores the run and policy filters. Reflex evaluations/transitions and TypeSafe latency and token usage are scoped to the resource scheduler. The TypeSafe panels show nothing for runs exported before the `client` label existed. Reflex transitions include clock/arrival events; they are not placement counts. No dollar cost is inferred from tokens.",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
@@ -1024,7 +1024,7 @@
             "id": 32,
             "definition": {
               "type": "timeseries",
-              "title": "TypeSafe call p95 (ms) \u2014 all workloads",
+              "title": "Scheduler TypeSafe call p95 (ms)",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -1034,7 +1034,7 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "p95:typesafe.client.call.duration{$env AND $application} by {model}"
+                      "query": "p95:typesafe.client.call.duration{$env AND $application AND client:resource_scheduler} by {model}"
                     }
                   ],
                   "formulas": [
@@ -1061,7 +1061,7 @@
             "id": 33,
             "definition": {
               "type": "timeseries",
-              "title": "TypeSafe tokens per bucket \u2014 all workloads",
+              "title": "Scheduler TypeSafe tokens per bucket",
               "show_legend": true,
               "legend_layout": "auto",
               "requests": [
@@ -1071,7 +1071,7 @@
                     {
                       "data_source": "metrics",
                       "name": "q1",
-                      "query": "sum:typesafe.client.tokens{$env AND $application} by {direction}.as_count()"
+                      "query": "sum:typesafe.client.tokens{$env AND $application AND client:resource_scheduler} by {direction}.as_count()"
                     }
                   ],
                   "formulas": [

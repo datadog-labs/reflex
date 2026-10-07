@@ -21,3 +21,4 @@ reqwest = { version = "0.12", default-features = false, features = ["json", "rus
 reflex = { path = "crates/reflex", version = "0.1.0" }
 reflex-macros = { path = "crates/reflex-macros", version = "0.1.0" }
 typesafe-ai = { path = "crates/typesafe-ai", version = "0.1.0" }
+openai-decisions = { path = "crates/openai-decisions", version = "0.1.0" }

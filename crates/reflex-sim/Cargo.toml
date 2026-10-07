@@ -17,6 +17,8 @@ reqwest.workspace = true
 reflex.workspace = true
 reflex-typesafe = { path = "../reflex-typesafe" }
 typesafe-ai.workspace = true
+reflex-openai = { path = "../reflex-openai" }
+openai-decisions.workspace = true
 tokio = { workspace = true, features = ["signal"] }
 serde.workspace = true
 serde_json = { workspace = true, features = ["float_roundtrip"] }

@@ -12,6 +12,7 @@ pub mod engine;
 pub mod jev;
 pub mod playground;
 pub mod policy;
+pub mod provider;
 pub mod report;
 pub mod scenario;
 pub mod scheduler;

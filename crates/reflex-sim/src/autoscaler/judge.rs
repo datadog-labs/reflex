@@ -6,8 +6,8 @@ use super::engine::{
     coverage, legal_choices, Choice, Data, Group, NodePhase, Phase, Resources, HEADROOM_CAP,
     PROVISION_MS, SCALE_DOWN_COOLDOWN_MS,
 };
+use crate::provider::{choice_judge, ModelClient};
 use reflex::{Controller, EvaluationError};
-use reflex_typesafe::TypeSafeJudge;
 use serde::Serialize;
 use std::{
     collections::BTreeMap,
@@ -15,7 +15,7 @@ use std::{
     pin::Pin,
     time::{Duration, Instant},
 };
-use typesafe_ai::{choice, questions, SystemOneTask, TypeSafeClient, Usage};
+use typesafe_ai::Usage;
 
 /// How far ahead a forecast may justify provisioning: one node start plus a margin.
 pub const HEADROOM_LOOKAHEAD_S: u64 = 60;
@@ -437,14 +437,14 @@ pub trait Evaluator: Send + Sync {
     fn evaluate(&self, evidence: Evidence) -> Evaluation<'_>;
 }
 pub struct LiveEvaluator {
-    client: TypeSafeClient,
+    client: ModelClient,
     model: String,
     meter: Option<opentelemetry::metrics::Meter>,
 }
 impl LiveEvaluator {
-    pub fn new(client: TypeSafeClient, model: String) -> Self {
+    pub fn new(client: impl Into<ModelClient>, model: String) -> Self {
         Self {
-            client,
+            client: client.into(),
             model,
             meter: None,
         }
@@ -459,18 +459,17 @@ impl Evaluator for LiveEvaluator {
     fn evaluate(&self, evidence: Evidence) -> Evaluation<'_> {
         Box::pin(async move {
             let start = Instant::now();
-            let task = SystemOneTask::builder()
-                .model(&self.model)
-                .questions(questions! {
-                    action: choice(INSTRUCTIONS, options(&evidence))
-                })
-                .build();
-            let task = match task {
-                Ok(t) => t,
-                Err(e) => return Inference::failed("configuration", e.to_string()),
-            };
             // A fresh adapter per evaluation makes diagnostics belong to this response.
-            let judge = TypeSafeJudge::new(self.client.clone(), task).select_answer(|a| a.action);
+            let judge = choice_judge!(
+                &self.client,
+                &self.model,
+                action: INSTRUCTIONS,
+                options(&evidence)
+            );
+            let judge = match judge {
+                Ok(j) => j,
+                Err(e) => return Inference::failed("configuration", e),
+            };
             let mut controller = Controller::builder().name("cluster_autoscaler");
             if let Some(meter) = &self.meter {
                 controller = controller.meter(meter.clone());
@@ -491,7 +490,7 @@ impl Evaluator for LiveEvaluator {
                             .map(|d| d.probabilities.clone())
                             .unwrap_or_default(),
                         model: diagnostics.as_ref().map(|d| d.model.clone()),
-                        usage: diagnostics.as_ref().map(|d| d.usage.clone()),
+                        usage: diagnostics.as_ref().and_then(|d| d.usage.clone()),
                         request_id: diagnostics.and_then(|d| d.request_id),
                         latency_ms: 0.,
                         error: None,

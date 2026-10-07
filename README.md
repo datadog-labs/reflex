@@ -112,6 +112,7 @@ Reflex also emits its own OpenTelemetry counters and spans (`reflex.evaluations`
 | Rust 1.92+ and Node.js | The simulator and its UI |
 | `DD_API_KEY`, `DD_APP_KEY`, `DD_SITE` | Publishing and querying metrics. The application key needs `timeseries_query` permission. |
 | `TYPESAFE_API_KEY` | Live Jev recommendations |
+| `OPENAI_API_KEY` | Live recommendations from OpenAI Decisions instead of Jev, with `--provider openai` |
 | [uv](https://docs.astral.sh/uv/) | The local Toto service. Toto needs no API key. |
 
 Build the UI once.
@@ -147,6 +148,7 @@ There are other ways to run it.
 
 - To run **without Datadog**, drop `--features datadog`, `--datadog`, and `--datadog-evidence`. State and forecasts then come from the simulator's local observations, and only `TYPESAFE_API_KEY` is required.
 - To **publish to Datadog but decide on local state**, use `--datadog` without `--datadog-evidence`. Publishing needs only `DD_API_KEY`.
+- To run **with OpenAI Decisions instead of Jev**, add `--provider openai`. The same questions and evidence go to `gpt-6-luna` (override with `--model`), and `OPENAI_API_KEY` replaces `TYPESAFE_API_KEY`. The client then emits `openai.decisions.client.*` metrics, so the dashboards' `typesafe.client.*` panels stay empty.
 - To run **without credentials**, use `cargo run -p reflex --example circuit_breaker`, a smaller circuit breaker with a deterministic judge.
 
 ## Use Reflex in your application
@@ -181,7 +183,7 @@ reflex = { path = "../reflex/crates/reflex" }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 ```
 
-To use Jev, also add the `typesafe-ai` and `reflex-typesafe` crates and inject a `TypeSafeClient` into `TypeSafeJudge`. The [live Jev example](crates/reflex-typesafe/examples/jev.rs) shows the setup (`cargo run -p reflex-typesafe --example jev`, with `TYPESAFE_API_KEY` set). See the [SDK guide](SDK_README.md) for hook signatures, executor construction, and the [TypeSafe integration](SDK_README.md#typesafe-integration).
+To use Jev, also add the `typesafe-ai` and `reflex-typesafe` crates and inject a `TypeSafeClient` into `TypeSafeJudge`. The [live Jev example](crates/reflex-typesafe/examples/jev.rs) shows the setup (`cargo run -p reflex-typesafe --example jev`, with `TYPESAFE_API_KEY` set). To use the OpenAI Decisions API instead, add `openai-decisions` and `reflex-openai` and inject a `DecisionsClient` into `DecisionsJudge` (`cargo run -p reflex-openai --example decisions`, with `OPENAI_API_KEY` set). See the [SDK guide](SDK_README.md) for hook signatures, executor construction, the [TypeSafe integration](SDK_README.md#typesafe-integration), and the [OpenAI Decisions integration](SDK_README.md#openai-decisions-integration).
 
 ## Further reading
 

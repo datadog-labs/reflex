@@ -199,8 +199,9 @@ function Inference({ state }) {
     {!state.available && <Text as="p" size="sm">Jev is not configured on this server; the cluster will not be scaled.</Text>}
     {p && <Text as="p" size="sm">Evaluating the cluster as of {time(p.observed_at_ms)}{p.response_ready && state.paused ? '; the reply applies after resuming' : ''}.</Text>}
     <div className="inference-count"><Stat label="Evaluations" value={fmt(state.calls)} /></div>
+    <Text as="p" size="xs" variant="secondary">Model <code>{state.model}</code></Text>
     <Text as="p" size="xs" variant="secondary" className="autoscaler-run">Run tag <code>{state.simulation_run}</code>: with Datadog export on, every metric from this run carries it as <code>simulation_run</code>.</Text>
-    {c && <details className="cost-detail"><summary>Estimated Jev cost: ${Number(c.estimated_usd).toFixed(6)} · since server start</summary><Text as="p" size="sm">{fmt(c.input_tokens)} input tokens · {fmt(c.output_tokens)} output tokens · {fmt(c.priced_calls)} priced responses. {c.missing_usage_calls} calls without reported usage; {c.unpriced_calls} without a known rate.</Text><Text as="p" size="xs" variant="secondary">Jev 1.13 input: $0.042 per million tokens; output free. Excludes unreported and unpriced usage. Reset preserves this estimate; restarting clears it. This is not your final bill.</Text></details>}
+    {c && <details className="cost-detail"><summary>Estimated Jev cost: ${Number(c.estimated_usd).toFixed(6)} · since server start</summary><Text as="p" size="sm">{fmt(c.input_tokens)} input tokens · {fmt(c.output_tokens)} output tokens · {fmt(c.priced_calls)} priced responses. {c.missing_usage_calls} calls without reported usage; {c.unpriced_calls} without a known rate.</Text><Text as="p" size="xs" variant="secondary">Input per million tokens: $0.042 for Jev 1.13, $0.10 for GPT-6 Luna; output free. Excludes unreported and unpriced usage. Reset preserves this estimate; restarting clears it. This is not your final bill.</Text></details>}
   </Section>;
 }
 function Events({ state, limit = 12 }) {

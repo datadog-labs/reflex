@@ -39,9 +39,13 @@ struct Args {
     /// Circuit-breaker playground policy (Jev + Reflex only).
     #[arg(long, default_value = "jev", value_parser = ["jev"], requires = "playground")]
     policy: String,
-    /// TypeSafe model used by the Jev policy.
-    #[arg(long, default_value = "jev-1.13.0", requires = "playground")]
-    jev_model: String,
+    /// Model provider behind the Jev policy. `openai` uses the OpenAI Decisions API
+    /// and OPENAI_API_KEY instead of TypeSafe and TYPESAFE_API_KEY.
+    #[arg(long, value_enum, default_value_t, requires = "playground")]
+    provider: reflex_sim::provider::Provider,
+    /// Model used by the Jev policy [default: jev-1.13.0, or gpt-6-luna with --provider openai].
+    #[arg(long = "model", visible_alias = "jev-model", requires = "playground")]
+    jev_model: Option<String>,
     /// Loopback port for the playground (0 chooses an available port).
     #[arg(long, default_value_t = 8742, requires = "playground")]
     port: u16,
@@ -87,13 +91,14 @@ fn start(args: Args) -> Result<(), Error> {
     }
     // Validate query credentials before starting exporters or accepting browser commands.
     let sources = if args.datadog_evidence {
-        if std::env::var("TYPESAFE_API_KEY")
+        let variable = args.provider.key_variable();
+        if std::env::var(variable)
             .ok()
             .is_none_or(|key| key.trim().is_empty())
         {
-            return Err(Error::Invalid(
-                "TYPESAFE_API_KEY is required for Datadog evidence".into(),
-            ));
+            return Err(Error::Invalid(format!(
+                "{variable} is required for Datadog evidence"
+            )));
         }
         Some([
             reflex_sim::datadog::Source::from_env()?,
@@ -168,8 +173,12 @@ async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 3]>) -> R
                 "Local Toto forecasting enabled for circuit breaker, scheduler and cluster autoscaler."
             );
         }
+        let provider = args.provider;
+        let model = args
+            .jev_model
+            .unwrap_or_else(|| provider.default_model().into());
         let settings = reflex_sim::playground::inference::JevSettings {
-            model: args.jev_model.clone(),
+            model: model.clone(),
             ..Default::default()
         };
         let mut scheduler_evaluator: Option<
@@ -179,39 +188,36 @@ async fn run(args: Args, sources: Option<[reflex_sim::datadog::Source; 3]>) -> R
             std::sync::Arc<dyn reflex_sim::autoscaler::judge::Evaluator>,
         > = None;
         let mut evaluator: Option<std::sync::Arc<dyn reflex_sim::jev::Evaluator>> =
-            match std::env::var("TYPESAFE_API_KEY")
+            match std::env::var(provider.key_variable())
                 .ok()
                 .filter(|key| !key.trim().is_empty())
             {
                 Some(key) => {
                     // One client per simulation: the same settings, named so that each
                     // simulation's request metrics can be told apart from the others'.
-                    let client = |name| {
-                        typesafe_ai::TypeSafeClient::builder()
-                            .api_key(key.clone())
-                            .name(name)
-                            .meter(opentelemetry::global::meter("typesafe-ai"))
-                            .timeout(std::time::Duration::from_secs(2))
-                            .max_retries(0)
-                            .build()
-                            .map_err(|e| Error::Invalid(e.to_string()))
-                    };
+                    let client = |name| provider.client(&key, name).map_err(Error::Invalid);
                     autoscaler_evaluator = Some(std::sync::Arc::new(
                         reflex_sim::autoscaler::judge::LiveEvaluator::new(
                             client("cluster_autoscaler")?,
-                            args.jev_model.clone(),
+                            model.clone(),
                         ),
                     ));
                     scheduler_evaluator = Some(std::sync::Arc::new(
                         reflex_sim::scheduler::judge::LiveEvaluator::new(
                             client("resource_scheduler")?,
-                            args.jev_model.clone(),
+                            model.clone(),
                         ),
                     ));
                     Some(std::sync::Arc::new(reflex_sim::jev::LiveEvaluator::new(
                         client("circuit_breaker")?,
-                        args.jev_model,
+                        model,
                     )))
+                }
+                // The TypeSafe default reports its missing key when the playground starts.
+                None if provider == reflex_sim::provider::Provider::Openai => {
+                    return Err(Error::Invalid(
+                        "set OPENAI_API_KEY before starting the playground".into(),
+                    ));
                 }
                 None => None,
             };

@@ -887,6 +887,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
 
 [[package]]
+name = "openai-decisions"
+version = "0.1.0"
+dependencies = [
+ "opentelemetry",
+ "opentelemetry-appender-tracing",
+ "opentelemetry-otlp",
+ "opentelemetry-proto",
+ "opentelemetry_sdk",
+ "prost",
+ "reqwest 0.12.28",
+ "reqwest 0.13.5",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tokio",
+ "tracing",
+ "tracing-opentelemetry",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "openssl-probe"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1210,17 +1231,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "reflex-openai"
+version = "0.1.0"
+dependencies = [
+ "openai-decisions",
+ "reflex",
+ "serde",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "reflex-sim"
 version = "0.1.0"
 dependencies = [
  "axum",
  "clap",
+ "openai-decisions",
  "opentelemetry",
  "opentelemetry-appender-tracing",
  "opentelemetry-otlp",
  "opentelemetry_sdk",
  "pin-project-lite",
  "reflex",
+ "reflex-openai",
  "reflex-typesafe",
  "reqwest 0.12.28",
  "reqwest 0.13.5",

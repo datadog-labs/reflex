@@ -7,13 +7,13 @@ use crate::{
     policy::{
         Admission, AdmissionContext, CircuitPhase, ClientOutcome, Observation, Policy, PolicyFuture,
     },
+    provider::{choice_judge, ModelClient},
     Error,
 };
 use reflex::{
     state_machine, Controller, EvaluationError, ExecutionOutcome, InMemory, Judgment, Rejection,
     StateMachineExecutor,
 };
-use reflex_typesafe::TypeSafeJudge;
 use serde::{Deserialize, Serialize};
 use std::{
     collections::{BTreeMap, VecDeque},
@@ -22,7 +22,7 @@ use std::{
     sync::Arc,
     time::{Duration, Instant},
 };
-use typesafe_ai::{choice, questions, SystemOneTask, TypeSafeClient, Usage};
+use typesafe_ai::Usage;
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize, clap::ValueEnum)]
 #[serde(rename_all = "snake_case")]
@@ -139,31 +139,31 @@ pub trait Evaluator: Send + Sync {
 }
 #[derive(Clone)]
 pub struct LiveEvaluator {
-    client: TypeSafeClient,
+    client: ModelClient,
     model: String,
 }
 impl LiveEvaluator {
-    pub fn new(client: TypeSafeClient, model: String) -> Self {
-        Self { client, model }
+    pub fn new(client: impl Into<ModelClient>, model: String) -> Self {
+        Self {
+            client: client.into(),
+            model,
+        }
     }
 }
 impl Evaluator for LiveEvaluator {
     fn evaluate(&self, evidence: Evidence) -> EvaluationFuture<'_> {
         Box::pin(async move {
             let start = Instant::now();
-            let task=SystemOneTask::builder().model(&self.model).questions(questions! {
-                action: choice("Protect useful traffic in this circuit breaker. When forecast is present, use its uncertain p10/p50/p90 projections of recent observations to anticipate pressure. Forecasts cannot predict injected faults or certify recovery, and lower observed failures while blocking are not proof of health. Never bypass a recovery probe based on forecasts. Use only the supplied client-visible evidence. Compare the supplied short and long windows, respecting their explicit durations and timestamps. Datadog measurements are delayed and may be missing; never interpret missing data as health. Locally blocked requests are not downstream failures. Server queue and utilization measurements, when present, describe resource pressure. Opening blocks requests and lets downstream work drain; blocking healthy traffic loses useful work. Once open and cooldown has elapsed, recommend a probe to test recovery. Five consecutive successful probes close the circuit, with only one probe in flight at a time; any failed probe reopens it. Select only a legal action. NoChange means maintain the current state or abstain when evidence is weak. Confidence, if supplied, describes the choice, not guaranteed operational success.", [
+            // A fresh adapter per evaluation makes diagnostics belong to this response.
+            let judge = choice_judge!(&self.client, &self.model, action: "Protect useful traffic in this circuit breaker. When forecast is present, use its uncertain p10/p50/p90 projections of recent observations to anticipate pressure. Forecasts cannot predict injected faults or certify recovery, and lower observed failures while blocking are not proof of health. Never bypass a recovery probe based on forecasts. Use only the supplied client-visible evidence. Compare the supplied short and long windows, respecting their explicit durations and timestamps. Datadog measurements are delayed and may be missing; never interpret missing data as health. Locally blocked requests are not downstream failures. Server queue and utilization measurements, when present, describe resource pressure. Opening blocks requests and lets downstream work drain; blocking healthy traffic loses useful work. Once open and cooldown has elapsed, recommend a probe to test recovery. Five consecutive successful probes close the circuit, with only one probe in flight at a time; any failed probe reopens it. Select only a legal action. NoChange means maintain the current state or abstain when evidence is weak. Confidence, if supplied, describes the choice, not guaranteed operational success.", [
                     (Choice::Open,"Open the closed circuit to relieve sustained distress"),
                     (Choice::Probe,"Begin sequential recovery probes after the open circuit's cooldown"),
                     (Choice::NoChange,"Keep the circuit unchanged; abstain or wait for more evidence"),
-                ])
-            }).build();
-            let task = match task {
-                Ok(t) => t,
-                Err(e) => return Inference::failed("configuration", e.to_string()),
+            ]);
+            let judge = match judge {
+                Ok(j) => j,
+                Err(e) => return Inference::failed("configuration", e),
             };
-            // A fresh adapter per evaluation makes diagnostics belong to this response.
-            let judge = TypeSafeJudge::new(self.client.clone(), task).select_answer(|a| a.action);
             let controller = Controller::builder()
                 .name("circuit_breaker")
                 .judge(judge)
@@ -182,7 +182,7 @@ impl Evaluator for LiveEvaluator {
                             .map(|d| d.probabilities.clone())
                             .unwrap_or_default(),
                         model: diagnostics.as_ref().map(|d| d.model.clone()),
-                        usage: diagnostics.as_ref().map(|d| d.usage.clone()),
+                        usage: diagnostics.as_ref().and_then(|d| d.usage.clone()),
                         request_id: diagnostics.and_then(|d| d.request_id),
                         error: None,
                         wall_latency_ms: 0.0,

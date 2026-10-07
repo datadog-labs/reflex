@@ -3,8 +3,8 @@
 // Copyright 2026-present Datadog, Inc.
 
 use super::engine::{Choice, Data, Job, JobPhase};
+use crate::provider::{choice_judge, ModelClient};
 use reflex::Controller;
-use reflex_typesafe::TypeSafeJudge;
 use serde::Serialize;
 use std::{
     collections::BTreeMap,
@@ -12,7 +12,7 @@ use std::{
     pin::Pin,
     time::{Duration, Instant},
 };
-use typesafe_ai::{choice, questions, SystemOneTask, TypeSafeClient, Usage};
+use typesafe_ai::Usage;
 #[derive(Clone, Serialize)]
 pub struct JobEvidence {
     pub priority: super::engine::Priority,
@@ -188,12 +188,15 @@ pub trait Evaluator: Send + Sync {
     fn evaluate(&self, state: Evidence) -> Evaluation<'_>;
 }
 pub struct LiveEvaluator {
-    client: TypeSafeClient,
+    client: ModelClient,
     model: String,
 }
 impl LiveEvaluator {
-    pub fn new(client: TypeSafeClient, model: String) -> Self {
-        Self { client, model }
+    pub fn new(client: impl Into<ModelClient>, model: String) -> Self {
+        Self {
+            client: client.into(),
+            model,
+        }
     }
 }
 impl Evaluator for LiveEvaluator {
@@ -215,15 +218,11 @@ impl Evaluator for LiveEvaluator {
                     (*c, label)
                 })
                 .collect();
-            let task = SystemOneTask::builder().model(&self.model).questions(questions! {
-                placement: choice("Choose a request and node from legal_choices. Each candidate is the oldest queued request from one client; preserve FIFO within each client. Prefer Critical over High over Normal, balancing waiting time and useful throughput. Priorities are live operator preferences, not estimates. When the oldest feasible head has waited 30 seconds, the deterministic aging rule restricts choices to that job and excludes Defer. Node-only choices refer to candidate.id; place choices contain an explicit job ID and node index. Jobs are non-preemptive. Consider CPU/memory fragmentation, estimated durations and upcoming queued work. Defer delays all placement until the next evaluation; use sparingly. Optional forecasts are uncertain demand/pressure projections, not future jobs or permission to exceed capacity. Current jobs, priorities, and node reservations are the placement state. Optional Datadog telemetry is delayed context; missing telemetry must not cause deferral. Never infer current capacity or exact future completion times from delayed metrics. Only choose a supplied legal choice.", options)
-            }).build();
-            let task = match task {
-                Ok(t) => t,
-                Err(e) => return Inference::failed(e.to_string()),
+            let judge = choice_judge!(&self.client, &self.model, placement: "Choose a request and node from legal_choices. Each candidate is the oldest queued request from one client; preserve FIFO within each client. Prefer Critical over High over Normal, balancing waiting time and useful throughput. Priorities are live operator preferences, not estimates. When the oldest feasible head has waited 30 seconds, the deterministic aging rule restricts choices to that job and excludes Defer. Node-only choices refer to candidate.id; place choices contain an explicit job ID and node index. Jobs are non-preemptive. Consider CPU/memory fragmentation, estimated durations and upcoming queued work. Defer delays all placement until the next evaluation; use sparingly. Optional forecasts are uncertain demand/pressure projections, not future jobs or permission to exceed capacity. Current jobs, priorities, and node reservations are the placement state. Optional Datadog telemetry is delayed context; missing telemetry must not cause deferral. Never infer current capacity or exact future completion times from delayed metrics. Only choose a supplied legal choice.", options);
+            let judge = match judge {
+                Ok(j) => j,
+                Err(e) => return Inference::failed(e),
             };
-            let judge =
-                TypeSafeJudge::new(self.client.clone(), task).select_answer(|a| a.placement);
             let controller = Controller::builder()
                 .name("resource_scheduler")
                 .judge(judge)
@@ -241,7 +240,7 @@ impl Evaluator for LiveEvaluator {
                             .map(|d| d.probabilities.clone())
                             .unwrap_or_default(),
                         model: info.as_ref().map(|d| d.model.clone()),
-                        usage: info.map(|d| d.usage),
+                        usage: info.and_then(|d| d.usage),
                         latency_ms: 0.,
                         error: None,
                     }

@@ -50,9 +50,6 @@ pub struct InferenceStatus {
     pub evidence_age_seconds: Option<f64>,
     pub simulation_run: Option<String>,
 }
-// Published Jev 1.13 pricing, verified 2026-09-20:
-// https://docs.typesafe.ai/models — $0.042 / million input tokens; output free.
-const INPUT_USD_PER_MILLION: f64 = 0.042;
 #[derive(Clone, Default, Serialize)]
 pub struct CostStatus {
     pub estimated_usd: f64,
@@ -77,9 +74,9 @@ impl CostStatus {
         self.input_tokens += usage.input_tokens;
         self.output_tokens += usage.output_tokens;
         // Use the resolved model, never assume an alias still has this price.
-        if model == Some("jev-1.13.0") {
+        if let Some(rate) = model.and_then(crate::provider::input_usd_per_million) {
             self.priced_calls += 1;
-            self.estimated_usd += usage.input_tokens as f64 * INPUT_USD_PER_MILLION / 1_000_000.0;
+            self.estimated_usd += usage.input_tokens as f64 * rate / 1_000_000.0;
         } else {
             self.unpriced_calls += 1;
         }
@@ -436,6 +433,23 @@ mod tests {
         assert_eq!(cost.priced_calls, 0);
         assert_eq!(cost.input_tokens, 700);
         assert_eq!(cost.estimated_usd, 0.0);
+    }
+    #[test]
+    fn each_provider_model_is_priced_at_its_own_published_rate() {
+        for (model, usd) in [("jev-1.13.0", 0.042), ("gpt-6-luna", 0.10)] {
+            let mut cost = CostStatus::default();
+            cost.dispatched();
+            let mut result = Inference::failed("unused", "fixture");
+            result.model = Some(model.into());
+            result.usage = Some(typesafe_ai::Usage {
+                input_tokens: 1_000_000,
+                output_tokens: 0,
+                extra: Default::default(),
+            });
+            cost.record(&result);
+            assert_eq!(cost.priced_calls, 1, "{model}");
+            assert!((cost.estimated_usd - usd).abs() < 1e-12, "{model}");
+        }
     }
 }
 

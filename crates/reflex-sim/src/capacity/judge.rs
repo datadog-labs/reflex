@@ -7,8 +7,8 @@ use super::{
     forecast::{Snapshot, SERIES},
     workload::Bucket,
 };
+use crate::provider::{choice_judge, ModelClient};
 use reflex::Controller;
-use reflex_typesafe::TypeSafeJudge;
 use serde::{Deserialize, Serialize};
 use std::{
     collections::BTreeMap,
@@ -16,7 +16,7 @@ use std::{
     pin::Pin,
     time::{Duration, Instant},
 };
-use typesafe_ai::{choice, questions, SystemOneTask, TypeSafeClient, Usage};
+use typesafe_ai::Usage;
 #[derive(Clone, Serialize, Deserialize)]
 pub struct ForecastEvidence {
     pub origin_ms: u64,
@@ -203,12 +203,15 @@ pub trait Evaluator: Send + Sync {
     fn evaluate(&self, state: Evidence) -> Evaluation<'_>;
 }
 pub struct LiveEvaluator {
-    client: TypeSafeClient,
+    client: ModelClient,
     model: String,
 }
 impl LiveEvaluator {
-    pub fn new(client: TypeSafeClient, model: String) -> Self {
-        Self { client, model }
+    pub fn new(client: impl Into<ModelClient>, model: String) -> Self {
+        Self {
+            client: client.into(),
+            model,
+        }
     }
 }
 impl Evaluator for LiveEvaluator {
@@ -221,15 +224,11 @@ impl Evaluator for LiveEvaluator {
                 .copied()
                 .map(|a| (a, a.label()))
                 .collect::<Vec<_>>();
-            let task=SystemOneTask::builder().model(&self.model).questions(questions! {
-                intervention:choice("Choose a capacity action to reduce queue delay and rejections while minimizing active node-seconds. Nodes have 8 CPU and 16 GiB. Starting nodes take startup_s seconds and cannot serve yet; draining nodes finish existing work but take no new jobs. Include starting capacity in your plan. Demand is offered work, not admitted traffic. Forecast p10/p50/p90 are uncertain pointwise quantiles, not guarantees. Compare expected demand during startup and afterwards with ready and pending capacity. Respect the node budget, retain one ready node, avoid oscillation, and hold when no change is useful. Use only supplied evidence. The legal choices are screened again against actual current state before execution",options)
-            }).build();
-            let task = match task {
-                Ok(t) => t,
-                Err(e) => return Inference::failed(e.to_string()),
+            let judge = choice_judge!(&self.client, &self.model, intervention: "Choose a capacity action to reduce queue delay and rejections while minimizing active node-seconds. Nodes have 8 CPU and 16 GiB. Starting nodes take startup_s seconds and cannot serve yet; draining nodes finish existing work but take no new jobs. Include starting capacity in your plan. Demand is offered work, not admitted traffic. Forecast p10/p50/p90 are uncertain pointwise quantiles, not guarantees. Compare expected demand during startup and afterwards with ready and pending capacity. Respect the node budget, retain one ready node, avoid oscillation, and hold when no change is useful. Use only supplied evidence. The legal choices are screened again against actual current state before execution", options);
+            let judge = match judge {
+                Ok(j) => j,
+                Err(e) => return Inference::failed(e),
             };
-            let judge =
-                TypeSafeJudge::new(self.client.clone(), task).select_answer(|a| a.intervention);
             let controller = Controller::builder()
                 .judge(judge)
                 .inference_timeout(Duration::from_secs(2))
@@ -246,7 +245,7 @@ impl Evaluator for LiveEvaluator {
                             .map(|d| d.probabilities.clone())
                             .unwrap_or_default(),
                         model: info.as_ref().map(|d| d.model.clone()),
-                        usage: info.map(|d| d.usage),
+                        usage: info.and_then(|d| d.usage),
                         latency_ms: 0.,
                         error: None,
                     }

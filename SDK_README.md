@@ -10,6 +10,8 @@ This workspace contains the initial implementation. It uses Rust 1.92+ and Tokio
 | `reflex-macros` | `state_machine!`, re-exported by `reflex` |
 | `typesafe-ai` | Standalone HTTP client, `questions!`, and typed Choice, Score, and Noul answers |
 | `reflex-typesafe` | Inject an instantiated TypeSafe client and task as a judge |
+| `openai-decisions` | Standalone HTTP client for the OpenAI Decisions API, `questions!`, and typed Choice, Score, and Predicate answers |
+| `reflex-openai` | Inject an instantiated OpenAI Decisions client and task as a judge |
 
 ## Run the circuit breaker
 
@@ -113,6 +115,45 @@ cargo run -p reflex-typesafe --example jev
 ```
 
 This performs a real provider request. Development tests use loopback HTTP servers and never require a key.
+
+## OpenAI Decisions integration
+
+`openai-decisions` and `reflex-openai` are an alternative provider with the same shape, for the [OpenAI Decisions API](https://developers.openai.com/api/docs/guides/decisions). The client has its own request metrics, traces, and structured logs; see [OpenAI Decisions telemetry](crates/openai-decisions/TELEMETRY.md).
+
+Use `DecisionsClient::builder().api_key(key).timeout(duration).build()?`, then define a `DecisionTask` using `questions!` with `choice`, `predicate`, and `score`. Choice values are typed application values, as with TypeSafe. Score levels are `(label, description)` pairs. Instructions are plain text.
+
+```rust
+use openai_decisions::{choice, questions, DecisionTask, DecisionsClient};
+use reflex_openai::DecisionsJudge;
+
+let client = DecisionsClient::builder()
+    .api_key(std::env::var("OPENAI_API_KEY")?)
+    .build()?;
+let task = DecisionTask::builder()
+    .model("gpt-6-luna")
+    .questions(questions! {
+        action: choice("Recommend the next circuit action.", [
+            (Action::Open, "Open under sustained distress"),
+            (Action::NoChange, "Leave the circuit unchanged"),
+        ]),
+    })
+    .build()?;
+let judge = DecisionsJudge::new(client, task).select_answer(|answers| answers.action);
+```
+
+`client.decide(&task, &input)` sends a string input as is and an array or object as its JSON text. Image inputs are not supported yet. The client validates answers and distributions, disables redirects, and retries 429 and 5xx responses with bounded backoff inside its deadline.
+
+Three behaviours differ from the TypeSafe client:
+
+- **Refusals.** The API can answer a question with `type: "refusal"`. The call then fails with `Error::Refusal`, naming the question, and the adapter reports `openai_refusal`. Other answers in that response are not returned.
+- **Response metadata.** The published response contract guarantees only `answers`. `Response::usage` is `None` when the provider reports none, and `Response::model` falls back to the requested model.
+- **Error codes.** `Error::Http` keeps the provider's machine-readable `code`, such as `model_not_found`, but never its message. The adapter preserves status-specific failure codes such as `openai_http_401`.
+
+A live evaluation example is [decisions.rs](crates/reflex-openai/examples/decisions.rs). It uses the environment's `OPENAI_API_KEY` when explicitly run:
+
+```sh
+cargo run -p reflex-openai --example decisions
+```
 
 ## Guarantees and current scope
 
